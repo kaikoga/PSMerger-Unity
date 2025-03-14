@@ -1,0 +1,16 @@
+{
+    "name": "PSMerger",
+    "rootNamespace": "",
+    "references": [
+        "ClusterVR.CreatorKit.Item.Implements"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

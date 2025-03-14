@@ -1,0 +1,17 @@
+{
+  "name": "net.kaikoga.psmerger",
+  "displayName": "PSMerger",
+  "version": "0.1.0",
+  "unity": "2021.3",
+  "description": "Merge PlayerScript",
+  "type": "tool",
+  "dependencies": {
+    "mu.cluster.cluster-creator-kit": "2.0.0"
+  },
+  "author": {
+    "name": "kaikoga",
+    "email": "info@mail.kaikoga.net",
+    "url": "https://www.kaikoga.net/"
+  },
+  "license": "CC0-1.0"
+}
