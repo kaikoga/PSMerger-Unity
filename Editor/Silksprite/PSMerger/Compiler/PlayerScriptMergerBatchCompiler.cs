@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using ClusterVR.CreatorKit.Editor.EditorEvents;
 using UnityEditor;
@@ -37,6 +38,7 @@ namespace Silksprite.PSMerger.Compiler
             Debug.Log($"[{nameof(PlayerScriptMerger)}]更新開始");
             CombineAllOfScene();
             CombineAllOfProject();
+            CombineAllAssets();
             Debug.Log($"[{nameof(PlayerScriptMerger)}]更新終了");
         }
 
@@ -85,5 +87,26 @@ namespace Silksprite.PSMerger.Compiler
             }
         }
 
+        static void CombineAllAssets()
+        {
+            var guids = AssetDatabase.FindAssets("t:ClusterScriptAssetMerger", null);
+            
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var merger = AssetDatabase.LoadAssetAtPath<ClusterScriptAssetMerger>(path);
+                switch (merger.ScriptType)
+                {
+                    case ClusterScriptType.ItemScript:
+                        ItemScriptMergerCompiler.Compile(merger);
+                        break;
+                    case ClusterScriptType.PlayerScript:
+                        PlayerScriptMergerCompiler.Compile(merger);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(merger.ScriptType), merger.ScriptType, null);
+                }
+            }
+        }
     }
 }
