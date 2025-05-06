@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "Silksprite.PSMerger",
+        "ClusterVR.CreatorKit.Editor.Custom",
         "ClusterVR.CreatorKit.Editor.EditorEvents",
         "ClusterVR.CreatorKit.Item.Implements"
     ],

@@ -1,19 +1,29 @@
-
+using ClusterVR.CreatorKit.Editor.Custom;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Silksprite.PSMerger
 {
     [CustomEditor(typeof(PlayerScriptAssetMerger))]
-    public class PlayerScriptAssetMergerEditor : Editor
+    public class PlayerScriptAssetMergerEditor : VisualElementEditor
     {
-        public override void OnInspectorGUI()
+        public override VisualElement CreateInspectorGUI()
         {
-            base.OnInspectorGUI();
-            if (GUILayout.Button("Compile"))
+            var content = base.CreateInspectorGUI();
+            content.Add(new IMGUIContainer(() =>
             {
-                PlayerScriptMergerCompiler.Compile((PlayerScriptAssetMerger)target);
-            }
+                if (GUILayout.Button("Compile"))
+                {
+                    Compile();
+                }
+            }));
+            return content;
+        }
+
+        void Compile()
+        {
+            PlayerScriptMergerCompiler.Compile((PlayerScriptAssetMerger)target);
         }
     }
 }

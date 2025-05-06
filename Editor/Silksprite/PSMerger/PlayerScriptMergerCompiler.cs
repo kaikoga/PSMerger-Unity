@@ -1,5 +1,6 @@
 using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
+using PlasticGui;
 using Silksprite.PSMerger.Access;
 
 namespace Silksprite.PSMerger
@@ -85,15 +86,20 @@ const __ = (() => {
         public static bool Compile(PlayerScriptAssetMerger playerScriptAssetMerger)
         {
             using var javaScriptAssetAccess = new JavaScriptAssetAccess(playerScriptAssetMerger.MergedPlayerScript);
-            javaScriptAssetAccess.text = BuildPlayerScript(playerScriptAssetMerger.PlayerScripts);;
+            javaScriptAssetAccess.text = BuildPlayerScript(playerScriptAssetMerger.PlayerScripts);
             return javaScriptAssetAccess.hasModifiedProperties;
         }
 
         static string BuildPlayerScript(JavaScriptAsset[] playerScripts)
         {
-            return PlayerScriptPreamble + string.Join("\n", playerScripts.Select(ps => $@"
+            return BuildPlayerScript(playerScripts.Select(ps => new[] { ps }).ToArray());
+        }
+
+        static string BuildPlayerScript(JavaScriptAsset[][] playerScripts)
+        {
+            return PlayerScriptPreamble + string.Join("\n", playerScripts.Select(context => $@"
 (_ => {{
-{ps.text}
+{string.Join("\n", context.Select(ps => ps != null ? ps.text : null))}
 }})(__());
 "));
         }
