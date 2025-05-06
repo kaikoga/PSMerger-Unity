@@ -1,5 +1,5 @@
 {
-    "name": "PSMerger",
+    "name": "Silksprite.PSMerger",
     "rootNamespace": "",
     "references": [
         "ClusterVR.CreatorKit.Item.Implements"

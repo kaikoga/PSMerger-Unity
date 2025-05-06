@@ -1,9 +1,6 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
-using Google.Protobuf.WellKnownTypes;
-using UnityEditor;
+using Silksprite.PSMerger.Access;
 
 namespace Silksprite.PSMerger
 {
@@ -78,80 +75,28 @@ const __ = (() => {
             using (var playerScriptAccess = new PlayerScriptAccess(playerScriptMerger.GetComponent<PlayerScript>()))
             {
                 playerScriptAccess.sourceCodeAsset = null;
-                playerScriptAccess.sourceCode = BuildPlayerScript(playerScriptMerger);
+                playerScriptAccess.sourceCode = BuildPlayerScript(playerScriptMerger.PlayerScripts);
                 changed |= playerScriptAccess.hasModifiedProperties;
             }
 
             return changed;
         }
 
-        static string BuildPlayerScript(PlayerScriptMerger playerScriptMerger)
+        public static bool Compile(PlayerScriptAssetMerger playerScriptAssetMerger)
         {
-            return PlayerScriptPreamble + string.Join("\n", playerScriptMerger.PlayerScripts.Select(ps => $@"
+            using var javaScriptAssetAccess = new JavaScriptAssetAccess(playerScriptAssetMerger.MergedPlayerScript);
+            javaScriptAssetAccess.text = BuildPlayerScript(playerScriptAssetMerger.PlayerScripts);;
+            return javaScriptAssetAccess.hasModifiedProperties;
+        }
+
+        static string BuildPlayerScript(JavaScriptAsset[] playerScripts)
+        {
+            return PlayerScriptPreamble + string.Join("\n", playerScripts.Select(ps => $@"
 (_ => {{
 {ps.text}
 }})(__());
 "));
         }
 
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
-        class ScriptableItemAccess : IDisposable
-        {
-            readonly SerializedObject _serializedObject;
-            
-            public bool hasModifiedProperties => _serializedObject.hasModifiedProperties;
-
-            public JavaScriptAsset sourceCodeAsset
-            {
-                set
-                {
-                    using var prop = _serializedObject.FindProperty("sourceCodeAsset");
-                    if (prop.objectReferenceValue != value) prop.objectReferenceValue = value;
-                }
-            }
-
-            public string sourceCode
-            {
-                set
-                {
-                    using var prop = _serializedObject.FindProperty("sourceCode");
-                    if (prop.stringValue != value) prop.stringValue = value;
-                }
-            }
-
-            public ScriptableItemAccess(ScriptableItem scriptableItem) => _serializedObject = new SerializedObject(scriptableItem);
-
-            void IDisposable.Dispose() => _serializedObject.ApplyModifiedProperties();
-        }
-
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
-        class PlayerScriptAccess : IDisposable
-        {
-            readonly SerializedObject _serializedObject;
-
-            public bool hasModifiedProperties => _serializedObject.hasModifiedProperties;
-
-            public JavaScriptAsset sourceCodeAsset
-            {
-                set
-                {
-                    using var prop = _serializedObject.FindProperty("sourceCodeAsset");
-                    if (prop.objectReferenceValue != value) prop.objectReferenceValue = value;
-                }
-            }
-
-            public string sourceCode
-            {
-                set
-                {
-                    using var prop = _serializedObject.FindProperty("sourceCode");
-                    if (prop.stringValue != value) prop.stringValue = value;
-                }
-            }
-
-            public PlayerScriptAccess(PlayerScript playerScript) => _serializedObject = new SerializedObject(playerScript);
-
-            void IDisposable.Dispose() => _serializedObject.ApplyModifiedProperties();
-        }
     }
 }
