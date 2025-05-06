@@ -3,7 +3,7 @@ using ClusterVR.CreatorKit.Editor.EditorEvents;
 using UnityEditor;
 using UnityEngine;
 
-namespace Silksprite.PSMerger
+namespace Silksprite.PSMerger.Compiler
 {
     // CSCombinerと同じことをする
     public static class PlayerScriptMergerBatchCompiler
