@@ -17,6 +17,7 @@ namespace Silksprite.PSMerger
 
     public enum ClusterScriptType
     {
+        ConcatOnly,
         ItemScript,
         PlayerScript
     }

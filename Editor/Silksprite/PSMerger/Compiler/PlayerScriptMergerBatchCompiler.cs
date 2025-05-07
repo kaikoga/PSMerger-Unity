@@ -97,6 +97,9 @@ namespace Silksprite.PSMerger.Compiler
                 var merger = AssetDatabase.LoadAssetAtPath<ClusterScriptAssetMerger>(path);
                 switch (merger.ScriptType)
                 {
+                    case ClusterScriptType.ConcatOnly:
+                        ConcatOnlyCompiler.Compile(merger);
+                        break;
                     case ClusterScriptType.ItemScript:
                         ItemScriptMergerCompiler.Compile(merger);
                         break;

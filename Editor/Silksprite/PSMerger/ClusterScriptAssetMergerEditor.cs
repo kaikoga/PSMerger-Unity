@@ -28,6 +28,9 @@ namespace Silksprite.PSMerger
             var merger = (ClusterScriptAssetMerger)target;
             switch (merger.ScriptType)
             {
+                case ClusterScriptType.ConcatOnly:
+                    ConcatOnlyCompiler.Compile(merger);
+                    break;
                 case ClusterScriptType.ItemScript:
                     ItemScriptMergerCompiler.Compile(merger);
                     break;
