@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using ClusterVR.CreatorKit.Editor.Custom;
+using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSMerger.Compiler;
 using UnityEditor;
 using UnityEngine;
@@ -10,11 +12,25 @@ namespace Silksprite.PSMerger
     [CustomEditor(typeof(ClusterScriptAssetMerger))]
     public class ClusterScriptAssetMergerEditor : VisualElementEditor
     {
+        ClusterScriptAssetMerger _merger;
+
+        void OnEnable()
+        {
+            _merger = (ClusterScriptAssetMerger)target;
+        }
+
         public override VisualElement CreateInspectorGUI()
         {
             var content = base.CreateInspectorGUI();
             content.Add(new IMGUIContainer(() =>
             {
+                using (new EditorGUI.DisabledScope(_merger.MergedScript))
+                {
+                    if (GUILayout.Button("Create Merged Script"))
+                    {
+                        CreateMergedScript();
+                    }
+                }
                 if (GUILayout.Button("Compile"))
                 {
                     Compile();
@@ -23,22 +39,28 @@ namespace Silksprite.PSMerger
             return content;
         }
 
+        void CreateMergedScript()
+        {
+            var assetPath = $"{Path.GetDirectoryName(AssetDatabase.GetAssetPath(_merger))}/MergedClusterScript.js";
+            var javaScriptAsset = PSMergerUtil.CreateJavaScriptAsset(assetPath);
+            _merger.SetMergedScript(javaScriptAsset);
+        }
+
         void Compile()
         {
-            var merger = (ClusterScriptAssetMerger)target;
-            switch (merger.ScriptType)
+            switch (_merger.ScriptType)
             {
                 case ClusterScriptType.ConcatOnly:
-                    ConcatOnlyCompiler.Compile(merger);
+                    ConcatOnlyCompiler.Compile(_merger);
                     break;
                 case ClusterScriptType.ItemScript:
-                    ItemScriptMergerCompiler.Compile(merger);
+                    ItemScriptMergerCompiler.Compile(_merger);
                     break;
                 case ClusterScriptType.PlayerScript:
-                    PlayerScriptMergerCompiler.Compile(merger);
+                    PlayerScriptMergerCompiler.Compile(_merger);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(merger.ScriptType), merger.ScriptType, null);
+                    throw new ArgumentOutOfRangeException(nameof(_merger.ScriptType), _merger.ScriptType, null);
             }
         }
     }

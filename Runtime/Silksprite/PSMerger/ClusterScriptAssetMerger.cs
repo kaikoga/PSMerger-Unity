@@ -13,6 +13,11 @@ namespace Silksprite.PSMerger
         public ClusterScriptType ScriptType => scriptType;
         public JavaScriptAsset[][] ScriptContexts => scriptContexts.Select(context => context.JavaScriptAssets).ToArray();
         public JavaScriptAsset MergedScript => mergedScript;
+
+        public void SetMergedScript(JavaScriptAsset javaScriptAsset)
+        {
+            mergedScript = javaScriptAsset;
+        }
     }
 
     public enum ClusterScriptType
