@@ -7,13 +7,16 @@ namespace Silksprite.PSMerger.Compiler
     {
         const string ItemScriptPreamble = @"
 const $$ = (() => {
-    const onUpdate = new Map();
-    const onReceive = new Map();
-    $.onUpdate(deltaTime => {
-        for (const f of onFrame.values()) f(deltaTime);
+    const h = new Proxy(new Map(), {
+        get(target, prop, receiver) {
+            return target.has(prop) ? target.get(prop) : target.set(prop, new Map()).get(prop);
+        }
     });
-    $.onReceive((messageType, arg, sender) => {
-        for (const f of onReceive.values()) f(messageType, arg, sender);
+    $.onUpdate((...args) => {
+        for (const f of h.onUpdate.values()) f(...args);
+    });
+    $.onReceive((...args) => {
+        for (const f of h.onReceive.values()) f(...args);
     }, { item: true, player: true });
     function createProxy(obj, base) {
         return new Proxy(obj, {
@@ -30,8 +33,8 @@ const $$ = (() => {
     }
     return () => {
         return createProxy({
-            onUpdate(callback) { onUpdate.set(this, callback) },
-            onReceive(callback) { onReceive.set(this, callback) },
+            onUpdate(callback) { h.onUpdate.set(this, callback) },
+            onReceive(callback) { h.onReceive.set(this, callback) },
         }, $);
     }
 })();
@@ -39,17 +42,17 @@ const $$ = (() => {
 
         const string PlayerScriptPreamble = @"
 const __ = (() => {
-    const onFrame = new Map();
-    const onReceive = new Map();
-    const onOscReceive = new Map();
-    _.onFrame(deltaTime => {
-        for (const f of onFrame.values()) f(deltaTime);
+    const h = new Proxy(new Map(), {
+        get: function(target, prop) { return target.has(prop) ? target.get(prop) : target.set(prop, new Map()).get(prop); }
     });
-    _.onReceive((messageType, arg, sender) => {
-        for (const f of onReceive.values()) f(messageType, arg, sender);
+    _.onFrame((...args) => {
+        for (const f of h.onFrame.values()) f(...args);
     });
-    _.oscHandle.onReceive((messages) => {
-        for (const f of onOscReceive.values()) f(messages);
+    _.onReceive((...args) => {
+        for (const f of h.onReceive.values()) f(...args);
+    });
+    _.oscHandle.onReceive((...args) => {
+        for (const f of h.onOscReceive.values()) f(...args);
     });
     function createProxy(obj, base) {
         return new Proxy(obj, {
@@ -66,11 +69,11 @@ const __ = (() => {
     }
     return () => {
         const _oscHandle = createProxy({
-            onOscReceive(callback) { onOscReceive.set(this, callback) },
+            onOscReceive(callback) { h.onOscReceive.set(this, callback) },
         }, _.oscHandle);
         return createProxy({
-            onFrame(callback) { onFrame.set(this, callback) },
-            onReceive(callback) { onReceive.set(this, callback) },
+            onFrame(callback) { h.onFrame.set(this, callback) },
+            onReceive(callback) { h.onReceive.set(this, callback) },
             get oscHandle() { return _oscHandle },
         }, _);
     }
