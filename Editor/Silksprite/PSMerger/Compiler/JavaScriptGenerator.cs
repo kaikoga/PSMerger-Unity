@@ -11,22 +11,36 @@ namespace Silksprite.PSMerger.Compiler
         readonly string _gg;
         readonly string _preamble;
 
-        public JavaScriptGenerator(bool playerScript)
+        JavaScriptGenerator(string g, string gg, (string obj, string name, string args)[] callbackDefs)
         {
-            _g = playerScript ? "_" : "$";
-            _gg = playerScript ? "__" : "$$";
-            _preamble = playerScript 
-                ? BuildPreamble(_g, _gg, new (string, string, string)[]
-                {
-                    (null, "onFrame", null),
-                    (null, "onReceive", null),
-                    ("oscHandle", "onOscReceive", null)
-                })
-                : BuildPreamble(_g, _gg, new (string, string, string)[]
-                {
-                    (null, "onUpdate", null),
-                    (null, "onReceive", "{ item: true, player: true }")
-                });
+            _g = g;
+            _gg = gg;
+            _preamble = BuildPreamble(g, gg, callbackDefs);
+        }
+
+        public static JavaScriptGenerator ForItemScript()
+        {
+            const string g = "$";
+            const string gg = "$$";
+            var callbackDefs = new (string, string, string)[]
+            {
+                (null, "onUpdate", null),
+                (null, "onReceive", "{ item: true, player: true }")
+            };
+            return new JavaScriptGenerator(g, gg, callbackDefs);
+        }
+
+        public static JavaScriptGenerator ForPlayerScript()
+        {
+            const string g = "_";
+            const string gg = "__";
+            var callbackDefs = new (string, string, string)[]
+            {
+                (null, "onFrame", null),
+                (null, "onReceive", null),
+                ("oscHandle", "onOscReceive", null)
+            };
+            return new JavaScriptGenerator(g, gg, callbackDefs);
         }
 
         public string MergeScripts(JavaScriptAsset[][] scripts)

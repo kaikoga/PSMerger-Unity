@@ -5,7 +5,7 @@ namespace Silksprite.PSMerger.Compiler
 {
     public static class ItemScriptMergerCompiler
     {
-        static readonly JavaScriptGenerator Gen = new(false);
+        static readonly JavaScriptGenerator Gen = JavaScriptGenerator.ForItemScript();
 
         public static bool Compile(ClusterScriptAssetMerger clusterScriptAssetMerger)
         {

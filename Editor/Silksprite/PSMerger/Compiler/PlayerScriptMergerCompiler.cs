@@ -12,7 +12,7 @@ namespace Silksprite.PSMerger.Compiler
         static string _itemScript;
         static string ItemScript => _itemScript ??= AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(ItemScriptPath).text;
 
-        static readonly JavaScriptGenerator Gen = new(true);
+        static readonly JavaScriptGenerator Gen = JavaScriptGenerator.ForPlayerScript();
 
         public static bool Compile(PlayerScriptMerger playerScriptMerger)
         {
