@@ -7,42 +7,6 @@ namespace Silksprite.PSMerger.Compiler
 {
     public class JavaScriptGenerator
     {
-        const string ItemScriptPreamble = @"
-const $$ = (() => {
-    const h = new Proxy(new Map(), {
-        get(target, prop, receiver) {
-            return target.has(prop) ? target.get(prop) : target.set(prop, new Map()).get(prop);
-        }
-    });
-    $.onUpdate((...args) => {
-        for (const f of h.onUpdate.values()) f(...args);
-    });
-    $.onReceive((...args) => {
-        for (const f of h.onReceive.values()) f(...args);
-    }, { item: true, player: true });
-    function createProxy(obj, base) {
-        return new Proxy(obj, {
-            get(target, prop, receiver) {
-                let thisValue = target; 
-                let value = target[prop];
-                if (value === undefined) {
-                    thisValue = base;
-                    value = base[prop];
-                }
-                return (value instanceof Function) ? value.bind(thisValue) : value;
-            }
-        });
-    }
-    return () => {
-        return createProxy({
-            onUpdate(callback) { h.onUpdate.set(this, callback) },
-            onReceive(callback) { h.onReceive.set(this, callback) },
-        }, $);
-    }
-})();
-";
-
-        
         readonly string _g;
         readonly string _gg;
         readonly string _preamble;
@@ -52,13 +16,17 @@ const $$ = (() => {
             _g = playerScript ? "_" : "$";
             _gg = playerScript ? "__" : "$$";
             _preamble = playerScript 
-                ? BuildPreamble(new (string, string, string)[]
+                ? BuildPreamble(_g, _gg, new (string, string, string)[]
                 {
                     (null, "onFrame", null),
                     (null, "onReceive", null),
                     ("oscHandle", "onOscReceive", null)
                 })
-                : ItemScriptPreamble;
+                : BuildPreamble(_g, _gg, new (string, string, string)[]
+                {
+                    (null, "onUpdate", null),
+                    (null, "onReceive", "{ item: true, player: true }")
+                });
         }
 
         public string MergeScripts(JavaScriptAsset[][] scripts)
@@ -71,7 +39,8 @@ const $$ = (() => {
         }
 
         [SuppressMessage("ReSharper", "RedundantStringInterpolation")]
-        string BuildPreamble((string obj, string name, string args)[] callbackDefs)
+        [SuppressMessage("ReSharper", "ConvertIfStatementToConditionalTernaryExpression")]
+        static string BuildPreamble(string g, string gg, (string obj, string name, string args)[] callbackDefs)
         {
             var callbacks = callbackDefs
                 .Select(def => (def.obj, def.name, path: def.obj is null ? def.name : $"{def.obj}.{def.name}", def.args))
@@ -82,15 +51,22 @@ const $$ = (() => {
                 .ToArray();
             var sb = new StringBuilder();
             
-            sb.AppendLine($"const {_gg} = (() => {{");
+            sb.AppendLine($"const {gg} = (() => {{");
             sb.AppendLine($"  const h = new Proxy(new Map(), {{");
             sb.AppendLine($"    get: function(target, prop) {{ return target.has(prop) ? target.get(prop) : target.set(prop, new Map()).get(prop); }}");
             sb.AppendLine($"  }});");
             foreach (var callback in callbacks)
             {
-                sb.AppendLine($"  {_g}.{callback.path}((...args) => {{");
+                sb.AppendLine($"  {g}.{callback.path}((...args) => {{");
                 sb.AppendLine($"    for (const f of h.{callback.name}.values()) f(...args);");
-                sb.AppendLine($"  }});");
+                if (callback.args is null)
+                {
+                    sb.AppendLine($"  }});");
+                }
+                else
+                {
+                    sb.AppendLine($"  }}, {callback.args});");
+                }
             }
             sb.AppendLine($"  function createProxy(obj, base) {{");
             sb.AppendLine($"    return new Proxy(obj, {{");
@@ -113,7 +89,7 @@ const $$ = (() => {
                 {
                     sb.AppendLine($"      {c.name}(callback) {{ h.{c.name}.set(this, callback) }},");
                 }
-                sb.AppendLine($"    }}, {_g}.{obj.Key});");
+                sb.AppendLine($"    }}, {g}.{obj.Key});");
             }
             sb.AppendLine($"    return createProxy({{");
             sb.AppendLine($"      onFrame(callback) {{ h.onFrame.set(this, callback) }},");
@@ -122,7 +98,7 @@ const $$ = (() => {
             {
                 sb.AppendLine($"      get {obj}() {{ return _{obj} }},");
             }
-            sb.AppendLine($"    }}, {_g});");
+            sb.AppendLine($"    }}, {g});");
             sb.AppendLine($"  }}");
             sb.AppendLine($"}})();");
 
