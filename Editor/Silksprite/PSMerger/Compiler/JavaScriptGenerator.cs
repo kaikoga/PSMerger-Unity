@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
@@ -9,20 +10,18 @@ namespace Silksprite.PSMerger.Compiler
     {
         readonly string _g;
         readonly string _gg;
-        readonly string _preamble;
+        readonly CallbackDef[] _callbackDefs;
 
         JavaScriptGenerator(string g, string gg, CallbackDef[] callbackDefs)
         {
             _g = g;
             _gg = gg;
-            _preamble = BuildPreamble(g, gg, callbackDefs);
+            _callbackDefs = callbackDefs;
         }
 
         public static JavaScriptGenerator ForItemScript()
         {
-            const string g = "$";
-            const string gg = "$$";
-            var callbackDefs = new[]
+            return new JavaScriptGenerator("$", "$$", new[]
             {
                 new CallbackDef(null, "onCollide", null),
                 new CallbackDef(null, "onCommentReceived", null),
@@ -43,26 +42,27 @@ namespace Silksprite.PSMerger.Compiler
                 new CallbackDef(null, "onTextInput", null),
                 new CallbackDef(null, "onUpdate", null),
                 new CallbackDef(null, "onUse", null),
-            };
-            return new JavaScriptGenerator(g, gg, callbackDefs);
+            });
         }
 
         public static JavaScriptGenerator ForPlayerScript()
         {
-            const string g = "_";
-            const string gg = "__";
-            var callbackDefs = new CallbackDef[]
+            return new JavaScriptGenerator("_", "__", new[]
             {
                 new CallbackDef(null, "onFrame", null),
                 new CallbackDef(null, "onReceive", null),
                 new CallbackDef("oscHandle", "onOscReceive", null),
-            };
-            return new JavaScriptGenerator(g, gg, callbackDefs);
+            });
         }
 
         public string MergeScripts(JavaScriptAsset[][] scripts)
         {
-            return _preamble + string.Join("\n", scripts.Select(context => $@"
+            var allScripts = scripts.SelectMany(script => script);
+            var callbackDefs = _callbackDefs
+                .Where(def => allScripts.Any(s => s.text.Contains(def.Name)))
+                .ToArray();
+            var preamble = BuildPreamble(_g, _gg, callbackDefs);
+            return preamble + string.Join("\n", scripts.Select(context => $@"
 ({_g} => {{
 {string.Join("\n", context.Select(ps => ps != null ? ps.text : null))}
 }})({_gg}());
