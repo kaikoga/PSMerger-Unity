@@ -11,7 +11,7 @@ namespace Silksprite.PSMerger.Compiler
         readonly string _gg;
         readonly string _preamble;
 
-        JavaScriptGenerator(string g, string gg, (string obj, string name, string args)[] callbackDefs)
+        JavaScriptGenerator(string g, string gg, CallbackDef[] callbackDefs)
         {
             _g = g;
             _gg = gg;
@@ -22,27 +22,27 @@ namespace Silksprite.PSMerger.Compiler
         {
             const string g = "$";
             const string gg = "$$";
-            var callbackDefs = new (string, string, string)[]
+            var callbackDefs = new[]
             {
-                (null, "onCollide", null),
-                (null, "onCommentReceived", null),
-                (null, "onExternalCallEnd", null),
-                (null, "onGetOwnProducts", null),
-                (null, "onGiftSent", null),
-                (null, "onGrab", null),
-                (null, "onInteract", null),
-                (null, "onPhysicsUpdate", null),
-                (null, "onPurchaseUpdated", null),
-                (null, "onReceive", "{ item: true, player: true }"),
-                (null, "onRequestGrantProductResult", null),
-                (null, "onRequestPurchaseStatus", null),
-                (null, "onRide", null),
-                (null, "onStart", null),
-                (null, "onSteer", null),
-                (null, "onSteerAdditionalAxis", null),
-                (null, "onTextInput", null),
-                (null, "onUpdate", null),
-                (null, "onUse", null),
+                new CallbackDef(null, "onCollide", null),
+                new CallbackDef(null, "onCommentReceived", null),
+                new CallbackDef(null, "onExternalCallEnd", null),
+                new CallbackDef(null, "onGetOwnProducts", null),
+                new CallbackDef(null, "onGiftSent", null),
+                new CallbackDef(null, "onGrab", null),
+                new CallbackDef(null, "onInteract", null),
+                new CallbackDef(null, "onPhysicsUpdate", null),
+                new CallbackDef(null, "onPurchaseUpdated", null),
+                new CallbackDef(null, "onReceive", "{ item: true, player: true }"),
+                new CallbackDef(null, "onRequestGrantProductResult", null),
+                new CallbackDef(null, "onRequestPurchaseStatus", null),
+                new CallbackDef(null, "onRide", null),
+                new CallbackDef(null, "onStart", null),
+                new CallbackDef(null, "onSteer", null),
+                new CallbackDef(null, "onSteerAdditionalAxis", null),
+                new CallbackDef(null, "onTextInput", null),
+                new CallbackDef(null, "onUpdate", null),
+                new CallbackDef(null, "onUse", null),
             };
             return new JavaScriptGenerator(g, gg, callbackDefs);
         }
@@ -51,11 +51,11 @@ namespace Silksprite.PSMerger.Compiler
         {
             const string g = "_";
             const string gg = "__";
-            var callbackDefs = new (string, string, string)[]
+            var callbackDefs = new CallbackDef[]
             {
-                (null, "onFrame", null),
-                (null, "onReceive", null),
-                ("oscHandle", "onOscReceive", null),
+                new CallbackDef(null, "onFrame", null),
+                new CallbackDef(null, "onReceive", null),
+                new CallbackDef("oscHandle", "onOscReceive", null),
             };
             return new JavaScriptGenerator(g, gg, callbackDefs);
         }
@@ -71,14 +71,11 @@ namespace Silksprite.PSMerger.Compiler
 
         [SuppressMessage("ReSharper", "RedundantStringInterpolation")]
         [SuppressMessage("ReSharper", "ConvertIfStatementToConditionalTernaryExpression")]
-        static string BuildPreamble(string g, string gg, (string obj, string name, string args)[] callbackDefs)
+        static string BuildPreamble(string g, string gg, CallbackDef[] callbackDefs)
         {
-            var callbacks = callbackDefs
-                .Select(def => (def.obj, def.name, path: def.obj is null ? def.name : $"{def.obj}.{def.name}", def.args))
-                .ToArray();
-            var objs = callbacks
-                .Where(c => c.obj is not null)
-                .GroupBy(c => c.obj)
+            var objs = callbackDefs
+                .Where(c => c.Obj is not null)
+                .GroupBy(c => c.Obj)
                 .ToArray();
             var sb = new StringBuilder();
             
@@ -86,20 +83,20 @@ namespace Silksprite.PSMerger.Compiler
             sb.AppendLine($"  const h = new Proxy(new Map(), {{");
             sb.AppendLine($"    get: function(target, prop) {{ return target.has(prop) ? target.get(prop) : target.set(prop, new Map()).get(prop); }}");
             sb.AppendLine($"  }});");
-            foreach (var c in callbacks)
+            foreach (var c in callbackDefs)
             {
-                sb.AppendLine($"  function {c.name}(g, callback) {{");
-                sb.AppendLine($"    if (h.{c.name}.keys().next().done) {g}.{c.path}((...args) => {{");
-                sb.AppendLine($"      for (const f of h.{c.name}.values()) f(...args);");
-                if (c.args is null)
+                sb.AppendLine($"  function {c.Name}(g, callback) {{");
+                sb.AppendLine($"    if (h.{c.Name}.keys().next().done) {g}.{c.Path}((...args) => {{");
+                sb.AppendLine($"      for (const f of h.{c.Name}.values()) f(...args);");
+                if (c.Args is null)
                 {
                     sb.AppendLine($"    }});");
                 }
                 else
                 {
-                    sb.AppendLine($"    }}, {c.args});");
+                    sb.AppendLine($"    }}, {c.Args});");
                 }
-                sb.AppendLine($"    h.{c.name}.set(g, callback);");
+                sb.AppendLine($"    h.{c.Name}.set(g, callback);");
                 sb.AppendLine($"  }}");
             }
             sb.AppendLine($"  function createProxy(obj, base) {{");
@@ -121,14 +118,14 @@ namespace Silksprite.PSMerger.Compiler
                 sb.AppendLine($"    const _{obj.Key} = createProxy({{");
                 foreach (var c in obj)
                 {
-                    sb.AppendLine($"      {c.name}(callback) {{ {c.name}(this, callback) }},");
+                    sb.AppendLine($"      {c.Name}(callback) {{ {c.Name}(this, callback) }},");
                 }
                 sb.AppendLine($"    }}, {g}.{obj.Key});");
             }
             sb.AppendLine($"    return createProxy({{");
-            foreach (var c in callbacks.Where(c => c.obj is null))
+            foreach (var c in callbackDefs.Where(c => c.Obj is null))
             {
-                sb.AppendLine($"      {c.name}(callback) {{ {c.name}(this, callback) }},");
+                sb.AppendLine($"      {c.Name}(callback) {{ {c.Name}(this, callback) }},");
             }
             foreach (var obj in objs.Select(o => o.Key))
             {
@@ -139,6 +136,22 @@ namespace Silksprite.PSMerger.Compiler
             sb.AppendLine($"}})();");
 
             return sb.ToString();
+        }
+    }
+
+    public readonly struct CallbackDef
+    {
+        public readonly string Obj;
+        public readonly string Name;
+        public readonly string Args;
+
+        public string Path => Obj is null ? Name : $"{Obj}.{Name}";
+
+        public CallbackDef(string obj, string name, string args)
+        {
+            Obj = obj;
+            Name = name;
+            Args = args;
         }
     }
 }
