@@ -69,18 +69,21 @@ namespace Silksprite.PSMerger.Compiler
             sb.AppendLine($"  const h = new Proxy(new Map(), {{");
             sb.AppendLine($"    get: function(target, prop) {{ return target.has(prop) ? target.get(prop) : target.set(prop, new Map()).get(prop); }}");
             sb.AppendLine($"  }});");
-            foreach (var callback in callbacks)
+            foreach (var c in callbacks)
             {
-                sb.AppendLine($"  {g}.{callback.path}((...args) => {{");
-                sb.AppendLine($"    for (const f of h.{callback.name}.values()) f(...args);");
-                if (callback.args is null)
+                sb.AppendLine($"  function {c.name}(g, callback) {{");
+                sb.AppendLine($"    if (h.{c.name}.keys().next().done) {g}.{c.path}((...args) => {{");
+                sb.AppendLine($"      for (const f of h.{c.name}.values()) f(...args);");
+                if (c.args is null)
                 {
-                    sb.AppendLine($"  }});");
+                    sb.AppendLine($"    }});");
                 }
                 else
                 {
-                    sb.AppendLine($"  }}, {callback.args});");
+                    sb.AppendLine($"    }}, {c.args});");
                 }
+                sb.AppendLine($"    h.{c.name}.set(g, callback);");
+                sb.AppendLine($"  }}");
             }
             sb.AppendLine($"  function createProxy(obj, base) {{");
             sb.AppendLine($"    return new Proxy(obj, {{");
@@ -101,13 +104,15 @@ namespace Silksprite.PSMerger.Compiler
                 sb.AppendLine($"    const _{obj.Key} = createProxy({{");
                 foreach (var c in obj)
                 {
-                    sb.AppendLine($"      {c.name}(callback) {{ h.{c.name}.set(this, callback) }},");
+                    sb.AppendLine($"      {c.name}(callback) {{ {c.name}(this, callback) }},");
                 }
                 sb.AppendLine($"    }}, {g}.{obj.Key});");
             }
             sb.AppendLine($"    return createProxy({{");
-            sb.AppendLine($"      onFrame(callback) {{ h.onFrame.set(this, callback) }},");
-            sb.AppendLine($"      onReceive(callback) {{ h.onReceive.set(this, callback) }},");
+            foreach (var c in callbacks.Where(c => c.obj is null))
+            {
+                sb.AppendLine($"      {c.name}(callback) {{ {c.name}(this, callback) }},");
+            }
             foreach (var obj in objs.Select(o => o.Key))
             {
                 sb.AppendLine($"      get {obj}() {{ return _{obj} }},");
