@@ -33,7 +33,7 @@ namespace Silksprite.PSMerger.Compiler
                 new CallbackDef(null, "onInteract", null),
                 new CallbackDef(null, "onPhysicsUpdate", null),
                 new CallbackDef(null, "onPurchaseUpdated", null),
-                new CallbackDef(null, "onReceive", "{ item: true, player: true }"),
+                new CallbackDef(null, "onReceive", "@, { item: true, player: true }"),
                 new CallbackDef(null, "onRequestGrantProductResult", null),
                 new CallbackDef(null, "onRequestPurchaseStatus", null),
                 new CallbackDef(null, "onRide", null),
@@ -80,22 +80,19 @@ namespace Silksprite.PSMerger.Compiler
             var sb = new StringBuilder();
             
             sb.AppendLine($"const {gg} = (() => {{");
-            sb.AppendLine($"  const h = new Proxy(new Map(), {{");
-            sb.AppendLine($"    get: function(target, prop) {{ return target.has(prop) ? target.get(prop) : target.set(prop, new Map()).get(prop); }}");
+            sb.AppendLine($"  const x = new Proxy({{ }}, {{");
+            sb.AppendLine($"    get: function(target, prop) {{ const v = !target[prop]; target[prop] = true; return v; }}");
+            sb.AppendLine($"  }});");
+            sb.AppendLine($"  const h = new Proxy({{ }}, {{");
+            sb.AppendLine($"    get: function(target, prop) {{ return target[prop] ??= new Map(); }}");
+            sb.AppendLine($"  }});");
+            sb.AppendLine($"  const d = new Proxy({{ }}, {{");
+            sb.AppendLine($"    get: function(target, prop) {{ return (...args) => {{ for (const f of h[prop].values()) f(...args); }}; }}");
             sb.AppendLine($"  }});");
             foreach (var c in callbackDefs)
             {
                 sb.AppendLine($"  function {c.Name}(g, callback) {{");
-                sb.AppendLine($"    if (h.{c.Name}.keys().next().done) {g}.{c.Path}((...args) => {{");
-                sb.AppendLine($"      for (const f of h.{c.Name}.values()) f(...args);");
-                if (c.Args is null)
-                {
-                    sb.AppendLine($"    }});");
-                }
-                else
-                {
-                    sb.AppendLine($"    }}, {c.Args});");
-                }
+                sb.AppendLine($"    if (x.{c.Name}) {g}.{c.Path}({c.Args.Replace("@", $"d.{c.Name}")});");
                 sb.AppendLine($"    h.{c.Name}.set(g, callback);");
                 sb.AppendLine($"  }}");
             }
@@ -151,7 +148,7 @@ namespace Silksprite.PSMerger.Compiler
         {
             Obj = obj;
             Name = name;
-            Args = args;
+            Args = args ?? "@";
         }
     }
 }
