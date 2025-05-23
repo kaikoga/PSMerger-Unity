@@ -24,8 +24,25 @@ namespace Silksprite.PSMerger.Compiler
             const string gg = "$$";
             var callbackDefs = new (string, string, string)[]
             {
+                (null, "onCollide", null),
+                (null, "onCommentReceived", null),
+                (null, "onExternalCallEnd", null),
+                (null, "onGetOwnProducts", null),
+                (null, "onGiftSent", null),
+                (null, "onGrab", null),
+                (null, "onInteract", null),
+                (null, "onPhysicsUpdate", null),
+                (null, "onPurchaseUpdated", null),
+                (null, "onReceive", "{ item: true, player: true }"),
+                (null, "onRequestGrantProductResult", null),
+                (null, "onRequestPurchaseStatus", null),
+                (null, "onRide", null),
+                (null, "onStart", null),
+                (null, "onSteer", null),
+                (null, "onSteerAdditionalAxis", null),
+                (null, "onTextInput", null),
                 (null, "onUpdate", null),
-                (null, "onReceive", "{ item: true, player: true }")
+                (null, "onUse", null),
             };
             return new JavaScriptGenerator(g, gg, callbackDefs);
         }
@@ -38,7 +55,7 @@ namespace Silksprite.PSMerger.Compiler
             {
                 (null, "onFrame", null),
                 (null, "onReceive", null),
-                ("oscHandle", "onOscReceive", null)
+                ("oscHandle", "onOscReceive", null),
             };
             return new JavaScriptGenerator(g, gg, callbackDefs);
         }
