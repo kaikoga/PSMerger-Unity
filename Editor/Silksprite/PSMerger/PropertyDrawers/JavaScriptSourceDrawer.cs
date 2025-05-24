@@ -29,7 +29,7 @@ namespace Silksprite.PSMerger.PropertyDrawers
             });
             container.Add(new HelpBox
             {
-                text = "Script Context に追加した内容が共存します",
+                text = "Script Context に追加した内容が共存します。",
                 messageType = HelpBoxMessageType.Info
             });
             return container;
