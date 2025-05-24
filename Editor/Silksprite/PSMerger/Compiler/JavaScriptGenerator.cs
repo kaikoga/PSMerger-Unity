@@ -62,12 +62,12 @@ namespace Silksprite.PSMerger.Compiler
             var scripts = javaScriptSource.ScriptContexts;
             var allScripts = javaScriptSource.AllScripts;
             var callbackDefs = _callbackDefs
-                .Where(def => allScripts.Any(s => s.text.Contains(def.ApiName)))
+                .Where(def => allScripts.Any(script => script.Contains(def.ApiName)))
                 .ToArray();
             var preamble = BuildPreamble(_g, _gg, callbackDefs);
-            return preamble + string.Join("\n", scripts.Select(context => $@"
+            return preamble + string.Join("\n", scripts.Select(script => $@"
 ({_g} => {{
-{string.Join("\n", context.Select(ps => ps != null ? ps.text : null))}
+{string.Join("\n", script)}
 }})({_gg}());
 "));
         }

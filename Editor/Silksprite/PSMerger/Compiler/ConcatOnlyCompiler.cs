@@ -15,7 +15,7 @@ namespace Silksprite.PSMerger.Compiler
 
         static string ConcatScript(JavaScriptSource javaScriptSource)
         {
-            return string.Join("\n", javaScriptSource.AllScripts.Select(asset => asset != null ? asset.text : null));
+            return string.Join("\n", javaScriptSource.AllScripts);
         }
     }
 }

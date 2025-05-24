@@ -12,11 +12,11 @@ namespace Silksprite.PSMerger
         [SerializeField] internal JavaScriptAsset[] scriptLibraries = { };
         [SerializeField] internal JavaScriptContext[] scriptContexts = { };
         
-        public JavaScriptAsset[] ScriptLibraries => scriptLibraries;
-        public JavaScriptAsset[][] ScriptContexts => scriptContexts.Select(context => context.JavaScriptAssets).ToArray();
+        public string[] ScriptLibraries => scriptLibraries.FilterTexts().ToArray();
+        public string[][] ScriptContexts => scriptContexts.Select(context => context.JavaScriptAssets.FilterTexts().ToArray()).ToArray();
 
-        public JavaScriptAsset[] AllScripts => 
-            scriptLibraries
+        public string[] AllScripts => 
+            scriptLibraries.FilterTexts()
                 .Concat(ScriptContexts.SelectMany(asset => asset))
                 .ToArray();
 
@@ -28,6 +28,16 @@ namespace Silksprite.PSMerger
         {
             this.scriptLibraries = scriptLibraries;
             this.scriptContexts = scriptContexts;
+        }
+    }
+
+    static class EnumerableJavaScriptAssetExtensions
+    {
+        public static IEnumerable<string> FilterTexts(this IEnumerable<JavaScriptAsset> assets)
+        {
+            return assets
+                .Select(asset => asset ? asset.text : null)
+                .Where(text => text is not null);
         }
     }
 }
