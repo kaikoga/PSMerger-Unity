@@ -11,9 +11,11 @@ namespace Silksprite.PSMerger
     {
         [SerializeField] internal JavaScriptAsset[] scriptLibraries = { };
         [SerializeField] internal JavaScriptContext[] scriptContexts = { };
+        [SerializeField] internal bool detectCallbackSupport = true;
         
         public string[] ScriptLibraries => scriptLibraries.FilterTexts().ToArray();
         public string[][] ScriptContexts => scriptContexts.Select(context => context.JavaScriptAssets.FilterTexts().ToArray()).ToArray();
+        public bool DetectCallbackSupport => detectCallbackSupport;
 
         public string[] AllScripts => 
             scriptLibraries.FilterTexts()

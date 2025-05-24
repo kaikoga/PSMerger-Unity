@@ -12,9 +12,10 @@ namespace Silksprite.PSMerger.PropertyDrawers
         {
             var scriptLibraries = property.FindPropertyRelative(nameof(JavaScriptSource.scriptLibraries));
             var scriptContexts = property.FindPropertyRelative(nameof(JavaScriptSource.scriptContexts));
+            var detectCallbackSupport = property.FindPropertyRelative(nameof(JavaScriptSource.detectCallbackSupport));
 
             var container = new VisualElement();
-            container.Add(new PropertyField(property.FindPropertyRelative(nameof(JavaScriptSource.scriptLibraries)))
+            container.Add(new PropertyField(scriptLibraries)
             {
                 name = "PropertyField:" + scriptLibraries.propertyPath
             });
@@ -23,13 +24,22 @@ namespace Silksprite.PSMerger.PropertyDrawers
                 text = "Script Libraries に追加した内容はスクリプトの先頭に追加されます。",
                 messageType = HelpBoxMessageType.Info
             });
-            container.Add(new PropertyField(property.FindPropertyRelative(nameof(JavaScriptSource.scriptContexts)))
+            container.Add(new PropertyField(scriptContexts)
             {
                 name = "PropertyField:" + scriptContexts.propertyPath
             });
             container.Add(new HelpBox
             {
                 text = "Script Context に追加した内容が共存します。",
+                messageType = HelpBoxMessageType.Info
+            });
+            container.Add(new PropertyField(detectCallbackSupport)
+            {
+                name = "PropertyField:" + detectCallbackSupport.propertyPath
+            });
+            container.Add(new HelpBox
+            {
+                text = "オンの場合、コールバックのサポートを必要に応じて生成します。\nほとんどの場合オンで問題ありません。",
                 messageType = HelpBoxMessageType.Info
             });
             return container;

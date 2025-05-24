@@ -60,16 +60,18 @@ namespace Silksprite.PSMerger.Compiler
         public string MergeScripts(JavaScriptSource javaScriptSource)
         {
             var allScripts = javaScriptSource.AllScripts;
-            var callbackDefs = _callbackDefs
-                .Where(def => allScripts.Any(script => script.Contains(def.ApiName)))
-                .ToArray();
+            var callbackDefs = javaScriptSource.DetectCallbackSupport
+                ? _callbackDefs
+                    .Where(def => allScripts.Any(script => script.Contains(def.ApiName)))
+                    .ToArray()
+                : _callbackDefs;
             var scriptContexts = javaScriptSource.ScriptContexts;
             var sb = new StringBuilder();
             foreach (var lib in javaScriptSource.ScriptLibraries)
             {
                 sb.AppendLine(lib);
             }
-            if (scriptContexts.Length > 0)
+            if (javaScriptSource.DetectCallbackSupport || scriptContexts.Length > 0)
             {
                 sb.Append(BuildPreamble(_g, _gg, callbackDefs));
                 foreach (var context in scriptContexts)
