@@ -63,20 +63,24 @@ namespace Silksprite.PSMerger.Compiler
             var callbackDefs = _callbackDefs
                 .Where(def => allScripts.Any(script => script.Contains(def.ApiName)))
                 .ToArray();
+            var scriptContexts = javaScriptSource.ScriptContexts;
             var sb = new StringBuilder();
             foreach (var lib in javaScriptSource.ScriptLibraries)
             {
                 sb.AppendLine(lib);
             }
-            sb.Append(BuildPreamble(_g, _gg, callbackDefs));
-            foreach (var context in javaScriptSource.ScriptContexts)
+            if (scriptContexts.Length > 0)
             {
-                sb.AppendLine($"({_g} => {{");
-                foreach (var script in context)
+                sb.Append(BuildPreamble(_g, _gg, callbackDefs));
+                foreach (var context in scriptContexts)
                 {
-                    sb.AppendLine(script);
+                    sb.AppendLine($"({_g} => {{");
+                    foreach (var script in context)
+                    {
+                        sb.AppendLine(script);
+                    }
+                    sb.AppendLine($"}})({_gg}());");
                 }
-                sb.AppendLine($"}})({_gg}());");
             }
             return sb.ToString();
         }
