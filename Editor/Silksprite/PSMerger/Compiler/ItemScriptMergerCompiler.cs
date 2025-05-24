@@ -7,6 +7,18 @@ namespace Silksprite.PSMerger.Compiler
     {
         static readonly JavaScriptGenerator Gen = JavaScriptGenerator.ForItemScript();
 
+        public static bool Compile(ItemScriptMerger itemScriptMerger)
+        {
+            var changed = false;
+            using (var scriptableItemAccess = new ScriptableItemAccess(itemScriptMerger.GetComponent<ScriptableItem>()))
+            {
+                scriptableItemAccess.sourceCodeAsset = null;
+                scriptableItemAccess.sourceCode = BuildItemScript(itemScriptMerger.JavaScriptSource);
+                changed |= scriptableItemAccess.hasModifiedProperties;
+            }
+            return changed;
+        }
+
         public static bool Compile(ClusterScriptAssetMerger clusterScriptAssetMerger)
         {
             using var javaScriptAssetAccess = new JavaScriptAssetAccess(clusterScriptAssetMerger.MergedScript);

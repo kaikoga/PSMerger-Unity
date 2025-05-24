@@ -7,8 +7,10 @@ using UnityEngine;
 namespace Silksprite.PSMerger.Compiler
 {
     // CSCombinerと同じことをする
-    public static class PlayerScriptMergerBatchCompiler
+    public static class PSMergerBatchCompiler
     {
+        const string PSMerger = "PSMerger";
+
         public static class EventHandler
         {
             [InitializeOnLoadMethod]
@@ -35,21 +37,21 @@ namespace Silksprite.PSMerger.Compiler
 
         static void CompileAll()
         {
-            Debug.Log($"[{nameof(PlayerScriptMerger)}]更新開始");
+            Debug.Log($"[{PSMerger}]更新開始");
             CombineAllOfScene();
             CombineAllOfProject();
             CombineAllAssets();
-            Debug.Log($"[{nameof(PlayerScriptMerger)}]更新終了");
+            Debug.Log($"[{PSMerger}]更新終了");
         }
 
         static void CombineAllOfScene()
         {
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             var rootObjects = scene.GetRootGameObjects();
-            foreach (var combiner in rootObjects.SelectMany(o => o.GetComponentsInChildren<PlayerScriptMerger>(true)))
+            foreach (var mergerComponent in rootObjects.SelectMany(o => o.GetComponentsInChildren<ClusterScriptComponentMergerBase>(true)))
             {
-                Debug.Log($"[{nameof(PlayerScriptMerger)}][Scene]{combiner.name}");
-                PlayerScriptMergerCompiler.Compile(combiner);
+                Debug.Log($"[{mergerComponent.GetType().Name}][Scene]{mergerComponent.gameObject.name}");
+                CombineSingleComponent(mergerComponent);
             }
         }
 
@@ -62,20 +64,20 @@ namespace Silksprite.PSMerger.Compiler
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var prefab = PrefabUtility.LoadPrefabContents(path);
 
-                var combiners = prefab.GetComponentsInChildren<PlayerScriptMerger>(true);
-                if (combiners.Length == 0)
+                var mergerComponents = prefab.GetComponentsInChildren<ClusterScriptComponentMergerBase>(true);
+                if (mergerComponents.Length == 0)
                 {
                     PrefabUtility.UnloadPrefabContents(prefab);
                     continue;
                 }
 
-                Debug.Log($"[{nameof(PlayerScriptMerger)}][Prefab]{path}");
+                Debug.Log($"[{PSMerger}][Prefab]{path}");
 
                 var changed = false;
-                foreach (var combiner in combiners)
+                foreach (var mergerComponent in mergerComponents)
                 {
-                    Debug.Log($"[{nameof(PlayerScriptMerger)}][Prefab]{combiner.name}");
-                    changed |= PlayerScriptMergerCompiler.Compile(combiner);
+                    Debug.Log($"[{mergerComponent.GetType().Name}][Prefab]{mergerComponent.gameObject.name}");
+                    changed |= CombineSingleComponent(mergerComponent);
                 }
 
                 if (changed)
@@ -85,6 +87,16 @@ namespace Silksprite.PSMerger.Compiler
 
                 PrefabUtility.UnloadPrefabContents(prefab);
             }
+        }
+
+        static bool CombineSingleComponent(ClusterScriptComponentMergerBase mergerComponent)
+        {
+            return mergerComponent switch
+            {
+                PlayerScriptMerger playerScriptMerger => PlayerScriptMergerCompiler.Compile(playerScriptMerger),
+                ItemScriptMerger itemScriptMerger => ItemScriptMergerCompiler.Compile(itemScriptMerger),
+                _ => throw new ArgumentException($"{mergerComponent.GetType().Name} is not supported")
+            };
         }
 
         static void CombineAllAssets()

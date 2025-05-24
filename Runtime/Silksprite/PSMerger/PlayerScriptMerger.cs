@@ -3,11 +3,8 @@ using UnityEngine;
 
 namespace Silksprite.PSMerger
 {
-    [RequireComponent(typeof(PlayerScript)), DisallowMultipleComponent]
-    public class PlayerScriptMerger : MonoBehaviour
+    [RequireComponent(typeof(PlayerScript))]
+    public class PlayerScriptMerger : ClusterScriptComponentMergerBase
     {
-        [SerializeField] JavaScriptSource javaScriptSource;
-
-        public JavaScriptSource JavaScriptSource => javaScriptSource;
     }
 }
