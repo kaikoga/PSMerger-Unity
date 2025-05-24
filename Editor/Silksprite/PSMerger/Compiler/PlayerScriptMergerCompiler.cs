@@ -27,7 +27,7 @@ namespace Silksprite.PSMerger.Compiler
             using (var playerScriptAccess = new PlayerScriptAccess(playerScriptMerger.GetComponent<PlayerScript>()))
             {
                 playerScriptAccess.sourceCodeAsset = null;
-                playerScriptAccess.sourceCode = BuildPlayerScript(playerScriptMerger.PlayerScripts);
+                playerScriptAccess.sourceCode = BuildPlayerScript(playerScriptMerger.JavaScriptSource);
                 changed |= playerScriptAccess.hasModifiedProperties;
             }
 
@@ -37,18 +37,13 @@ namespace Silksprite.PSMerger.Compiler
         public static bool Compile(ClusterScriptAssetMerger clusterScriptAssetMerger)
         {
             using var javaScriptAssetAccess = new JavaScriptAssetAccess(clusterScriptAssetMerger.MergedScript);
-            javaScriptAssetAccess.text = BuildPlayerScript(clusterScriptAssetMerger.ScriptContexts);
+            javaScriptAssetAccess.text = BuildPlayerScript(clusterScriptAssetMerger.JavaScriptSource);
             return javaScriptAssetAccess.hasModifiedProperties;
         }
 
-        static string BuildPlayerScript(JavaScriptAsset[] playerScripts)
+        static string BuildPlayerScript(JavaScriptSource javaScriptSource)
         {
-            return BuildPlayerScript(playerScripts.Select(ps => new[] { ps }).ToArray());
-        }
-
-        static string BuildPlayerScript(JavaScriptAsset[][] playerScripts)
-        {
-            return Gen.MergeScripts(playerScripts);
+            return Gen.MergeScripts(javaScriptSource);
         }
     }
 }

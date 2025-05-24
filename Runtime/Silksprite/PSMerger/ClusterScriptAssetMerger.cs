@@ -10,7 +10,7 @@ namespace Silksprite.PSMerger
         [SerializeField] JavaScriptAsset mergedScript;
         
         public ClusterScriptType ScriptType => scriptType;
-        public JavaScriptAsset[][] ScriptContexts => javaScriptSource.ScriptContexts;
+        public JavaScriptSource JavaScriptSource => javaScriptSource;
         public JavaScriptAsset MergedScript => mergedScript;
 
         public void SetMergedScript(JavaScriptAsset javaScriptAsset)

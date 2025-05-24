@@ -6,8 +6,8 @@ namespace Silksprite.PSMerger
     [RequireComponent(typeof(PlayerScript)), DisallowMultipleComponent]
     public class PlayerScriptMerger : MonoBehaviour
     {
-        [SerializeField] JavaScriptAsset[] playerScripts = {};
+        [SerializeField] JavaScriptSource javaScriptSource;
 
-        public JavaScriptAsset[] PlayerScripts => playerScripts;
+        public JavaScriptSource JavaScriptSource => javaScriptSource;
     }
 }

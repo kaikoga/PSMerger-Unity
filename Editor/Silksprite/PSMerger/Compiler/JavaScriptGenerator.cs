@@ -59,9 +59,10 @@ namespace Silksprite.PSMerger.Compiler
             });
         }
 
-        public string MergeScripts(JavaScriptAsset[][] scripts)
+        public string MergeScripts(JavaScriptSource javaScriptSource)
         {
-            var allScripts = scripts.SelectMany(script => script);
+            var scripts = javaScriptSource.ScriptContexts;
+            var allScripts = javaScriptSource.AllScripts;
             var callbackDefs = _callbackDefs
                 .Where(def => allScripts.Any(s => s.text.Contains(def.ApiName)))
                 .ToArray();

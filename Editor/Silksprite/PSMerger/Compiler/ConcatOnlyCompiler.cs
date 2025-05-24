@@ -9,15 +9,13 @@ namespace Silksprite.PSMerger.Compiler
         public static bool Compile(ClusterScriptAssetMerger clusterScriptAssetMerger)
         {
             using var javaScriptAssetAccess = new JavaScriptAssetAccess(clusterScriptAssetMerger.MergedScript);
-            javaScriptAssetAccess.text = ConcatScript(clusterScriptAssetMerger.ScriptContexts);
+            javaScriptAssetAccess.text = ConcatScript(clusterScriptAssetMerger.JavaScriptSource);
             return javaScriptAssetAccess.hasModifiedProperties;
         }
 
-        static string ConcatScript(JavaScriptAsset[][] itemScripts)
+        static string ConcatScript(JavaScriptSource javaScriptSource)
         {
-            return string.Join("\n", itemScripts
-                .SelectMany(assets => assets)
-                .Select(asset => asset != null ? asset.text : null));
+            return string.Join("\n", javaScriptSource.AllScripts.Select(asset => asset != null ? asset.text : null));
         }
     }
 }

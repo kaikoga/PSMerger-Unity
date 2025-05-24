@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using UnityEngine;
@@ -13,6 +14,11 @@ namespace Silksprite.PSMerger
         
         public JavaScriptAsset[] ScriptLibraries => scriptLibraries;
         public JavaScriptAsset[][] ScriptContexts => scriptContexts.Select(context => context.JavaScriptAssets).ToArray();
+
+        public JavaScriptAsset[] AllScripts => 
+            scriptLibraries
+                .Concat(ScriptContexts.SelectMany(asset => asset))
+                .ToArray();
 
         public JavaScriptSource()
         {
