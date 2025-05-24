@@ -18,9 +18,19 @@ namespace Silksprite.PSMerger.PropertyDrawers
             {
                 name = "PropertyField:" + scriptLibraries.propertyPath
             });
+            container.Add(new HelpBox
+            {
+                text = "Script Libraries に追加した内容はスクリプトの先頭に追加されます。",
+                messageType = HelpBoxMessageType.Info
+            });
             container.Add(new PropertyField(property.FindPropertyRelative(nameof(JavaScriptSource.scriptContexts)))
             {
                 name = "PropertyField:" + scriptContexts.propertyPath
+            });
+            container.Add(new HelpBox
+            {
+                text = "Script Context に追加した内容が共存します",
+                messageType = HelpBoxMessageType.Info
             });
             return container;
         }

@@ -59,17 +59,26 @@ namespace Silksprite.PSMerger.Compiler
 
         public string MergeScripts(JavaScriptSource javaScriptSource)
         {
-            var scripts = javaScriptSource.ScriptContexts;
             var allScripts = javaScriptSource.AllScripts;
             var callbackDefs = _callbackDefs
                 .Where(def => allScripts.Any(script => script.Contains(def.ApiName)))
                 .ToArray();
-            var preamble = BuildPreamble(_g, _gg, callbackDefs);
-            return preamble + string.Join("\n", scripts.Select(script => $@"
-({_g} => {{
-{string.Join("\n", script)}
-}})({_gg}());
-"));
+            var sb = new StringBuilder();
+            foreach (var lib in javaScriptSource.ScriptLibraries)
+            {
+                sb.AppendLine(lib);
+            }
+            sb.Append(BuildPreamble(_g, _gg, callbackDefs));
+            foreach (var context in javaScriptSource.ScriptContexts)
+            {
+                sb.AppendLine($"({_g} => {{");
+                foreach (var script in context)
+                {
+                    sb.AppendLine(script);
+                }
+                sb.AppendLine($"}})({_gg}());");
+            }
+            return sb.ToString();
         }
 
         [SuppressMessage("ReSharper", "RedundantStringInterpolation")]
