@@ -23,25 +23,25 @@ namespace Silksprite.PSMerger.Compiler
         {
             return new JavaScriptGenerator("$", "$$", new[]
             {
-                new CallbackDef(null, "onCollide", null),
-                new CallbackDef(null, "onCommentReceived", null),
-                new CallbackDef(null, "onExternalCallEnd", null),
-                new CallbackDef(null, "onGetOwnProducts", null),
-                new CallbackDef(null, "onGiftSent", null),
-                new CallbackDef(null, "onGrab", null),
-                new CallbackDef(null, "onInteract", null),
-                new CallbackDef(null, "onPhysicsUpdate", null),
-                new CallbackDef(null, "onPurchaseUpdated", null),
+                new CallbackDef(null, "onCollide"),
+                new CallbackDef(null, "onCommentReceived"),
+                new CallbackDef(null, "onExternalCallEnd"),
+                new CallbackDef(null, "onGetOwnProducts"),
+                new CallbackDef(null, "onGiftSent"),
+                new CallbackDef(null, "onGrab"),
+                new CallbackDef(null, "onInteract"),
+                new CallbackDef(null, "onPhysicsUpdate"),
+                new CallbackDef(null, "onPurchaseUpdated"),
                 new CallbackDef(null, "onReceive", "@, { item: true, player: true }"),
-                new CallbackDef(null, "onRequestGrantProductResult", null),
-                new CallbackDef(null, "onRequestPurchaseStatus", null),
-                new CallbackDef(null, "onRide", null),
-                new CallbackDef(null, "onStart", null),
-                new CallbackDef(null, "onSteer", null),
-                new CallbackDef(null, "onSteerAdditionalAxis", null),
-                new CallbackDef(null, "onTextInput", null),
-                new CallbackDef(null, "onUpdate", null),
-                new CallbackDef(null, "onUse", null),
+                new CallbackDef(null, "onRequestGrantProductResult"),
+                new CallbackDef(null, "onRequestPurchaseStatus"),
+                new CallbackDef(null, "onRide"),
+                new CallbackDef(null, "onStart"),
+                new CallbackDef(null, "onSteer"),
+                new CallbackDef(null, "onSteerAdditionalAxis"),
+                new CallbackDef(null, "onTextInput"),
+                new CallbackDef(null, "onUpdate"),
+                new CallbackDef(null, "onUse"),
             });
         }
 
@@ -49,9 +49,13 @@ namespace Silksprite.PSMerger.Compiler
         {
             return new JavaScriptGenerator("_", "__", new[]
             {
-                new CallbackDef(null, "onFrame", null),
-                new CallbackDef(null, "onReceive", null),
-                new CallbackDef("oscHandle", "onOscReceive", null),
+                new CallbackDef(null, "onFrame"),
+                new CallbackDef(null, "onReceive"),
+                new CallbackDef("oscHandle", "onOscReceive"),
+                new CallbackDef(null, "onButton0", "0, @", "onButton"),
+                new CallbackDef(null, "onButton1", "1, @", "onButton"),
+                new CallbackDef(null, "onButton2", "2, @", "onButton"),
+                new CallbackDef(null, "onButton3", "3, @", "onButton"),
             });
         }
 
@@ -59,7 +63,7 @@ namespace Silksprite.PSMerger.Compiler
         {
             var allScripts = scripts.SelectMany(script => script);
             var callbackDefs = _callbackDefs
-                .Where(def => allScripts.Any(s => s.text.Contains(def.Name)))
+                .Where(def => allScripts.Any(s => s.text.Contains(def.ApiName)))
                 .ToArray();
             var preamble = BuildPreamble(_g, _gg, callbackDefs);
             return preamble + string.Join("\n", scripts.Select(context => $@"
@@ -77,6 +81,7 @@ namespace Silksprite.PSMerger.Compiler
                 .Where(c => c.Obj is not null)
                 .GroupBy(c => c.Obj)
                 .ToArray();
+            var rootCallbackDefs = callbackDefs.Where(c => c.Obj is null);
             var sb = new StringBuilder();
             
             sb.AppendLine($"const {gg} = (() => {{");
@@ -113,16 +118,16 @@ namespace Silksprite.PSMerger.Compiler
             foreach (var obj in objs)
             {
                 sb.AppendLine($"    const _{obj.Key} = createProxy({{");
-                foreach (var c in obj)
+                foreach (var apiBody in obj.Select(o => o.ApiBody).Distinct())
                 {
-                    sb.AppendLine($"      {c.Name}(callback) {{ {c.Name}(this, callback) }},");
+                    sb.AppendLine($"      {apiBody},");
                 }
                 sb.AppendLine($"    }}, {g}.{obj.Key});");
             }
             sb.AppendLine($"    return createProxy({{");
-            foreach (var c in callbackDefs.Where(c => c.Obj is null))
+            foreach (var apiBody in rootCallbackDefs.Select(o => o.ApiBody).Distinct())
             {
-                sb.AppendLine($"      {c.Name}(callback) {{ {c.Name}(this, callback) }},");
+                sb.AppendLine($"      {apiBody},");
             }
             foreach (var obj in objs.Select(o => o.Key))
             {
@@ -141,14 +146,26 @@ namespace Silksprite.PSMerger.Compiler
         public readonly string Obj;
         public readonly string Name;
         public readonly string Args;
+        public readonly string Path;
+        public readonly string ApiName;
+        public readonly string ApiBody;
 
-        public string Path => Obj is null ? Name : $"{Obj}.{Name}";
-
-        public CallbackDef(string obj, string name, string args)
+        public CallbackDef(string obj, string name, string args = null, string apiName = null)
         {
+            const string onButtonBody = @"onButton(index, callback) {
+        switch (index) {
+          case 0: onButton0(this, callback); break;
+          case 1: onButton1(this, callback); break;
+          case 2: onButton2(this, callback); break;
+          case 3: onButton3(this, callback); break;
+        }
+      }";
             Obj = obj;
             Name = name;
             Args = args ?? "@";
+            ApiName = apiName ?? name;
+            Path = Obj is null ? ApiName : $"{Obj}.{ApiName}";
+            ApiBody = ApiName == "onButton" ? onButtonBody :  $"{ApiName}(callback) {{ {ApiName}(this, callback) }}";
         }
     }
 }
