@@ -1,4 +1,3 @@
-using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSMerger.Access;
 using UnityEditor;
@@ -7,10 +6,10 @@ namespace Silksprite.PSMerger.Compiler
 {
     public static class PlayerScriptMergerCompiler
     {
-        const string ItemScriptPath = "Packages/net.net.kaikoga.psmerger/ClusterScripts/GlobalPlayerScriptSetter.js";
+        const string ItemScriptPath = "Packages/net.kaikoga.psmerger/ClusterScripts/GlobalPlayerScriptSetter.js";
 
-        static string _itemScript;
-        static string ItemScript => _itemScript ??= AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(ItemScriptPath).text;
+        static JavaScriptAsset _itemScriptAsset;
+        static JavaScriptAsset ItemScriptAsset => _itemScriptAsset ??= AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(ItemScriptPath);
 
         static readonly JavaScriptGenerator Gen = JavaScriptGenerator.ForPlayerScript();
 
@@ -19,8 +18,8 @@ namespace Silksprite.PSMerger.Compiler
             var changed = false;
             using (var scriptableItemAccess = new ScriptableItemAccess(playerScriptMerger.GetComponent<ScriptableItem>()))
             {
-                scriptableItemAccess.sourceCodeAsset = null;
-                scriptableItemAccess.sourceCode = ItemScript;
+                scriptableItemAccess.sourceCodeAsset = ItemScriptAsset;
+                scriptableItemAccess.sourceCode = null;
                 changed |= scriptableItemAccess.hasModifiedProperties;
             }
 
