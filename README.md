@@ -47,6 +47,12 @@ Add the following to your `Packages/manifest.json`:
 }
 ```
 
+## Usage
+
+Two modes are supported:
+- Attach a `PlayerScriptMerger` or `ItemScriptMerger` component to ScriptableItems to merge scripts in place.
+- Create a `ClusterScriptAssetMerger` via `Assets` -> `Create` -> `Silksprite` -> `ClusterScriptAssetMerger` to merge scripts into a JavaScriptAsset.
+
 ## Important Notes
 
 When using PSMerger, there are some behavioral differences from standard Cluster scripting:
