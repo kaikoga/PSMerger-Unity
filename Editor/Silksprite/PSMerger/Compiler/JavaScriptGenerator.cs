@@ -47,13 +47,13 @@ namespace Silksprite.PSMerger.Compiler
         {
             return new JavaScriptGenerator("_", "__", new[]
             {
-                new CallbackDef(null, "onFrame"),
-                new CallbackDef(null, "onReceive"),
-                new CallbackDef("oscHandle", "onOscReceive"),
                 new CallbackDef(null, "onButton0", "0, @", "onButton"),
                 new CallbackDef(null, "onButton1", "1, @", "onButton"),
                 new CallbackDef(null, "onButton2", "2, @", "onButton"),
                 new CallbackDef(null, "onButton3", "3, @", "onButton"),
+                new CallbackDef(null, "onFrame"),
+                new CallbackDef(null, "onReceive"),
+                new CallbackDef("oscHandle", "onOscReceive"),
             });
         }
 
