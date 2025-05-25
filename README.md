@@ -1,41 +1,57 @@
-## PSMerger
+# PSMerger
 
-[PlayerScript](https://docs.cluster.mu/script/interfaces/PlayerScript.html) and [ItemScript](https://docs.cluster.mu/script/interfaces/ClusterScript.html) Merger
+A Unity package that merges [PlayerScript](https://docs.cluster.mu/script/interfaces/PlayerScript.html) and [ItemScript](https://docs.cluster.mu/script/interfaces/ClusterScript.html) callbacks from multiple input scripts in Cluster.
 
 <img src="screenshot.png" width="300" />
 
-## Merges ItemScript
+## What is this?
 
-- ClusterScript.onStart()
-- ClusterScript.onUpdate()
-- ClusterScript.onInteract()
-- ClusterScript.onTextInput()
-- ClusterScript.onExternalCallEnd()
-- ...
+PSMerger allows you to combine multiple ItemScript or PlayerScript source files into a single script, enabling you to use multiple script functionalities simultaneously in Cluster.
 
-## Merges PlayerScript
+### ItemScript Callbacks
+- `onCollide()`
+- `onCommentReceived()`
+- `onExternalCallEnd()`
+- `onGetOwnProducts()`
+- `onGiftSent()`
+- `onGrab()`
+- `onInteract()`
+- `onPhysicsUpdate()`
+- `onPurchaseUpdated()`
+- `onReceive()`
+- `onRequestGrantProductResult()`
+- `onRequestPurchaseStatus()`
+- `onRide()`
+- `onStart()`
+- `onSteer()`
+- `onSteerAdditionalAxis()`
+- `onTextInput()`
+- `onUpdate()`
+- `onUse()`
 
-- PlayerScript.onFrame()
-- PlayerScript.onReceive()
-- PlayerScript.onButton()
-- OscHandle.onReceive()
+### PlayerScript Callbacks
+- `onButton()`
+- `onFrame()`
+- `onReceive()`
+- `OscHandle.onReceive()`
 
-## Caveats
+## Installation
 
-- Callbacks for responses of API calls by other contexts are called in all contexts.
-  You should check `meta` whether you want to process the callback result.  
-- [ClusterScript.onPurchaseUpdated()](https://docs.cluster.mu/script/interfaces/ClusterScript.html#onPurchaseUpdated) receives all subscribed purchases (in all contexts) by [ClusterScript.subscribePurchase()](https://docs.cluster.mu/script/interfaces/ClusterScript.html#subscribePurchase). 
-- [UnityComponent.onClick()](https://docs.cluster.mu/script/interfaces/UnityComponent.html#onClick) can be used, but not coexist. (only the last registration will take effect.)
+Add the following to your `Packages/manifest.json`:
 
-## Install
-
-```json5
-// Packages/manifest.json
+```json
 {
   "dependencies": {
-    // ...
-    "net.kaikoga.psmerger": "https://github.com/kaikoga/PSMerger-Unity.git",
-    // ...
+    "net.kaikoga.psmerger": "https://github.com/kaikoga/PSMerger-Unity.git"
   }
 }
 ```
+
+## Important Notes
+
+When using PSMerger, there are some behavioral differences from standard Cluster scripting:
+
+- `ClusterScript.onReceive()` receives messages from both ItemHandle and PlayerHandle regardless of the second parameter
+- `ClusterScript.onPurchaseUpdated()` receives all subscribed purchases from all input scripts
+- `UnityComponent.onClick()` registrations are not merged - only the last registration takes effect
+- API call responses are broadcast to all input scripts - use the `meta` parameter to filter responses
