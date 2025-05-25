@@ -50,14 +50,16 @@ Add the following to your `Packages/manifest.json`:
 ## Usage
 
 Two modes are supported:
+
 - Attach a `PlayerScriptMerger` or `ItemScriptMerger` component to ScriptableItems to merge scripts in place.
+  - For `PlayerScriptMerger`, ItemScript of the item is automatically set up to apply the merged PlayerScript to all players in the space.
 - Create a `ClusterScriptAssetMerger` via `Assets` -> `Create` -> `Silksprite` -> `ClusterScriptAssetMerger` to merge scripts into a JavaScriptAsset.
 
 ## Important Notes
 
 When using PSMerger, there are some behavioral differences from standard Cluster scripting:
 
-- `ClusterScript.onReceive()` receives messages from both ItemHandle and PlayerHandle regardless of the second parameter
+- `ClusterScript.onReceive()` receives messages from both ItemHandle and PlayerHandle, regardless of the second parameter
 - `ClusterScript.onPurchaseUpdated()` receives all subscribed purchases from all input scripts
 - `UnityComponent.onClick()` registrations are not merged - only the last registration takes effect
 - API call responses are broadcast to all input scripts - use the `meta` parameter to filter responses
