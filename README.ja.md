@@ -52,7 +52,7 @@
 
 ### ScriptableItem にマージ
 
-ScriptableItems に `PlayerScriptMerger` または `ItemScriptMerger` コンポーネントを追加すると、その場でマージされます。
+ScriptableItem に `PlayerScriptMerger` または `ItemScriptMerger` コンポーネントを追加すると、その場でマージされます。
 
 `PlayerScriptMerger` を使う場合は、マージされたPlayerScriptがスペース内のすべてのプレイヤーに適用されるItemScriptが自動で設定されます。
 
