@@ -1,4 +1,5 @@
 using Silksprite.PSMerger.Access;
+using Silksprite.PSMerger.Compiler.Internal;
 
 namespace Silksprite.PSMerger.Compiler
 {
@@ -7,13 +8,20 @@ namespace Silksprite.PSMerger.Compiler
         public static bool Compile(ClusterScriptAssetMerger clusterScriptAssetMerger)
         {
             using var javaScriptAssetAccess = new JavaScriptAssetAccess(clusterScriptAssetMerger.MergedScript);
-            javaScriptAssetAccess.text = ConcatScript(clusterScriptAssetMerger.JavaScriptSource);
+            var output = ConcatScript(clusterScriptAssetMerger.JavaScriptSource);
+            javaScriptAssetAccess.text = output.SourceCode();
             return javaScriptAssetAccess.hasModifiedProperties;
         }
 
-        static string ConcatScript(JavaScriptSource javaScriptSource)
+        static JavaScriptCompilerOutput ConcatScript(JavaScriptSource javaScriptSource)
         {
-            return string.Join("\n", javaScriptSource.AllScripts);
+            var env = new JavaScriptCompilerEnvironment(javaScriptSource);
+            var output = new JavaScriptCompilerOutput();
+            foreach (var script in env.AllScripts)
+            {
+                output.AppendLines(script);
+            }
+            return output;
         }
     }
 }
