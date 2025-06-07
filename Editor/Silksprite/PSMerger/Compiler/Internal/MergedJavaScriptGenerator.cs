@@ -57,8 +57,9 @@ namespace Silksprite.PSMerger.Compiler.Internal
             });
         }
 
-        public string MergeScripts(JavaScriptCompilerEnvironment env)
+        public JavaScriptCompilerOutput MergeScripts(JavaScriptCompilerEnvironment env)
         {
+            var output = new JavaScriptCompilerOutput(); 
             var allScripts = env.AllScripts;
             var callbackDefs = env.DetectCallbackSupport
                 ? _callbackDefs
@@ -66,92 +67,87 @@ namespace Silksprite.PSMerger.Compiler.Internal
                     .ToArray()
                 : _callbackDefs;
             var scriptContexts = env.ScriptContexts;
-            var sb = new StringBuilder();
             foreach (var lib in env.ScriptLibraries)
             {
-                sb.AppendLine(lib.Text);
+                output.AppendLine(lib.Text);
             }
             if (env.DetectCallbackSupport || scriptContexts.Length > 0)
             {
-                sb.Append(BuildPreamble(_g, _gg, callbackDefs));
+                BuildPreamble(_g, _gg, callbackDefs, output);
                 foreach (var context in scriptContexts)
                 {
-                    sb.AppendLine($"({_g} => {{");
+                    output.AppendLine($"({_g} => {{");
                     foreach (var input in context.JavaScriptInputs)
                     {
-                        sb.AppendLine(input.Text);
+                        output.AppendLines(input.Text);
                     }
-                    sb.AppendLine($"}})({_gg}());");
+                    output.AppendLine($"}})({_gg}());");
                 }
             }
-            return sb.ToString();
+            return output;
         }
 
         [SuppressMessage("ReSharper", "RedundantStringInterpolation")]
         [SuppressMessage("ReSharper", "ConvertIfStatementToConditionalTernaryExpression")]
-        static string BuildPreamble(string g, string gg, CallbackDef[] callbackDefs)
+        static void BuildPreamble(string g, string gg, CallbackDef[] callbackDefs, JavaScriptCompilerOutput output)
         {
             var objs = callbackDefs
                 .Where(c => c.Obj is not null)
                 .GroupBy(c => c.Obj)
                 .ToArray();
             var rootCallbackDefs = callbackDefs.Where(c => c.Obj is null);
-            var sb = new StringBuilder();
-            
-            sb.AppendLine($"const {gg} = (() => {{");
-            sb.AppendLine($"  const x = new Proxy({{ }}, {{");
-            sb.AppendLine($"    get: function(target, prop) {{ const v = !target[prop]; target[prop] = true; return v; }}");
-            sb.AppendLine($"  }});");
-            sb.AppendLine($"  const h = new Proxy({{ }}, {{");
-            sb.AppendLine($"    get: function(target, prop) {{ return target[prop] ??= new Map(); }}");
-            sb.AppendLine($"  }});");
-            sb.AppendLine($"  const d = new Proxy({{ }}, {{");
-            sb.AppendLine($"    get: function(target, prop) {{ return (...args) => {{ for (const f of h[prop].values()) f(...args); }}; }}");
-            sb.AppendLine($"  }});");
+            output.AppendLine($"const {gg} = (() => {{");
+            output.AppendLine($"  const x = new Proxy({{ }}, {{");
+            output.AppendLine($"    get: function(target, prop) {{ const v = !target[prop]; target[prop] = true; return v; }}");
+            output.AppendLine($"  }});");
+            output.AppendLine($"  const h = new Proxy({{ }}, {{");
+            output.AppendLine($"    get: function(target, prop) {{ return target[prop] ??= new Map(); }}");
+            output.AppendLine($"  }});");
+            output.AppendLine($"  const d = new Proxy({{ }}, {{");
+            output.AppendLine($"    get: function(target, prop) {{ return (...args) => {{ for (const f of h[prop].values()) f(...args); }}; }}");
+            output.AppendLine($"  }});");
             foreach (var c in callbackDefs)
             {
-                sb.AppendLine($"  function {c.Name}(g, callback) {{");
-                sb.AppendLine($"    if (x.{c.Name}) {g}.{c.Path}({c.Args.Replace("@", $"d.{c.Name}")});");
-                sb.AppendLine($"    h.{c.Name}.set(g, callback);");
-                sb.AppendLine($"  }}");
+                output.AppendLine($"  function {c.Name}(g, callback) {{");
+                output.AppendLine($"    if (x.{c.Name}) {g}.{c.Path}({c.Args.Replace("@", $"d.{c.Name}")});");
+                output.AppendLine($"    h.{c.Name}.set(g, callback);");
+                output.AppendLine($"  }}");
             }
-            sb.AppendLine($"  function createProxy(obj, base) {{");
-            sb.AppendLine($"    return new Proxy(obj, {{");
-            sb.AppendLine($"      get(target, prop, receiver) {{");
-            sb.AppendLine($"        let thisValue = target; ");
-            sb.AppendLine($"        let value = target[prop];");
-            sb.AppendLine($"        if (value === undefined) {{");
-            sb.AppendLine($"          thisValue = base;");
-            sb.AppendLine($"          value = base[prop];");
-            sb.AppendLine($"        }}");
-            sb.AppendLine($"        return (value instanceof Function) ? value.bind(thisValue) : value;");
-            sb.AppendLine($"      }}");
-            sb.AppendLine($"    }});");
-            sb.AppendLine($"  }}");
-            sb.AppendLine($"  return () => {{");
+            output.AppendLine($"  function createProxy(obj, base) {{");
+            output.AppendLine($"    return new Proxy(obj, {{");
+            output.AppendLine($"      get(target, prop, receiver) {{");
+            output.AppendLine($"        let thisValue = target; ");
+            output.AppendLine($"        let value = target[prop];");
+            output.AppendLine($"        if (value === undefined) {{");
+            output.AppendLine($"          thisValue = base;");
+            output.AppendLine($"          value = base[prop];");
+            output.AppendLine($"        }}");
+            output.AppendLine($"        return (value instanceof Function) ? value.bind(thisValue) : value;");
+            output.AppendLine($"      }}");
+            output.AppendLine($"    }});");
+            output.AppendLine($"  }}");
+            output.AppendLine($"  return () => {{");
             foreach (var obj in objs)
             {
-                sb.AppendLine($"    const _{obj.Key} = createProxy({{");
+                output.AppendLine($"    const _{obj.Key} = createProxy({{");
                 foreach (var apiBody in obj.Select(o => o.ApiBody).Distinct())
                 {
-                    sb.AppendLine($"      {apiBody},");
+                    output.AppendLines($"      {apiBody},");
                 }
-                sb.AppendLine($"    }}, {g}.{obj.Key});");
+                output.AppendLine($"    }}, {g}.{obj.Key});");
             }
-            sb.AppendLine($"    return createProxy({{");
+            output.AppendLine($"    return createProxy({{");
             foreach (var apiBody in rootCallbackDefs.Select(o => o.ApiBody).Distinct())
             {
-                sb.AppendLine($"      {apiBody},");
+                output.AppendLines($"      {apiBody},");
             }
             foreach (var obj in objs.Select(o => o.Key))
             {
-                sb.AppendLine($"      get {obj}() {{ return _{obj} }},");
+                output.AppendLine($"      get {obj}() {{ return _{obj} }},");
             }
-            sb.AppendLine($"    }}, {g});");
-            sb.AppendLine($"  }}");
-            sb.AppendLine($"}})();");
-
-            return sb.ToString();
+            output.AppendLine($"    }}, {g});");
+            output.AppendLine($"  }}");
+            output.AppendLine($"}})();");
         }
     }
 

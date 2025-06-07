@@ -1,4 +1,6 @@
+using System.IO;
 using System.Linq;
+using System.Text;
 using ClusterVR.CreatorKit.Item.Implements;
 
 namespace Silksprite.PSMerger.Compiler.Internal
@@ -8,6 +10,8 @@ namespace Silksprite.PSMerger.Compiler.Internal
         public readonly JavaScriptInput[] ScriptLibraries;
         public readonly JavaScriptCompilerContext[] ScriptContexts;
         public readonly bool DetectCallbackSupport;
+
+        readonly StringBuilder _sb = new();
         
         public JavaScriptCompilerEnvironment(JavaScriptSource source)
         {
@@ -26,6 +30,22 @@ namespace Silksprite.PSMerger.Compiler.Internal
                 .Concat(ScriptContexts.SelectMany(context => context.JavaScriptInputs))
                 .Select(input => input.Text)
                 .ToArray();
+        
+        public void AppendLine(string line)
+        {
+            _sb.AppendLine(line);
+        }
+
+        public void AppendLines(string lines)
+        {
+            var stringReader = new StringReader(lines);
+            while (stringReader.ReadLine() is { } line)
+            {
+                _sb.AppendLine(line);
+            }
+        }
+
+        public string Output() => _sb.ToString();
     }
 
     public class JavaScriptCompilerContext
