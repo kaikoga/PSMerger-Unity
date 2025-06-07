@@ -1,6 +1,4 @@
-using System.IO;
 using System.Linq;
-using System.Text;
 using ClusterVR.CreatorKit.Item.Implements;
 
 namespace Silksprite.PSMerger.Compiler.Internal
@@ -11,12 +9,10 @@ namespace Silksprite.PSMerger.Compiler.Internal
         public readonly JavaScriptCompilerContext[] ScriptContexts;
         public readonly bool DetectCallbackSupport;
 
-        readonly StringBuilder _sb = new();
-        
         public JavaScriptCompilerEnvironment(JavaScriptSource source)
         {
             ScriptLibraries = source.scriptLibraries
-                .Where(asset => asset is not null)
+                .Where(asset => asset != null)
                 .Select(asset => new JavaScriptInput(asset))
                 .ToArray();
             ScriptContexts = source.scriptContexts
@@ -30,22 +26,6 @@ namespace Silksprite.PSMerger.Compiler.Internal
                 .Concat(ScriptContexts.SelectMany(context => context.JavaScriptInputs))
                 .Select(input => input.Text)
                 .ToArray();
-        
-        public void AppendLine(string line)
-        {
-            _sb.AppendLine(line);
-        }
-
-        public void AppendLines(string lines)
-        {
-            var stringReader = new StringReader(lines);
-            while (stringReader.ReadLine() is { } line)
-            {
-                _sb.AppendLine(line);
-            }
-        }
-
-        public string Output() => _sb.ToString();
     }
 
     public class JavaScriptCompilerContext
@@ -55,7 +35,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
         public JavaScriptCompilerContext(JavaScriptContext context)
         {
             JavaScriptInputs = context.JavaScriptAssets
-                .Where(asset => asset is not null)
+                .Where(asset => asset != null)
                 .Select(asset => new JavaScriptInput(asset))
                 .ToArray();
         }
