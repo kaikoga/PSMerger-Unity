@@ -2,24 +2,24 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
-namespace Silksprite.PSMerger.Compiler
+namespace Silksprite.PSMerger.Compiler.Internal
 {
-    public class JavaScriptGenerator
+    public class MergedJavaScriptGenerator
     {
         readonly string _g;
         readonly string _gg;
         readonly CallbackDef[] _callbackDefs;
 
-        JavaScriptGenerator(string g, string gg, CallbackDef[] callbackDefs)
+        MergedJavaScriptGenerator(string g, string gg, CallbackDef[] callbackDefs)
         {
             _g = g;
             _gg = gg;
             _callbackDefs = callbackDefs;
         }
 
-        public static JavaScriptGenerator ForItemScript()
+        public static MergedJavaScriptGenerator ForItemScript()
         {
-            return new JavaScriptGenerator("$", "$$", new[]
+            return new MergedJavaScriptGenerator("$", "$$", new[]
             {
                 new CallbackDef(null, "onCollide"),
                 new CallbackDef(null, "onCommentReceived"),
@@ -43,9 +43,9 @@ namespace Silksprite.PSMerger.Compiler
             });
         }
 
-        public static JavaScriptGenerator ForPlayerScript()
+        public static MergedJavaScriptGenerator ForPlayerScript()
         {
-            return new JavaScriptGenerator("_", "__", new[]
+            return new MergedJavaScriptGenerator("_", "__", new[]
             {
                 new CallbackDef(null, "onButton0", "0, @", "onButton"),
                 new CallbackDef(null, "onButton1", "1, @", "onButton"),
@@ -57,29 +57,29 @@ namespace Silksprite.PSMerger.Compiler
             });
         }
 
-        public string MergeScripts(JavaScriptSource javaScriptSource)
+        public string MergeScripts(JavaScriptCompilerEnvironment env)
         {
-            var allScripts = javaScriptSource.AllScripts;
-            var callbackDefs = javaScriptSource.DetectCallbackSupport
+            var allScripts = env.AllScripts;
+            var callbackDefs = env.DetectCallbackSupport
                 ? _callbackDefs
                     .Where(def => allScripts.Any(script => script.Contains(def.ApiName)))
                     .ToArray()
                 : _callbackDefs;
-            var scriptContexts = javaScriptSource.ScriptContexts;
+            var scriptContexts = env.ScriptContexts;
             var sb = new StringBuilder();
-            foreach (var lib in javaScriptSource.ScriptLibraries)
+            foreach (var lib in env.ScriptLibraries)
             {
-                sb.AppendLine(lib);
+                sb.AppendLine(lib.Text);
             }
-            if (javaScriptSource.DetectCallbackSupport || scriptContexts.Length > 0)
+            if (env.DetectCallbackSupport || scriptContexts.Length > 0)
             {
                 sb.Append(BuildPreamble(_g, _gg, callbackDefs));
                 foreach (var context in scriptContexts)
                 {
                     sb.AppendLine($"({_g} => {{");
-                    foreach (var script in context)
+                    foreach (var input in context.JavaScriptInputs)
                     {
-                        sb.AppendLine(script);
+                        sb.AppendLine(input.Text);
                     }
                     sb.AppendLine($"}})({_gg}());");
                 }

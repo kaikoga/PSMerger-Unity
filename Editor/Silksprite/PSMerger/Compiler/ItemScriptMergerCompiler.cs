@@ -1,11 +1,12 @@
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSMerger.Access;
+using Silksprite.PSMerger.Compiler.Internal;
 
 namespace Silksprite.PSMerger.Compiler
 {
     public static class ItemScriptMergerCompiler
     {
-        static readonly JavaScriptGenerator Gen = JavaScriptGenerator.ForItemScript();
+        static readonly MergedJavaScriptGenerator Gen = MergedJavaScriptGenerator.ForItemScript();
 
         public static bool Compile(ItemScriptMerger itemScriptMerger)
         {
@@ -28,7 +29,7 @@ namespace Silksprite.PSMerger.Compiler
 
         static string BuildItemScript(JavaScriptSource javaScriptSource)
         {
-            return Gen.MergeScripts(javaScriptSource);
+            return Gen.MergeScripts(new JavaScriptCompilerEnvironment(javaScriptSource));
         }
     }
 }

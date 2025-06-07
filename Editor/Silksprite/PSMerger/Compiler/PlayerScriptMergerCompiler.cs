@@ -1,5 +1,6 @@
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSMerger.Access;
+using Silksprite.PSMerger.Compiler.Internal;
 using UnityEditor;
 
 namespace Silksprite.PSMerger.Compiler
@@ -11,7 +12,7 @@ namespace Silksprite.PSMerger.Compiler
         static JavaScriptAsset _itemScriptAsset;
         static JavaScriptAsset ItemScriptAsset => _itemScriptAsset ??= AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(ItemScriptPath);
 
-        static readonly JavaScriptGenerator Gen = JavaScriptGenerator.ForPlayerScript();
+        static readonly MergedJavaScriptGenerator Gen = MergedJavaScriptGenerator.ForPlayerScript();
 
         public static bool Compile(PlayerScriptMerger playerScriptMerger)
         {
@@ -42,7 +43,7 @@ namespace Silksprite.PSMerger.Compiler
 
         static string BuildPlayerScript(JavaScriptSource javaScriptSource)
         {
-            return Gen.MergeScripts(javaScriptSource);
+            return Gen.MergeScripts(new JavaScriptCompilerEnvironment(javaScriptSource));
         }
     }
 }
