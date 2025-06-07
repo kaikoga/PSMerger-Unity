@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 
@@ -21,11 +22,8 @@ namespace Silksprite.PSMerger.Compiler.Internal
             DetectCallbackSupport = source.detectCallbackSupport;
         }
         
-        public string[] AllScripts => 
-            ScriptLibraries
-                .Concat(ScriptContexts.SelectMany(context => context.JavaScriptInputs))
-                .Select(input => input.Text)
-                .ToArray();
+        public IEnumerable<JavaScriptInput> AllInputs() => 
+            ScriptLibraries.Concat(ScriptContexts.SelectMany(context => context.JavaScriptInputs));
     }
 
     public class JavaScriptCompilerContext

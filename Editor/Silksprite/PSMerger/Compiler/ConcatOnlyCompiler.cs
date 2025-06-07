@@ -17,9 +17,9 @@ namespace Silksprite.PSMerger.Compiler
         {
             var env = new JavaScriptCompilerEnvironment(javaScriptSource);
             var output = new JavaScriptCompilerOutput();
-            foreach (var script in env.AllScripts)
+            foreach (var script in env.AllInputs())
             {
-                output.AppendLines(script);
+                output.AppendInput(script);
             }
             return output;
         }

@@ -23,6 +23,11 @@ namespace Silksprite.PSMerger.Compiler.Internal
             }
         }
 
+        public void AppendInput(JavaScriptInput input)
+        {
+            AppendLines(input.Text);
+        }
+
         public string SourceCode() => _sb.ToString();
     }
 }

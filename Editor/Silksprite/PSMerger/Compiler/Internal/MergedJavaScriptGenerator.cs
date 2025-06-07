@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 
 namespace Silksprite.PSMerger.Compiler.Internal
 {
@@ -60,7 +59,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
         public JavaScriptCompilerOutput MergeScripts(JavaScriptCompilerEnvironment env)
         {
             var output = new JavaScriptCompilerOutput(); 
-            var allScripts = env.AllScripts;
+            var allScripts = env.AllInputs().Select(input => input.Text).ToArray();
             var callbackDefs = env.DetectCallbackSupport
                 ? _callbackDefs
                     .Where(def => allScripts.Any(script => script.Contains(def.ApiName)))
@@ -79,7 +78,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
                     output.AppendLine($"({_g} => {{");
                     foreach (var input in context.JavaScriptInputs)
                     {
-                        output.AppendLines(input.Text);
+                        output.AppendInput(input);
                     }
                     output.AppendLine($"}})({_gg}());");
                 }
