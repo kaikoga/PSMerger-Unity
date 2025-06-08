@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Silksprite.PSMerger.SourcemapAccess.Base;
 using SourcemapToolkit.SourcemapParser;
@@ -12,7 +13,7 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
         {
             _sourceMap = new()
             {
-                Version = 0,
+                Version = 3,
                 File = sourceFileName + ".map",
                 Sources = new(),
                 Names = new(),
@@ -35,9 +36,13 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
                         ZeroBasedLineNumber = index,
                         ZeroBasedColumnNumber = 0
                     },
-                    OriginalSourcePosition = null,
+                    OriginalSourcePosition = new SourcePosition
+                    {
+                        ZeroBasedLineNumber = index,
+                        ZeroBasedColumnNumber = 0
+                    },
                     OriginalName = null,
-                    OriginalFileName = null
+                    OriginalFileName = sourceFileName
                 }).ToList()
             };
         }
@@ -55,6 +60,35 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
                 OriginalName = null,
                 OriginalFileName = null
             });
+        }
+
+        void ISourcemap.Concat(ISourcemap sourcemap)
+        {
+            if (sourcemap is not SourcemapImpl impl)
+            {
+                throw new NotSupportedException();
+            }
+
+            var lineStartIndex = _sourceMap.ParsedMappings.Max(mapping => mapping.GeneratedSourcePosition.ZeroBasedLineNumber) + 1;
+
+            var inSourcemap = impl._sourceMap;
+            if (!_sourceMap.Sources.Contains(inSourcemap.File))
+            {
+                _sourceMap.Sources.Add(inSourcemap.File);
+            }
+            _sourceMap.Names = _sourceMap.Names.Concat(inSourcemap.Names).Distinct().ToList();
+            _sourceMap.ParsedMappings.AddRange(inSourcemap.ParsedMappings
+                .Select(mapping => new MappingEntry
+                {
+                    GeneratedSourcePosition = new ()
+                    {
+                        ZeroBasedLineNumber = mapping.GeneratedSourcePosition.ZeroBasedLineNumber + lineStartIndex,
+                        ZeroBasedColumnNumber = mapping.GeneratedSourcePosition.ZeroBasedColumnNumber
+                    },
+                    OriginalSourcePosition = (mapping.OriginalFileName != null ? mapping.OriginalSourcePosition : mapping.GeneratedSourcePosition).Clone(),
+                    OriginalName = mapping.OriginalName,
+                    OriginalFileName = inSourcemap.File
+                }));
         }
 
         string ISourcemap.Serialize()

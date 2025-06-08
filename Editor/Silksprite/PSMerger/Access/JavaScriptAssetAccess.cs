@@ -38,7 +38,7 @@ namespace Silksprite.PSMerger.Access
 
         void IDisposable.Dispose()
         {
-            if (!_serializedObject.hasModifiedProperties) return;
+            // if (!_serializedObject.hasModifiedProperties) return;
             var assetPath = AssetDatabase.GetAssetPath(_serializedObject.targetObject);
             if (string.IsNullOrEmpty(assetPath)) return;
 

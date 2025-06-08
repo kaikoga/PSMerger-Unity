@@ -32,7 +32,12 @@ namespace Silksprite.PSMerger.Compiler.Internal
 
         public void AppendInput(JavaScriptInput input)
         {
-            AppendLines(input.Text);
+            var stringReader = new StringReader(input.Text);
+            while (stringReader.ReadLine() is { } line)
+            {
+                _sourceCode.AppendLine(line);
+            }
+            _sourcemap.Concat(input.Sourcemap);
         }
 
         public string SourceCode() => _sourceCode.ToString();
