@@ -4,9 +4,9 @@
     "references": [
         "Silksprite.PSMerger",
         "Silksprite.PSMerger.Editor.SourcemapAccess",
-        "Silksprite.PSMerger.Editor.SourcemapAccess.Interface",
         "ClusterVR.CreatorKit.Editor.Custom",
         "ClusterVR.CreatorKit.Editor.EditorEvents",
+        "ClusterVR.CreatorKit.Item",
         "ClusterVR.CreatorKit.Item.Implements",
         "Silksprite.PSMerger.Editor.SourcemapAccess.Base"
     ],

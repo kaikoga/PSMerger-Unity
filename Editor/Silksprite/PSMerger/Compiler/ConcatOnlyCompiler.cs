@@ -8,7 +8,8 @@ namespace Silksprite.PSMerger.Compiler
         public static bool Compile(ClusterScriptAssetMerger clusterScriptAssetMerger)
         {
             using var javaScriptAssetAccess = new JavaScriptAssetAccess(clusterScriptAssetMerger.MergedScript);
-            var output = ConcatScript(clusterScriptAssetMerger.JavaScriptSource);
+            var env = JavaScriptCompilerEnvironment.Create(clusterScriptAssetMerger);
+            var output = ConcatScript(env);
             javaScriptAssetAccess.text = output.SourceCode();
             if (clusterScriptAssetMerger.GenerateSourcemap)
             {
@@ -17,10 +18,9 @@ namespace Silksprite.PSMerger.Compiler
             return javaScriptAssetAccess.hasModifiedProperties;
         }
 
-        static JavaScriptCompilerOutput ConcatScript(JavaScriptSource javaScriptSource)
+        static JavaScriptCompilerOutput ConcatScript(JavaScriptCompilerEnvironment env)
         {
-            var env = new JavaScriptCompilerEnvironment(javaScriptSource);
-            var output = new JavaScriptCompilerOutput();
+            var output = new JavaScriptCompilerOutput(env.OutputFileName);
             foreach (var script in env.AllInputs())
             {
                 output.AppendInput(script);

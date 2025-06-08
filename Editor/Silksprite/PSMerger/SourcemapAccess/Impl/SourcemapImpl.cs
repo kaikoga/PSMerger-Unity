@@ -8,25 +8,25 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
     {
         readonly SourceMap _sourceMap;
 
-        public SourcemapImpl()
+        public SourcemapImpl(string sourceFileName)
         {
             _sourceMap = new()
             {
                 Version = 0,
-                File = null,
+                File = sourceFileName + ".map",
                 Sources = new(),
                 Names = new(),
                 ParsedMappings = new()
             };
         }
         
-        public SourcemapImpl(string fileName, string sourceCode)
+        public SourcemapImpl(string sourceFileName, string sourceCode)
         {
             _sourceMap = new SourceMap
             {
                 Version = 3,
-                File = fileName + ".map",
-                Sources = new() { fileName },
+                File = sourceFileName + ".map",
+                Sources = new() { sourceFileName },
                 Names = new(),
                 ParsedMappings = sourceCode.Split("\n").Select((_, index) => new MappingEntry
                 {

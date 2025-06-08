@@ -8,8 +8,12 @@ namespace Silksprite.PSMerger.Compiler.Internal
     public class JavaScriptCompilerOutput
     {
         readonly StringBuilder _sourceCode = new();
+        readonly ISourcemap _sourcemap;
 
-        ISourcemap _sourcemap = SourcemapFactory.Create();
+        public JavaScriptCompilerOutput(string fileName)
+        {
+            _sourcemap = SourcemapFactory.Create(fileName);
+        }
         
         public void AppendLine(string line)
         {

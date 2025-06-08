@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using ClusterVR.CreatorKit.Item;
+using UnityEditor;
 
 namespace Silksprite.PSMerger.Compiler.Internal
 {
@@ -9,7 +12,9 @@ namespace Silksprite.PSMerger.Compiler.Internal
         public readonly JavaScriptCompilerContext[] ScriptContexts;
         public readonly bool DetectCallbackSupport;
 
-        public JavaScriptCompilerEnvironment(JavaScriptSource source)
+        public readonly string OutputFileName;
+
+        JavaScriptCompilerEnvironment(JavaScriptSource source, string fileName)
         {
             ScriptLibraries = source.scriptLibraries
                 .Where(asset => asset != null)
@@ -19,8 +24,23 @@ namespace Silksprite.PSMerger.Compiler.Internal
                 .Select(context => new JavaScriptCompilerContext(context))
                 .ToArray();
             DetectCallbackSupport = source.detectCallbackSupport;
+            OutputFileName = fileName;
         }
-        
+
+        public static JavaScriptCompilerEnvironment Create(ClusterScriptComponentMergerBase component)
+        {
+            return new JavaScriptCompilerEnvironment(
+                component.JavaScriptSource,
+                component.gameObject.GetComponent<IItem>().ItemName ?? component.gameObject.name);
+        }
+
+        public static JavaScriptCompilerEnvironment Create(ClusterScriptAssetMerger asset)
+        {
+            return new JavaScriptCompilerEnvironment(
+                asset.JavaScriptSource,
+                Path.GetFileName(AssetDatabase.GetAssetPath(asset.MergedScript)));
+        }
+
         public IEnumerable<JavaScriptInput> AllInputs() => 
             ScriptLibraries.Concat(ScriptContexts.SelectMany(context => context.JavaScriptInputs));
     }

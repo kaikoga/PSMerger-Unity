@@ -2,8 +2,8 @@ namespace Silksprite.PSMerger.SourcemapAccess.Base
 {
     public interface ISourcemapFactory
     {
-        ISourcemap Create();
-        ISourcemap Create(string fileName, string sourceCode);
+        ISourcemap Create(string sourceFileName);
+        ISourcemap Create(string sourceFileName, string sourceCode);
     }
 
 }
