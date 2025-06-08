@@ -1,6 +1,7 @@
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSMerger.Access;
 using Silksprite.PSMerger.Compiler.Internal;
+using UnityEngine;
 
 namespace Silksprite.PSMerger.Compiler
 {
@@ -26,6 +27,10 @@ namespace Silksprite.PSMerger.Compiler
             using var javaScriptAssetAccess = new JavaScriptAssetAccess(clusterScriptAssetMerger.MergedScript);
             var output = BuildItemScript(clusterScriptAssetMerger.JavaScriptSource);
             javaScriptAssetAccess.text = output.SourceCode();
+            if (clusterScriptAssetMerger.GenerateSourcemap)
+            {
+                javaScriptAssetAccess.sourcemap = output.Sourcemap();
+            } 
             return javaScriptAssetAccess.hasModifiedProperties;
         }
 

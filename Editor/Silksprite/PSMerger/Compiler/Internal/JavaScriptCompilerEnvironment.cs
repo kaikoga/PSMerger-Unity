@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using ClusterVR.CreatorKit.Item.Implements;
 
 namespace Silksprite.PSMerger.Compiler.Internal
 {
@@ -39,15 +38,4 @@ namespace Silksprite.PSMerger.Compiler.Internal
         }
     }
 
-    public class JavaScriptInput
-    {
-        public readonly JavaScriptAsset JavaScriptAsset;
-
-        public string Text => JavaScriptAsset.text;
-
-        public JavaScriptInput(JavaScriptAsset asset)
-        {
-            JavaScriptAsset = asset;
-        }
-    }
 }

@@ -1,6 +1,7 @@
 using System.IO;
 using ClusterVR.CreatorKit.Item.Implements;
 using UnityEditor;
+using UnityEngine;
 
 namespace Silksprite.PSMerger
 {

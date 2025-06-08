@@ -1,13 +1,7 @@
 {
-    "name": "Silksprite.PSMerger.Editor",
+    "name": "Silksprite.PSMerger.Editor.SourcemapAccess.Impl",
     "rootNamespace": "",
     "references": [
-        "Silksprite.PSMerger",
-        "Silksprite.PSMerger.Editor.SourcemapAccess",
-        "Silksprite.PSMerger.Editor.SourcemapAccess.Interface",
-        "ClusterVR.CreatorKit.Editor.Custom",
-        "ClusterVR.CreatorKit.Editor.EditorEvents",
-        "ClusterVR.CreatorKit.Item.Implements",
         "Silksprite.PSMerger.Editor.SourcemapAccess.Base"
     ],
     "includePlatforms": [
@@ -15,10 +9,13 @@
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll",
+        "SourcemapToolkit.SourcemapParser.dll"
+    ],
     "autoReferenced": false,
-    "defineConstraints": [],
+    "defineConstraints": ["PSMERGER_SOURCEMAP_SUPPORT"],
     "versionDefines": [
         {
             "name": "net.kaikoga.nuget.sourcemap-toolkit",

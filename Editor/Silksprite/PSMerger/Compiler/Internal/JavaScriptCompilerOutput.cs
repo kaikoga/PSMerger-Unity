@@ -1,17 +1,20 @@
 using System.IO;
-using System.Linq;
 using System.Text;
-using ClusterVR.CreatorKit.Item.Implements;
+using Silksprite.PSMerger.SourcemapAccess;
+using Silksprite.PSMerger.SourcemapAccess.Base;
 
 namespace Silksprite.PSMerger.Compiler.Internal
 {
     public class JavaScriptCompilerOutput
     {
-        readonly StringBuilder _sb = new();
+        readonly StringBuilder _sourceCode = new();
+
+        ISourcemap _sourcemap = SourcemapFactory.Create();
         
         public void AppendLine(string line)
         {
-            _sb.AppendLine(line);
+            _sourceCode.AppendLine(line);
+            _sourcemap.AppendLine();
         }
 
         public void AppendLines(string lines)
@@ -19,7 +22,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
             var stringReader = new StringReader(lines);
             while (stringReader.ReadLine() is { } line)
             {
-                _sb.AppendLine(line);
+                AppendLine(line);
             }
         }
 
@@ -28,6 +31,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
             AppendLines(input.Text);
         }
 
-        public string SourceCode() => _sb.ToString();
+        public string SourceCode() => _sourceCode.ToString();
+        public string Sourcemap() => _sourcemap.Serialize();
     }
 }

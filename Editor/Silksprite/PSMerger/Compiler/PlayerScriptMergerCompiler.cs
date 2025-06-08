@@ -40,6 +40,10 @@ namespace Silksprite.PSMerger.Compiler
             using var javaScriptAssetAccess = new JavaScriptAssetAccess(clusterScriptAssetMerger.MergedScript);
             var output = BuildPlayerScript(clusterScriptAssetMerger.JavaScriptSource);
             javaScriptAssetAccess.text = output.SourceCode();
+            if (clusterScriptAssetMerger.GenerateSourcemap)
+            {
+                javaScriptAssetAccess.sourcemap = output.Sourcemap();
+            } 
             return javaScriptAssetAccess.hasModifiedProperties;
         }
 

@@ -1,13 +1,8 @@
 {
-    "name": "Silksprite.PSMerger.Editor",
+    "name": "Silksprite.PSMerger.Editor.SourcemapAccess",
     "rootNamespace": "",
     "references": [
-        "Silksprite.PSMerger",
-        "Silksprite.PSMerger.Editor.SourcemapAccess",
-        "Silksprite.PSMerger.Editor.SourcemapAccess.Interface",
-        "ClusterVR.CreatorKit.Editor.Custom",
-        "ClusterVR.CreatorKit.Editor.EditorEvents",
-        "ClusterVR.CreatorKit.Item.Implements",
+        "Silksprite.PSMerger.Editor.SourcemapAccess.Impl",
         "Silksprite.PSMerger.Editor.SourcemapAccess.Base"
     ],
     "includePlatforms": [
@@ -15,7 +10,7 @@
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
+    "overrideReferences": true,
     "precompiledReferences": [],
     "autoReferenced": false,
     "defineConstraints": [],
