@@ -14,7 +14,7 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
             _sourceMap = new()
             {
                 Version = 3,
-                File = sourceFileName + ".map",
+                File = sourceFileName,
                 Sources = new(),
                 Names = new(),
                 ParsedMappings = new()
@@ -26,7 +26,7 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
             _sourceMap = new SourceMap
             {
                 Version = 3,
-                File = sourceFileName + ".map",
+                File = sourceFileName,
                 Sources = new() { sourceFileName },
                 Names = new(),
                 ParsedMappings = sourceCode.Split("\n").Select((_, index) => new MappingEntry
@@ -69,7 +69,9 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
                 throw new NotSupportedException();
             }
 
-            var lineStartIndex = _sourceMap.ParsedMappings.Max(mapping => mapping.GeneratedSourcePosition.ZeroBasedLineNumber) + 1;
+            var lineStartIndex = _sourceMap.ParsedMappings.Any()
+                ? _sourceMap.ParsedMappings.Max(mapping => mapping.GeneratedSourcePosition.ZeroBasedLineNumber) + 1
+                : 0;
 
             var inSourcemap = impl._sourceMap;
             if (!_sourceMap.Sources.Contains(inSourcemap.File))
