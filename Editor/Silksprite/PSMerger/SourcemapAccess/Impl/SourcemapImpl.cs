@@ -78,6 +78,7 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
             {
                 _sourceMap.Sources.Add(inSourcemap.File);
             }
+            _sourceMap.Sources = _sourceMap.Sources.Concat(inSourcemap.Sources).Distinct().ToList();
             _sourceMap.Names = _sourceMap.Names.Concat(inSourcemap.Names).Distinct().ToList();
             _sourceMap.ParsedMappings.AddRange(inSourcemap.ParsedMappings
                 .Select(mapping => new MappingEntry
@@ -89,7 +90,7 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
                     },
                     OriginalSourcePosition = (mapping.OriginalFileName != null ? mapping.OriginalSourcePosition : mapping.GeneratedSourcePosition).Clone(),
                     OriginalName = mapping.OriginalName,
-                    OriginalFileName = inSourcemap.File
+                    OriginalFileName = mapping.OriginalFileName ?? inSourcemap.File
                 }));
         }
 
