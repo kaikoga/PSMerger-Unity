@@ -6,8 +6,14 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
     [UsedImplicitly]
     public class SourcemapFactoryImpl : ISourcemapFactory
     {
-        ISourcemap ISourcemapFactory.Create(string sourceFileName) => new SourcemapImpl(sourceFileName);
+        ISourcemap ISourcemapFactory.CreateEmpty(string sourceFileName, string sourceFileAssetPath)
+        {
+            return new SourcemapImpl(sourceFileName, sourceFileAssetPath);
+        }
 
-        ISourcemap ISourcemapFactory.Create(string sourceFileName, string sourceCode) => new SourcemapImpl(sourceFileName, sourceCode);
+        ISourcemap ISourcemapFactory.CreateIdentity(string sourceFileName, string sourceFileAssetPath, string sourceCode)
+        {
+            return new SourcemapImpl(sourceFileName, sourceFileAssetPath, sourceCode);
+        }
     }
 }

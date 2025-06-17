@@ -20,7 +20,7 @@ namespace Silksprite.PSMerger.Compiler
 
         static JavaScriptCompilerOutput ConcatScript(JavaScriptCompilerEnvironment env)
         {
-            var output = new JavaScriptCompilerOutput(env.OutputFileName);
+            var output = new JavaScriptCompilerOutput(env.OutputFileName, env.OutputAssetPath);
             foreach (var script in env.AllInputs())
             {
                 output.AppendInput(script);

@@ -12,14 +12,14 @@ namespace Silksprite.PSMerger.SourcemapAccess
     {
         static readonly ISourcemapFactory Factory = new TSourcemapFactory();        
 
-        public static ISourcemap Create(string sourceFileName)
+        public static ISourcemap CreateEmpty(string sourceFileName, string sourceFileAssetPath)
         {
-            return Factory.Create(sourceFileName);
+            return Factory.CreateEmpty(sourceFileName, sourceFileAssetPath);
         }
         
-        public static ISourcemap Create(string sourceFileName, string sourceCode)
+        public static ISourcemap CreateIdentity(string sourceFileName, string sourceFileAssetPath, string sourceCode)
         {
-            return Factory.Create(sourceFileName, sourceCode);
+            return Factory.CreateIdentity(sourceFileName, sourceFileAssetPath, sourceCode);
         }
     }
 }

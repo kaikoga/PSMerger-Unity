@@ -6,8 +6,8 @@ namespace Silksprite.PSMerger.SourcemapAccess
     [UsedImplicitly]
     public class EmptySourcemapFactory : ISourcemapFactory
     {
-        ISourcemap ISourcemapFactory.Create(string sourceFileName) => new EmptySourcemap();
+        ISourcemap ISourcemapFactory.CreateEmpty(string sourceFileName, string sourceFileAssetPath) => new EmptySourcemap();
 
-        ISourcemap ISourcemapFactory.Create(string sourceFileName, string sourceCode) => new EmptySourcemap();
+        ISourcemap ISourcemapFactory.CreateIdentity(string sourceFileName, string sourceFileAssetPath, string sourceCode) => new EmptySourcemap();
     }
 }

@@ -13,8 +13,9 @@ namespace Silksprite.PSMerger.Compiler.Internal
         public readonly bool DetectCallbackSupport;
 
         public readonly string OutputFileName;
+        public readonly string OutputAssetPath;
 
-        JavaScriptCompilerEnvironment(JavaScriptSource source, string fileName)
+        JavaScriptCompilerEnvironment(JavaScriptSource source, string fileName, string assetPath)
         {
             ScriptLibraries = source.scriptLibraries
                 .Where(asset => asset != null)
@@ -25,20 +26,25 @@ namespace Silksprite.PSMerger.Compiler.Internal
                 .ToArray();
             DetectCallbackSupport = source.detectCallbackSupport;
             OutputFileName = fileName;
+            OutputAssetPath = assetPath;
         }
 
         public static JavaScriptCompilerEnvironment Create(ClusterScriptComponentMergerBase component)
         {
+            var itemName = component.gameObject.GetComponent<IItem>().ItemName ?? component.gameObject.name;
             return new JavaScriptCompilerEnvironment(
                 component.JavaScriptSource,
-                component.gameObject.GetComponent<IItem>().ItemName ?? component.gameObject.name);
+                itemName,
+                "");
         }
 
         public static JavaScriptCompilerEnvironment Create(ClusterScriptAssetMerger asset)
         {
+            var assetPath = AssetDatabase.GetAssetPath(asset.MergedScript);
             return new JavaScriptCompilerEnvironment(
                 asset.JavaScriptSource,
-                Path.GetFileName(AssetDatabase.GetAssetPath(asset.MergedScript)));
+                Path.GetFileName(assetPath),
+                assetPath);
         }
 
         public IEnumerable<JavaScriptInput> AllInputs() => 
