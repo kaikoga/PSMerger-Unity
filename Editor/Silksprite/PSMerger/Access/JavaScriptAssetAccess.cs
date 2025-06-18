@@ -14,11 +14,7 @@ namespace Silksprite.PSMerger.Access
         readonly SerializedObject _serializedObject;
         string _sourcemap;
 
-#if PSMERGER_SOURCEMAP_SUPPORT
         public bool hasModifiedProperties => _serializedObject.hasModifiedProperties || _sourcemap != null;
-#else
-        public bool hasModifiedProperties => _serializedObject.hasModifiedProperties;
-#endif
 
         public string text
         {
@@ -46,12 +42,10 @@ namespace Silksprite.PSMerger.Access
             File.WriteAllBytes(assetPath, Encoding.UTF8.GetBytes(prop.stringValue));
             AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceSynchronousImport);
 
-#if PSMERGER_SOURCEMAP_SUPPORT
             if (_sourcemap != null)
             {
                 File.WriteAllBytes($"{assetPath}.map", Encoding.UTF8.GetBytes(_sourcemap));
             }
-#endif
         }
     }
 }

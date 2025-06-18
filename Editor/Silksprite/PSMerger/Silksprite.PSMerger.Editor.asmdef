@@ -7,8 +7,7 @@
         "ClusterVR.CreatorKit.Editor.Custom",
         "ClusterVR.CreatorKit.Editor.EditorEvents",
         "ClusterVR.CreatorKit.Item",
-        "ClusterVR.CreatorKit.Item.Implements",
-        "Silksprite.PSMerger.Editor.SourcemapAccess.Base"
+        "ClusterVR.CreatorKit.Item.Implements"
     ],
     "includePlatforms": [
         "Editor"
@@ -19,12 +18,6 @@
     "precompiledReferences": [],
     "autoReferenced": false,
     "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "net.kaikoga.nuget.sourcemap-toolkit",
-            "expression": "",
-            "define": "PSMERGER_SOURCEMAP_SUPPORT"
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }

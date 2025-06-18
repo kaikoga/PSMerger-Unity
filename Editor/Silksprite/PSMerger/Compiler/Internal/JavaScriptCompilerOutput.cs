@@ -1,18 +1,17 @@
 using System.IO;
 using System.Text;
 using Silksprite.PSMerger.SourcemapAccess;
-using Silksprite.PSMerger.SourcemapAccess.Base;
 
 namespace Silksprite.PSMerger.Compiler.Internal
 {
     public class JavaScriptCompilerOutput
     {
         readonly StringBuilder _sourceCode = new();
-        readonly ISourcemap _sourcemap;
+        readonly SourcemapAsset _sourcemap;
 
         public JavaScriptCompilerOutput(string fileName, string assetPath)
         {
-            _sourcemap = SourcemapFactory.CreateEmpty(fileName, assetPath);
+            _sourcemap = SourcemapAsset.CreateEmpty(fileName, assetPath);
         }
         
         public void AppendLine(string line)

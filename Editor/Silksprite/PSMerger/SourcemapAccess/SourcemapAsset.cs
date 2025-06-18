@@ -1,57 +1,64 @@
-using System;
 using System.IO;
 using System.Linq;
-using Silksprite.PSMerger.SourcemapAccess.Base;
 using SourcemapToolkit.SourcemapParser;
 
-namespace Silksprite.PSMerger.SourcemapAccess.Impl
+namespace Silksprite.PSMerger.SourcemapAccess
 {
-    public class SourcemapImpl : ISourcemap
+    public class SourcemapAsset
     {
         readonly SourceMap _sourceMap;
         readonly string _sourceFileAssetPath;
 
-        public SourcemapImpl(string sourceFileName, string sourceFileAssetPath)
+        SourcemapAsset(SourceMap sourceMap, string sourceFileAssetPath)
         {
-            _sourceMap = new()
-            {
-                Version = 3,
-                File = sourceFileName,
-                Sources = new(),
-                Names = new(),
-                ParsedMappings = new()
-            };
-            _sourceFileAssetPath = sourceFileAssetPath;
-        }
-        
-        public SourcemapImpl(string sourceFileName, string sourceFileAssetPath, string sourceCode)
-        {
-            _sourceMap = new SourceMap
-            {
-                Version = 3,
-                File = sourceFileName,
-                Sources = new() { sourceFileName },
-                Names = new(),
-                ParsedMappings = sourceCode.Split("\n").Select((_, index) => new MappingEntry
-                {
-                    GeneratedSourcePosition = new SourcePosition
-                    {
-                        ZeroBasedLineNumber = index,
-                        ZeroBasedColumnNumber = 0
-                    },
-                    OriginalSourcePosition = new SourcePosition
-                    {
-                        ZeroBasedLineNumber = index,
-                        ZeroBasedColumnNumber = 0
-                    },
-                    OriginalName = null,
-                    OriginalFileName = sourceFileName
-                }).ToList()
-            };
+            _sourceMap = sourceMap;
             _sourceFileAssetPath = sourceFileAssetPath;
         }
 
-        void ISourcemap.AppendLine()
+        public static SourcemapAsset CreateEmpty(string sourceFileName, string sourceFileAssetPath)
+        {
+            return new SourcemapAsset(
+                new SourceMap
+                {
+                    Version = 3,
+                    File = sourceFileName,
+                    Sources = new(),
+                    Names = new(),
+                    ParsedMappings = new()
+                },
+                sourceFileAssetPath
+            );
+        }
+        public static SourcemapAsset CreateIdentity(string sourceFileName, string sourceFileAssetPath, string sourceCode)
+        {
+            return new SourcemapAsset(
+                new SourceMap
+                {
+                    Version = 3,
+                    File = sourceFileName,
+                    Sources = new() { sourceFileName },
+                    Names = new(),
+                    ParsedMappings = sourceCode.Split("\n").Select((_, index) => new MappingEntry
+                    {
+                        GeneratedSourcePosition = new SourcePosition
+                        {
+                            ZeroBasedLineNumber = index,
+                            ZeroBasedColumnNumber = 0
+                        },
+                        OriginalSourcePosition = new SourcePosition
+                        {
+                            ZeroBasedLineNumber = index,
+                            ZeroBasedColumnNumber = 0
+                        },
+                        OriginalName = null,
+                        OriginalFileName = sourceFileName
+                    }).ToList()
+                },
+                sourceFileAssetPath
+            );
+        }
+
+        public void AppendLine()
         {
             _sourceMap.ParsedMappings.Add(new MappingEntry
             {
@@ -66,13 +73,8 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
             });
         }
 
-        void ISourcemap.Concat(ISourcemap sourcemap)
+        public void Concat(SourcemapAsset other)
         {
-            if (sourcemap is not SourcemapImpl impl)
-            {
-                throw new NotSupportedException();
-            }
-
             string ConvertRelativePath(string sourcePath)
             {
                 if (Path.IsPathRooted(sourcePath))
@@ -80,9 +82,9 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
                     return sourcePath;
                 }
                 var path = sourcePath;
-                if (!string.IsNullOrWhiteSpace(impl._sourceFileAssetPath))
+                if (!string.IsNullOrWhiteSpace(other._sourceFileAssetPath))
                 {
-                    var inDirectoryName = Path.GetDirectoryName(impl._sourceFileAssetPath);
+                    var inDirectoryName = Path.GetDirectoryName(other._sourceFileAssetPath);
                     if (inDirectoryName != null)
                     {
                         if (Path.IsPathRooted(inDirectoryName))
@@ -108,7 +110,7 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
                 ? _sourceMap.ParsedMappings.Max(mapping => mapping.GeneratedSourcePosition.ZeroBasedLineNumber) + 1
                 : 0;
 
-            var inSourcemap = impl._sourceMap;
+            var inSourcemap = other._sourceMap;
             var inFile = ConvertRelativePath(inSourcemap.File);
             if (!_sourceMap.Sources.Contains(inFile))
             {
@@ -133,7 +135,7 @@ namespace Silksprite.PSMerger.SourcemapAccess.Impl
                 }));
         }
 
-        string ISourcemap.Serialize()
+        public string Serialize()
         {
             return new SourceMapGenerator().SerializeMapping(_sourceMap);
         }
