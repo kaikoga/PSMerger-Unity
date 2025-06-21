@@ -35,7 +35,7 @@ namespace Silksprite.PSCore.Access
 
         public void Dispose()
         {
-            _serializedObject.ApplyModifiedPropertiesWithoutUndo();
+            _serializedObject.ApplyModifiedProperties();
             _serializedObject?.Dispose();
         }
     }

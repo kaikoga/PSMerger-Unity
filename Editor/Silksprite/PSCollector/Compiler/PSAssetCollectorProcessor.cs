@@ -19,41 +19,60 @@ namespace Silksprite.PSCollector.Compiler
 
         public bool Collect(PSAssetCollector collector)
         {
-            var mergedWirls = CollectSources<MergedWorldItemReferenceList>().ToArray();
-            if (mergedWirls.SelectMany(mergedWirl => mergedWirl.WorldItemReferences).Any())
+            var changed = false;
+            changed |= CollectWorldItemReferenceLists(collector);
+            changed |= CollectPlayerLocalObjectReferenceLists(collector);
+            return changed;
+        }
+
+        bool CollectWorldItemReferenceLists(PSAssetCollector collector)
+        {
+            var mergedWirs = CollectSources<MergedWorldItemReferenceList>()
+                .SelectMany(mergedWirl => mergedWirl.WorldItemReferences)
+                .ToArray();
+            if (!mergedWirs.Any())
             {
-                if (!collector.gameObject.TryGetComponent<WorldItemReferenceList>(out var wirl))
-                {
-                    wirl = collector.gameObject.AddComponent<WorldItemReferenceList>();
-                }
-                using var wirlAccess = new WorldItemReferenceListAccess(wirl);
-                var entries = mergedWirls
-                    .SelectMany(mergedWirl => mergedWirl.WorldItemReferences)
-                    .Select(wir => new WorldItemReferenceListAccessEntry
-                    {
-                        id = wir.id,
-                        item = wir.item
-                    });
-                wirlAccess.SetEntries(entries);
+                return false;
             }
-            var mergedPlorls = CollectSources<MergedPlayerLocalObjectReferenceList>().ToArray();
-            if (mergedPlorls.SelectMany(mergedPlorl => mergedPlorl.PlayerLocalObjectReferences).Any())
-            {
-                if (!collector.gameObject.TryGetComponent<PlayerLocalObjectReferenceList>(out var plorl))
+            using var wirlAccess = new WorldItemReferenceListAccess(GetOrAddComponent<WorldItemReferenceList>(collector));
+            var entries = mergedWirs
+                .Select(wir => new WorldItemReferenceListAccessEntry
                 {
-                    plorl = collector.gameObject.AddComponent<PlayerLocalObjectReferenceList>();
-                }
-                using var plorlAccess = new PlayerLocalObjectReferenceListAccess(plorl);
-                var entries = mergedPlorls
-                    .SelectMany(mergedPlorl => mergedPlorl.PlayerLocalObjectReferences)
-                    .Select(plor => new PlayerLocalObjectReferenceListEntry
-                    {
-                        id = plor.id,
-                        targetObject = plor.targetObject
-                    });
-                plorlAccess.SetEntries(entries);
-            }
+                    id = wir.id,
+                    item = wir.item
+                });
+            wirlAccess.SetEntries(entries);
             return true;
+        }
+
+        bool CollectPlayerLocalObjectReferenceLists(PSAssetCollector collector)
+        {
+            var mergedPlors = CollectSources<MergedPlayerLocalObjectReferenceList>()
+                .SelectMany(mergedPlorl => mergedPlorl.PlayerLocalObjectReferences)
+                .ToArray();
+            if (!mergedPlors.Any())
+            {
+                return false;
+            }
+            using var plorlAccess = new PlayerLocalObjectReferenceListAccess(GetOrAddComponent<PlayerLocalObjectReferenceList>(collector));
+            var entries = mergedPlors
+                .Select(plor => new PlayerLocalObjectReferenceListEntry
+                {
+                    id = plor.id,
+                    targetObject = plor.targetObject
+                });
+            plorlAccess.SetEntries(entries);
+            return true;
+        }
+
+        static T GetOrAddComponent<T>(PSAssetCollector collector)
+            where T : Component
+        {
+            if (!collector.gameObject.TryGetComponent<T>(out var component))
+            {
+                component = collector.gameObject.AddComponent<T>();
+            }
+            return component;
         }
     }
 }
