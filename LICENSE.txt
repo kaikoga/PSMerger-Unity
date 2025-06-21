@@ -1,3 +1,12 @@
+PSMerger is licensed under CC0 1.0 Universal, except for the following third-party library, which is licensed under the MIT License:
+
+- SourcemapToolkit.SourcemapParser by Microsoft Corporation
+  - For technical reason, the DLL file is renamed to `Silksprite.PSMerger.SourcemapToolkit.SourcemapParser`.
+
+The full license text for the bundled softwares are available under their responsive directories.
+
+----
+
 CC0 1.0 Universal
 
 Statement of Purpose

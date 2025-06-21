@@ -53,7 +53,8 @@ Two modes are supported:
 
 - Attach a `PlayerScriptMerger` or `ItemScriptMerger` component to ScriptableItems to merge scripts in place.
   - For `PlayerScriptMerger`, ItemScript of the item is automatically set up to apply the merged PlayerScript to all players in the space.
-- Create a `ClusterScriptAssetMerger` via `Assets` -> `Create` -> `Silksprite` -> `ClusterScriptAssetMerger` to merge scripts into a JavaScriptAsset.
+- Create a `ClusterScriptAssetMerger` via `Assets` -> `Create` -> `Silksprite` -> `PSMerger` -> `ClusterScriptAssetMerger` to merge scripts into a JavaScriptAsset.
+  - Experimental SourceMap support is available on PSMerger 2.0.0 or over.
 
 ## Important Notes
 
@@ -63,3 +64,12 @@ When using PSMerger, there are some behavioral differences from standard Cluster
 - `ClusterScript.onPurchaseUpdated()` receives all subscribed purchases from all input scripts
 - `UnityComponent.onClick()` registrations are not merged - only the last registration takes effect
 - API call responses are broadcast to all input scripts - use the `meta` parameter to filter responses
+
+# PSCollector
+
+`Component` -> `Silksprite` -> `PSCollector` -> `PS Asset Collector`
+
+Collects contents of `Merged Something List` in the scene and populates `Something List` components of Creator Kit.
+Useful for configuring the Item and Asset dependencies of the PlayerScript merged with PSMerger. 
+
+Warning: The contents of `Something List` components are overwritten.
