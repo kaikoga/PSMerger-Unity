@@ -8,7 +8,7 @@ namespace Silksprite.PSCollector.Compiler
     {
         const string PSMerger = "PSCollector";
 
-        readonly PSAssetCollectorProcessor _processor = new();
+        readonly PSAssetCollectorCompiler _compiler = new();
 
         public void CompileAll()
         {
@@ -28,7 +28,7 @@ namespace Silksprite.PSCollector.Compiler
 
         bool CollectSingleComponent(PSAssetCollector collectorComponent)
         {
-            return _processor.Collect(collectorComponent);
+            return _compiler.Collect(collectorComponent);
         }
     }
 }

@@ -7,7 +7,7 @@ using PlayerLocalObjectReferenceListEntry = Silksprite.PSCore.Access.PlayerLocal
 
 namespace Silksprite.PSCollector.Compiler
 {
-    public class PSAssetCollectorProcessor
+    public class PSAssetCollectorCompiler
     {
         IEnumerable<T> CollectSources<T>()
             where T : Component
