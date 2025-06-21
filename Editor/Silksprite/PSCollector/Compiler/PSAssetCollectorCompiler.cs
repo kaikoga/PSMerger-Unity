@@ -21,6 +21,7 @@ namespace Silksprite.PSCollector.Compiler
         {
             var changed = false;
             changed |= CollectWorldItemReferenceLists(collector);
+            changed |= CollectWorldItemTemplateLists(collector);
             changed |= CollectPlayerLocalObjectReferenceLists(collector);
             return changed;
         }
@@ -42,6 +43,26 @@ namespace Silksprite.PSCollector.Compiler
                     item = wir.item
                 });
             wirlAccess.SetEntries(entries);
+            return true;
+        }
+
+        bool CollectWorldItemTemplateLists(PSAssetCollector collector)
+        {
+            var mergedWits = CollectSources<MergedWorldItemTemplateList>()
+                .SelectMany(mergedWit => mergedWit.WorldItemTemplates)
+                .ToArray();
+            if (!mergedWits.Any())
+            {
+                return false;
+            }
+            using var witlAccess = new WorldItemTemplateListAccess(GetOrAddComponent<WorldItemTemplateList>(collector));
+            var entries = mergedWits
+                .Select(wit => new WorldItemTemplateListAccessEntry
+                {
+                    id = wit.id,
+                    worldItemTemplate = wit.worldItemTemplate
+                });
+            witlAccess.SetEntries(entries);
             return true;
         }
 
