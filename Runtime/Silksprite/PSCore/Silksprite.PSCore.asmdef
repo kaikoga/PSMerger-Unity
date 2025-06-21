@@ -2,6 +2,7 @@
     "name": "Silksprite.PSCore",
     "rootNamespace": "",
     "references": [
+        "ClusterVR.CreatorKit",
         "ClusterVR.CreatorKit.Item",
         "ClusterVR.CreatorKit.Item.Implements"
     ],

@@ -1,4 +1,5 @@
 using System;
+using ClusterVR.CreatorKit;
 using ClusterVR.CreatorKit.Item.Implements;
 
 namespace Silksprite.PSCore.Access
@@ -6,7 +7,7 @@ namespace Silksprite.PSCore.Access
     [Serializable]
     public sealed class WorldItemTemplateListAccessEntry
     {
-        public string id;
+        [IdString] public string id;
         public Item worldItemTemplate;
     }
 }
