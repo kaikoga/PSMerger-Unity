@@ -25,6 +25,7 @@ namespace Silksprite.PSCollector.Compiler
             changed |= CollectWorldItemReferenceLists(collector);
             changed |= CollectWorldItemTemplateLists(collector);
             changed |= CollectPlayerLocalObjectReferenceLists(collector);
+            changed |= CollectIconAssetLists(collector);
             return changed;
         }
 
@@ -79,6 +80,17 @@ namespace Silksprite.PSCollector.Compiler
                 return false;
             }
             using var access = new PlayerLocalObjectReferenceListAccess(GetOrAddComponent<PlayerLocalObjectReferenceList>(collector));
+            access.SetEntries(entries);
+            return true;
+        }
+
+        bool CollectIconAssetLists(PSAssetCollector collector)
+        {
+            if (!CollectEntries<IconAssetListAccessEntry>(out var entries))
+            {
+                return false;
+            }
+            using var access = new IconAssetListAccess(GetOrAddComponent<IconAssetList>(collector));
             access.SetEntries(entries);
             return true;
         }
