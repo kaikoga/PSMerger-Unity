@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSCore.Access;
@@ -8,12 +7,14 @@ namespace Silksprite.PSCollector.Compiler
 {
     public class PSAssetCollectorCompiler
     {
-        IEnumerable<T> CollectSources<T>()
-            where T : Component
+        static bool CollectEntries<TEntry>(out TEntry[] entries)
         {
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             var rootObjects = scene.GetRootGameObjects();
-            return rootObjects.SelectMany(o => o.GetComponentsInChildren<T>(true));
+            entries = rootObjects.SelectMany(o => o.GetComponentsInChildren<IMergedAccessEntryList<TEntry>>(true))
+                .SelectMany(entryList => entryList.Entries)
+                .ToArray();
+            return entries.Length > 0;
         }
 
         public bool Collect(PSAssetCollector collector)
@@ -27,10 +28,7 @@ namespace Silksprite.PSCollector.Compiler
 
         bool CollectWorldItemReferenceLists(PSAssetCollector collector)
         {
-            var entries = CollectSources<MergedWorldItemReferenceList>()
-                .SelectMany(entry => entry.WorldItemReferences)
-                .ToArray();
-            if (!entries.Any())
+            if (!CollectEntries<WorldItemReferenceListAccessEntry>(out var entries))
             {
                 return false;
             }
@@ -41,10 +39,7 @@ namespace Silksprite.PSCollector.Compiler
 
         bool CollectWorldItemTemplateLists(PSAssetCollector collector)
         {
-            var entries = CollectSources<MergedWorldItemTemplateList>()
-                .SelectMany(entry => entry.WorldItemTemplates)
-                .ToArray();
-            if (!entries.Any())
+            if (!CollectEntries<WorldItemTemplateListAccessEntry>(out var entries))
             {
                 return false;
             }
@@ -55,10 +50,7 @@ namespace Silksprite.PSCollector.Compiler
 
         bool CollectPlayerLocalObjectReferenceLists(PSAssetCollector collector)
         {
-            var entries = CollectSources<MergedPlayerLocalObjectReferenceList>()
-                .SelectMany(entry => entry.PlayerLocalObjectReferences)
-                .ToArray();
-            if (!entries.Any())
+            if (!CollectEntries<PlayerLocalObjectReferenceListAccessEntry>(out var entries))
             {
                 return false;
             }
