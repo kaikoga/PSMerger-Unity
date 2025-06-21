@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Silksprite.PSCollector
 {
+    [AddComponentMenu("Silksprite/PSCollector/MergedWorldItemTemplateList")]
     public class MergedWorldItemTemplateList : MonoBehaviour, IMergedAccessEntryList<WorldItemTemplateListAccessEntry>
     {
         [SerializeField] WorldItemTemplateListAccessEntry[] worldItemTemplates;
