@@ -20,10 +20,22 @@ namespace Silksprite.PSCollector.Compiler
         public bool Collect(PSAssetCollector collector)
         {
             var changed = false;
+            changed |= CollectItemAudioSetLists(collector);
             changed |= CollectWorldItemReferenceLists(collector);
             changed |= CollectWorldItemTemplateLists(collector);
             changed |= CollectPlayerLocalObjectReferenceLists(collector);
             return changed;
+        }
+
+        bool CollectItemAudioSetLists(PSAssetCollector collector)
+        {
+            if (!CollectEntries<ItemAudioSetListAccessEntry>(out var entries))
+            {
+                return false;
+            }
+            using var access = new ItemAudioSetListAccess(GetOrAddComponent<ItemAudioSetList>(collector));
+            access.SetEntries(entries);
+            return true;
         }
 
         bool CollectWorldItemReferenceLists(PSAssetCollector collector)
