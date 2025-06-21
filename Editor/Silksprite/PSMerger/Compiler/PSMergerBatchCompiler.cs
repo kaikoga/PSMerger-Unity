@@ -38,9 +38,9 @@ namespace Silksprite.PSMerger.Compiler
         static void CompileAll()
         {
             Debug.Log($"[{PSMerger}]更新開始");
+            CombineAllAssets();
             CombineAllOfScene();
             CombineAllOfProject();
-            CombineAllAssets();
             Debug.Log($"[{PSMerger}]更新終了");
         }
 
