@@ -31,7 +31,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
 
         public void AppendInput(JavaScriptInput input)
         {
-            var stringReader = new StringReader(input.Text);
+            var stringReader = new StringReader(input.SourceCode);
             while (stringReader.ReadLine() is { } line)
             {
                 _sourceCode.AppendLine(line);

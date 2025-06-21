@@ -59,7 +59,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
         public JavaScriptCompilerOutput MergeScripts(JavaScriptCompilerEnvironment env)
         {
             var output = new JavaScriptCompilerOutput(env.OutputFileName, env.OutputAssetPath);
-            var allScripts = env.AllInputs().Select(input => input.Text).ToArray();
+            var allScripts = env.AllInputs().Select(input => input.SourceCode).ToArray();
             var callbackDefs = env.DetectCallbackSupport
                 ? _callbackDefs
                     .Where(def => allScripts.Any(script => script.Contains(def.ApiName)))
@@ -68,7 +68,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
             var scriptContexts = env.ScriptContexts;
             foreach (var lib in env.ScriptLibraries)
             {
-                output.AppendLine(lib.Text);
+                output.AppendLine(lib.SourceCode);
             }
             if (env.DetectCallbackSupport || scriptContexts.Length > 0)
             {

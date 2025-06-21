@@ -7,16 +7,20 @@ namespace Silksprite.PSMerger.Compiler.Internal
 {
     public class JavaScriptInput
     {
-        public readonly JavaScriptAsset JavaScriptAsset;
+        public readonly string SourceCode;
         public readonly SourcemapAsset Sourcemap;
- 
-        public string Text => JavaScriptAsset.text;
 
         public JavaScriptInput(JavaScriptAsset asset)
         {
-            JavaScriptAsset = asset;
+            SourceCode = asset.text;
             var assetPath = AssetDatabase.GetAssetPath(asset); 
             Sourcemap = SourcemapAsset.CreateIdentity(Path.GetFileName(assetPath), assetPath, asset.text);
+        }
+
+        public JavaScriptInput(string fileName, string sourceCode)
+        {
+            SourceCode = sourceCode;
+            Sourcemap = SourcemapAsset.CreateIdentity(fileName, "", sourceCode);
         }
     }
 }
