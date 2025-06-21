@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using UnityEditor;
-using UnityEngine;
 
 namespace Silksprite.PSCore.Access
 {
@@ -18,7 +17,7 @@ namespace Silksprite.PSCore.Access
             _serializedObject = new SerializedObject(playerLocalObjectReferenceList);
         }
 
-        public void SetEntries(IEnumerable<PlayerLocalObjectReferenceListEntry> entries)
+        public void SetEntries(IEnumerable<PlayerLocalObjectReferenceListAccessEntry> entries)
         {
             var e = entries.ToArray();
             var referencesProperty = _serializedObject.FindProperty("playerLocalObjectReferences");
@@ -39,11 +38,5 @@ namespace Silksprite.PSCore.Access
             _serializedObject?.Dispose();
         }
     }
-        
-    [Serializable]
-    public sealed class PlayerLocalObjectReferenceListEntry
-    {
-        public string id;
-        public GameObject targetObject;
-    }
+
 }

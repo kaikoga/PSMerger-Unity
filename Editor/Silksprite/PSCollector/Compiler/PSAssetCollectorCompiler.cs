@@ -3,7 +3,6 @@ using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSCore.Access;
 using UnityEngine;
-using PlayerLocalObjectReferenceListEntry = Silksprite.PSCore.Access.PlayerLocalObjectReferenceListEntry;
 
 namespace Silksprite.PSCollector.Compiler
 {
@@ -77,7 +76,7 @@ namespace Silksprite.PSCollector.Compiler
             }
             using var plorlAccess = new PlayerLocalObjectReferenceListAccess(GetOrAddComponent<PlayerLocalObjectReferenceList>(collector));
             var entries = mergedPlors
-                .Select(plor => new PlayerLocalObjectReferenceListEntry
+                .Select(plor => new PlayerLocalObjectReferenceListAccessEntry
                 {
                     id = plor.id,
                     targetObject = plor.targetObject

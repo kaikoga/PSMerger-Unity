@@ -7,6 +7,7 @@
         "ClusterVR.CreatorKit.Item",
         "ClusterVR.CreatorKit.Item.Implements",
         "Silksprite.PSCollector",
+        "Silksprite.PSCore",
         "Silksprite.PSCore.Editor"
     ],
     "includePlatforms": [

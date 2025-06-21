@@ -1,15 +1,11 @@
 {
-    "name": "Silksprite.PSCore.Editor",
+    "name": "Silksprite.PSCore",
     "rootNamespace": "",
     "references": [
-        "ClusterVR.CreatorKit.Editor.Custom",
         "ClusterVR.CreatorKit.Item",
-        "ClusterVR.CreatorKit.Item.Implements",
-        "Silksprite.PSCore"
+        "ClusterVR.CreatorKit.Item.Implements"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

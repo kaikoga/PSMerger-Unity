@@ -38,11 +38,5 @@ namespace Silksprite.PSCore.Access
             _serializedObject?.Dispose();
         }
     }
-        
-    [Serializable]
-    public sealed class WorldItemTemplateListAccessEntry
-    {
-        public string id;
-        public Item worldItemTemplate;
-    }
+
 }
