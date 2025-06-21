@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Silksprite.PSCollector
 {
-    [AddComponentMenu("Silksprite/PSCollector/MergedHumanoidAnimationList")]
+    [AddComponentMenu("Silksprite/PSCollector/Merged Humanoid Animation List")]
     public class MergedHumanoidAnimationList : MonoBehaviour, IMergedAccessEntryList<HumanoidAnimationListAccessEntry>
     {
         [SerializeField] HumanoidAnimationListAccessEntry[] humanoidAnimations;

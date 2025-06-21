@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Silksprite.PSCollector
 {
-    [AddComponentMenu("Silksprite/PSCollector/MergedItemAudioSetList")]
+    [AddComponentMenu("Silksprite/PSCollector/Merged Item Audio Set List")]
     public class MergedItemAudioSetList : MonoBehaviour, IMergedAccessEntryList<ItemAudioSetListAccessEntry>
     {
         [SerializeField] ItemAudioSetListAccessEntry[] itemAudioSets;

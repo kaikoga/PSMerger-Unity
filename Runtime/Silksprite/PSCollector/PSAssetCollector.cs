@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Silksprite.PSCollector
 {
-    [AddComponentMenu("Silksprite/PSCollector/PSAssetCollector")]
+    [AddComponentMenu("Silksprite/PSCollector/PS Asset Collector")]
     [RequireComponent(typeof(ScriptableItem))]
     public class PSAssetCollector : MonoBehaviour
     {

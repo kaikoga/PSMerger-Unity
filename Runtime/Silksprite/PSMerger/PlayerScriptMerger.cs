@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Silksprite.PSMerger
 {
-    [AddComponentMenu("Silksprite/PSMerger/PlayerScriptMerger")]
+    [AddComponentMenu("Silksprite/PSMerger/PlayerScript Merger")]
     [RequireComponent(typeof(PlayerScript))]
     public class PlayerScriptMerger : ClusterScriptComponentMergerBase
     {

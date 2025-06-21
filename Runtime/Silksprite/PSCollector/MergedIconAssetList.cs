@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Silksprite.PSCollector
 {
-    [AddComponentMenu("Silksprite/PSCollector/MergedIconAssetList")]
+    [AddComponentMenu("Silksprite/PSCollector/Merged Icon Asset List")]
     public class MergedIconAssetList : MonoBehaviour, IMergedAccessEntryList<IconAssetListAccessEntry>
     {
         [SerializeField] IconAssetListAccessEntry[] iconAssets;
