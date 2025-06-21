@@ -1,15 +1,13 @@
 {
-    "name": "Silksprite.PSBatchCompiler.Editor",
+    "name": "Silksprite.PSCollector.Editor",
     "rootNamespace": "",
     "references": [
-        "Silksprite.PSMerger",
-        "Silksprite.PSMerger.Editor.SourcemapAccess",
         "ClusterVR.CreatorKit.Editor.Custom",
         "ClusterVR.CreatorKit.Editor.EditorEvents",
         "ClusterVR.CreatorKit.Item",
         "ClusterVR.CreatorKit.Item.Implements",
-        "Silksprite.PSMerger.Editor",
-        "Silksprite.PSCollector.Editor"
+        "Silksprite.PSCollector",
+        "Silksprite.PSCore.Editor"
     ],
     "includePlatforms": [
         "Editor"

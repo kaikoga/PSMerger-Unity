@@ -1,4 +1,5 @@
 using ClusterVR.CreatorKit.Editor.EditorEvents;
+using Silksprite.PSCollector.Compiler;
 using Silksprite.PSMerger.Compiler;
 using UnityEditor;
 using UnityEngine;
@@ -37,6 +38,7 @@ namespace Silksprite.PSBatchCompiler
         {
             Debug.Log($"[{PSMerger}]更新開始");
             PSMergerBatchCompiler.CompileAll();
+            new PSCollectorBatchCompiler().CompileAll();
             Debug.Log($"[{PSMerger}]更新終了");
         }
     }
