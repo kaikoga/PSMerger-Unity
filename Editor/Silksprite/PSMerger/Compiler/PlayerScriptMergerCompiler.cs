@@ -1,5 +1,5 @@
 using ClusterVR.CreatorKit.Item.Implements;
-using Silksprite.PSMerger.Access;
+using Silksprite.PSCore.Access;
 using Silksprite.PSMerger.Compiler.Internal;
 using UnityEditor;
 

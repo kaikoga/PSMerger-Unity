@@ -3,13 +3,13 @@ using System.Diagnostics.CodeAnalysis;
 using ClusterVR.CreatorKit.Item.Implements;
 using UnityEditor;
 
-namespace Silksprite.PSMerger.Access
+namespace Silksprite.PSCore.Access
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    class ScriptableItemAccess : IDisposable
+    public class PlayerScriptAccess : IDisposable
     {
         readonly SerializedObject _serializedObject;
-            
+
         public bool hasModifiedProperties => _serializedObject.hasModifiedProperties;
 
         public JavaScriptAsset sourceCodeAsset
@@ -30,7 +30,7 @@ namespace Silksprite.PSMerger.Access
             }
         }
 
-        public ScriptableItemAccess(ScriptableItem scriptableItem) => _serializedObject = new SerializedObject(scriptableItem);
+        public PlayerScriptAccess(PlayerScript playerScript) => _serializedObject = new SerializedObject(playerScript);
 
         void IDisposable.Dispose() => _serializedObject.ApplyModifiedProperties();
     }

@@ -1,10 +1,7 @@
 {
-    "name": "Silksprite.PSMerger.Editor",
+    "name": "Silksprite.PSCore.Editor",
     "rootNamespace": "",
     "references": [
-        "Silksprite.PSCore.Editor",
-        "Silksprite.PSMerger",
-        "Silksprite.PSMerger.Editor.SourcemapAccess",
         "ClusterVR.CreatorKit.Editor.Custom",
         "ClusterVR.CreatorKit.Editor.EditorEvents",
         "ClusterVR.CreatorKit.Item",

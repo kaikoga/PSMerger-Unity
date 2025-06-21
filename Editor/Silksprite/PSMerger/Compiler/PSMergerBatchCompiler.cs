@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using ClusterVR.CreatorKit.Editor.EditorEvents;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,37 +10,11 @@ namespace Silksprite.PSMerger.Compiler
     {
         const string PSMerger = "PSMerger";
 
-        public static class EventHandler
+        public static void CompileAll()
         {
-            [InitializeOnLoadMethod]
-            public static void Initialize()
-            {
-                EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-                WorldUploadEvents.RegisterOnWorldUploadStart(OnWorldUploadStarted);
-            }
-
-            static void OnPlayModeStateChanged(PlayModeStateChange playMode)
-            {
-                if (playMode == PlayModeStateChange.ExitingEditMode)
-                {
-                    CompileAll();
-                }
-            }
-
-            static bool OnWorldUploadStarted(WorldUploadStartEventData data)
-            {
-                CompileAll();
-                return true;
-            }
-        }
-
-        static void CompileAll()
-        {
-            Debug.Log($"[{PSMerger}]更新開始");
             CombineAllAssets();
             CombineAllOfScene();
             CombineAllOfProject();
-            Debug.Log($"[{PSMerger}]更新終了");
         }
 
         static void CombineAllOfScene()

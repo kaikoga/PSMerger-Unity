@@ -4,12 +4,11 @@ using System.IO;
 using System.Text;
 using ClusterVR.CreatorKit.Item.Implements;
 using UnityEditor;
-using UnityEngine;
 
-namespace Silksprite.PSMerger.Access
+namespace Silksprite.PSCore.Access
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    class JavaScriptAssetAccess : IDisposable
+    public class JavaScriptAssetAccess : IDisposable
     {
         readonly SerializedObject _serializedObject;
         string _sourcemap;
