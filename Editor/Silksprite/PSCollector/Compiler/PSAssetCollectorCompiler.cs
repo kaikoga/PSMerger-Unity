@@ -21,6 +21,7 @@ namespace Silksprite.PSCollector.Compiler
         {
             var changed = false;
             changed |= CollectItemAudioSetLists(collector);
+            changed |= CollectHumanoidAnimationLists(collector);
             changed |= CollectWorldItemReferenceLists(collector);
             changed |= CollectWorldItemTemplateLists(collector);
             changed |= CollectPlayerLocalObjectReferenceLists(collector);
@@ -34,6 +35,17 @@ namespace Silksprite.PSCollector.Compiler
                 return false;
             }
             using var access = new ItemAudioSetListAccess(GetOrAddComponent<ItemAudioSetList>(collector));
+            access.SetEntries(entries);
+            return true;
+        }
+
+        bool CollectHumanoidAnimationLists(PSAssetCollector collector)
+        {
+            if (!CollectEntries<HumanoidAnimationListAccessEntry>(out var entries))
+            {
+                return false;
+            }
+            using var access = new HumanoidAnimationListAccess(GetOrAddComponent<HumanoidAnimationList>(collector));
             access.SetEntries(entries);
             return true;
         }
