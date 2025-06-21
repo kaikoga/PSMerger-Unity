@@ -1,12 +1,10 @@
-using System.Linq;
 using ClusterVR.CreatorKit.Editor.Custom;
-using Silksprite.PSCollector;
 using Silksprite.PSCollector.Compiler;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Silksprite.PSMerger
+namespace Silksprite.PSCollector
 {
     [CustomEditor(typeof(PSAssetCollector)), CanEditMultipleObjects]
     public class PSAssetCollectorEditor : VisualElementEditor

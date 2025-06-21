@@ -3,6 +3,7 @@ using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSCore.Access;
 using UnityEngine;
+using PlayerLocalObjectReferenceListEntry = Silksprite.PSCore.Access.PlayerLocalObjectReferenceListEntry;
 
 namespace Silksprite.PSCollector.Compiler
 {
@@ -34,6 +35,23 @@ namespace Silksprite.PSCollector.Compiler
                         item = wir.item
                     });
                 wirlAccess.SetEntries(entries);
+            }
+            var mergedPlorls = CollectSources<MergedPlayerLocalObjectReferenceList>().ToArray();
+            if (mergedPlorls.SelectMany(mergedPlorl => mergedPlorl.PlayerLocalObjectReferences).Any())
+            {
+                if (!collector.gameObject.TryGetComponent<PlayerLocalObjectReferenceList>(out var plorl))
+                {
+                    plorl = collector.gameObject.AddComponent<PlayerLocalObjectReferenceList>();
+                }
+                using var plorlAccess = new PlayerLocalObjectReferenceListAccess(plorl);
+                var entries = mergedPlorls
+                    .SelectMany(mergedPlorl => mergedPlorl.PlayerLocalObjectReferences)
+                    .Select(plor => new PlayerLocalObjectReferenceListEntry
+                    {
+                        id = plor.id,
+                        targetObject = plor.targetObject
+                    });
+                plorlAccess.SetEntries(entries);
             }
             return true;
         }
