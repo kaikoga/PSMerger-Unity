@@ -1,42 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
-using UnityEditor;
+using Silksprite.PSCore.Access.Base;
 
 namespace Silksprite.PSCore.Access
 {
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class WorldItemReferenceListAccess : IDisposable
+    public class WorldItemReferenceListAccess : ObjectAccessBase<WorldItemReferenceList>
     {
-        readonly SerializedObject _serializedObject;
-        
-        public WorldItemReferenceListAccess(WorldItemReferenceList worldItemReferenceList)
+        public WorldItemReferenceListAccess(WorldItemReferenceList worldItemReferenceList) : base(worldItemReferenceList)
         {
-            _serializedObject = new SerializedObject(worldItemReferenceList);
         }
 
-        public void SetEntries(IEnumerable<WorldItemReferenceListAccessEntry> entries)
+        public void SetEntries(WorldItemReferenceListAccessEntry[] entries)
         {
-            var e = entries.ToArray();
-            var referencesProperty = _serializedObject.FindProperty("worldItemReferences");
-            referencesProperty.ClearArray();
-            referencesProperty.arraySize = e.Length;
-            for (var i = 0; i < e.Length; i++)
+            AccessEntryListAccess.SetEntries(serializedObject.FindProperty("worldItemReferences"), entries, (entryProperty, entry) =>
             {
-                var entry = e[i];
-                var entryProperty = referencesProperty.GetArrayElementAtIndex(i);
                 entryProperty.FindPropertyRelative("id").stringValue = entry.id;
                 entryProperty.FindPropertyRelative("item").objectReferenceValue = entry.item;
-            }
-        }
-
-        public void Dispose()
-        {
-            _serializedObject.ApplyModifiedProperties();
-            _serializedObject?.Dispose();
+            });
         }
     }
-
 }

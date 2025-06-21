@@ -1,25 +1,22 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using ClusterVR.CreatorKit.Item.Implements;
+using Silksprite.PSCore.Access.Base;
 using UnityEditor;
 
 namespace Silksprite.PSCore.Access
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class JavaScriptAssetAccess : IDisposable
+    public class JavaScriptAssetAccess : ObjectAccessBase<JavaScriptAsset>
     {
-        readonly SerializedObject _serializedObject;
         string _sourcemap;
-
-        public bool hasModifiedProperties => _serializedObject.hasModifiedProperties || _sourcemap != null;
 
         public string text
         {
             set
             {
-                using var prop = _serializedObject.FindProperty(nameof(JavaScriptAsset.text));
+                using var prop = serializedObject.FindProperty(nameof(JavaScriptAsset.text));
                 if (prop.stringValue != value) prop.stringValue = value;
             }
         }
@@ -29,15 +26,17 @@ namespace Silksprite.PSCore.Access
             set => _sourcemap = value;
         }
 
-        public JavaScriptAssetAccess(JavaScriptAsset javaScriptAsset) => _serializedObject = new SerializedObject(javaScriptAsset);
+        public JavaScriptAssetAccess(JavaScriptAsset javaScriptAsset) : base(javaScriptAsset)
+        {
+        }
 
-        void IDisposable.Dispose()
+        public override void Dispose()
         {
             // if (!_serializedObject.hasModifiedProperties) return;
-            var assetPath = AssetDatabase.GetAssetPath(_serializedObject.targetObject);
+            var assetPath = AssetDatabase.GetAssetPath(serializedObject.targetObject);
             if (string.IsNullOrEmpty(assetPath)) return;
 
-            using var prop = _serializedObject.FindProperty(nameof(JavaScriptAsset.text));
+            using var prop = serializedObject.FindProperty(nameof(JavaScriptAsset.text));
             File.WriteAllBytes(assetPath, Encoding.UTF8.GetBytes(prop.stringValue));
             AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceSynchronousImport);
 

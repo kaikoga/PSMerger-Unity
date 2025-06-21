@@ -1,42 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
-using UnityEditor;
+using Silksprite.PSCore.Access.Base;
 
 namespace Silksprite.PSCore.Access
 {
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class PlayerLocalObjectReferenceListAccess : IDisposable
+    public class PlayerLocalObjectReferenceListAccess : ObjectAccessBase<PlayerLocalObjectReferenceList>
     {
-        readonly SerializedObject _serializedObject;
-        
-        public PlayerLocalObjectReferenceListAccess(PlayerLocalObjectReferenceList playerLocalObjectReferenceList)
+        public PlayerLocalObjectReferenceListAccess(PlayerLocalObjectReferenceList playerLocalObjectReferenceList) : base(playerLocalObjectReferenceList)
         {
-            _serializedObject = new SerializedObject(playerLocalObjectReferenceList);
         }
 
-        public void SetEntries(IEnumerable<PlayerLocalObjectReferenceListAccessEntry> entries)
+        public void SetEntries(PlayerLocalObjectReferenceListAccessEntry[] entries)
         {
-            var e = entries.ToArray();
-            var referencesProperty = _serializedObject.FindProperty("playerLocalObjectReferences");
-            referencesProperty.ClearArray();
-            referencesProperty.arraySize = e.Length;
-            for (var i = 0; i < e.Length; i++)
+            AccessEntryListAccess.SetEntries(serializedObject.FindProperty("playerLocalObjectReferences"), entries, (entryProperty, entry) =>
             {
-                var entry = e[i];
-                var entryProperty = referencesProperty.GetArrayElementAtIndex(i);
                 entryProperty.FindPropertyRelative("id").stringValue = entry.id;
                 entryProperty.FindPropertyRelative("targetObject").objectReferenceValue = entry.targetObject;
-            }
-        }
-
-        public void Dispose()
-        {
-            _serializedObject.ApplyModifiedProperties();
-            _serializedObject?.Dispose();
+            });
         }
     }
-
 }

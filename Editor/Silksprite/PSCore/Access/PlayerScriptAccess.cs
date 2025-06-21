@@ -1,22 +1,17 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using ClusterVR.CreatorKit.Item.Implements;
-using UnityEditor;
+using Silksprite.PSCore.Access.Base;
 
 namespace Silksprite.PSCore.Access
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class PlayerScriptAccess : IDisposable
+    public class PlayerScriptAccess : ObjectAccessBase<PlayerScript>
     {
-        readonly SerializedObject _serializedObject;
-
-        public bool hasModifiedProperties => _serializedObject.hasModifiedProperties;
-
         public JavaScriptAsset sourceCodeAsset
         {
             set
             {
-                using var prop = _serializedObject.FindProperty("sourceCodeAsset");
+                using var prop = serializedObject.FindProperty("sourceCodeAsset");
                 if (prop.objectReferenceValue != value) prop.objectReferenceValue = value;
             }
         }
@@ -25,13 +20,13 @@ namespace Silksprite.PSCore.Access
         {
             set
             {
-                using var prop = _serializedObject.FindProperty("sourceCode");
+                using var prop = serializedObject.FindProperty("sourceCode");
                 if (prop.stringValue != value) prop.stringValue = value;
             }
         }
 
-        public PlayerScriptAccess(PlayerScript playerScript) => _serializedObject = new SerializedObject(playerScript);
-
-        void IDisposable.Dispose() => _serializedObject.ApplyModifiedProperties();
+        public PlayerScriptAccess(PlayerScript playerScript) : base(playerScript)
+        {
+        }
     }
 }
