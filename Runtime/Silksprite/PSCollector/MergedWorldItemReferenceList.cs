@@ -1,20 +1,12 @@
-using System;
-using ClusterVR.CreatorKit.Item.Implements;
+using Silksprite.PSCore.Access;
 using UnityEngine;
 
 namespace Silksprite.PSCollector
 {
     public class MergedWorldItemReferenceList : MonoBehaviour
     {
-        [SerializeField] MergedWorldItemReferenceListEntry[] worldItemReferences;
+        [SerializeField] WorldItemReferenceListAccessEntry[] worldItemReferences;
         
-        public MergedWorldItemReferenceListEntry[] WorldItemReferences => worldItemReferences;
-        
-        [Serializable]
-        public class MergedWorldItemReferenceListEntry
-        {
-            public string id;
-            public Item item;
-        }
+        public WorldItemReferenceListAccessEntry[] WorldItemReferences => worldItemReferences;
     }
 }

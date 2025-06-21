@@ -1,19 +1,12 @@
-using System;
+using Silksprite.PSCore.Access;
 using UnityEngine;
 
 namespace Silksprite.PSCollector
 {
     public class MergedPlayerLocalObjectReferenceList : MonoBehaviour
     {
-        [SerializeField] MergedPlayerLocalObjectReferenceListEntry[] playerLocalObjectReferences;
+        [SerializeField] PlayerLocalObjectReferenceListAccessEntry[] playerLocalObjectReferences;
         
-        public MergedPlayerLocalObjectReferenceListEntry[] PlayerLocalObjectReferences => playerLocalObjectReferences;
-        
-        [Serializable]
-        public class MergedPlayerLocalObjectReferenceListEntry
-        {
-            public string id;
-            public GameObject targetObject;
-        }
+        public PlayerLocalObjectReferenceListAccessEntry[] PlayerLocalObjectReferences => playerLocalObjectReferences;
     }
 }

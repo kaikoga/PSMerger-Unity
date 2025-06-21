@@ -2,7 +2,8 @@
     "name": "Silksprite.PSCollector",
     "rootNamespace": "",
     "references": [
-        "ClusterVR.CreatorKit.Item.Implements"
+        "ClusterVR.CreatorKit.Item.Implements",
+        "Silksprite.PSCore"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -27,61 +27,43 @@ namespace Silksprite.PSCollector.Compiler
 
         bool CollectWorldItemReferenceLists(PSAssetCollector collector)
         {
-            var mergedWirs = CollectSources<MergedWorldItemReferenceList>()
-                .SelectMany(mergedWirl => mergedWirl.WorldItemReferences)
+            var entries = CollectSources<MergedWorldItemReferenceList>()
+                .SelectMany(entry => entry.WorldItemReferences)
                 .ToArray();
-            if (!mergedWirs.Any())
+            if (!entries.Any())
             {
                 return false;
             }
-            using var wirlAccess = new WorldItemReferenceListAccess(GetOrAddComponent<WorldItemReferenceList>(collector));
-            var entries = mergedWirs
-                .Select(wir => new WorldItemReferenceListAccessEntry
-                {
-                    id = wir.id,
-                    item = wir.item
-                });
-            wirlAccess.SetEntries(entries);
+            using var access = new WorldItemReferenceListAccess(GetOrAddComponent<WorldItemReferenceList>(collector));
+            access.SetEntries(entries);
             return true;
         }
 
         bool CollectWorldItemTemplateLists(PSAssetCollector collector)
         {
-            var mergedWits = CollectSources<MergedWorldItemTemplateList>()
-                .SelectMany(mergedWit => mergedWit.WorldItemTemplates)
+            var entries = CollectSources<MergedWorldItemTemplateList>()
+                .SelectMany(entry => entry.WorldItemTemplates)
                 .ToArray();
-            if (!mergedWits.Any())
+            if (!entries.Any())
             {
                 return false;
             }
-            using var witlAccess = new WorldItemTemplateListAccess(GetOrAddComponent<WorldItemTemplateList>(collector));
-            var entries = mergedWits
-                .Select(wit => new WorldItemTemplateListAccessEntry
-                {
-                    id = wit.id,
-                    worldItemTemplate = wit.worldItemTemplate
-                });
-            witlAccess.SetEntries(entries);
+            using var access = new WorldItemTemplateListAccess(GetOrAddComponent<WorldItemTemplateList>(collector));
+            access.SetEntries(entries);
             return true;
         }
 
         bool CollectPlayerLocalObjectReferenceLists(PSAssetCollector collector)
         {
-            var mergedPlors = CollectSources<MergedPlayerLocalObjectReferenceList>()
-                .SelectMany(mergedPlorl => mergedPlorl.PlayerLocalObjectReferences)
+            var entries = CollectSources<MergedPlayerLocalObjectReferenceList>()
+                .SelectMany(entry => entry.PlayerLocalObjectReferences)
                 .ToArray();
-            if (!mergedPlors.Any())
+            if (!entries.Any())
             {
                 return false;
             }
-            using var plorlAccess = new PlayerLocalObjectReferenceListAccess(GetOrAddComponent<PlayerLocalObjectReferenceList>(collector));
-            var entries = mergedPlors
-                .Select(plor => new PlayerLocalObjectReferenceListAccessEntry
-                {
-                    id = plor.id,
-                    targetObject = plor.targetObject
-                });
-            plorlAccess.SetEntries(entries);
+            using var access = new PlayerLocalObjectReferenceListAccess(GetOrAddComponent<PlayerLocalObjectReferenceList>(collector));
+            access.SetEntries(entries);
             return true;
         }
 
