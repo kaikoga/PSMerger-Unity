@@ -6,6 +6,7 @@
         "ClusterVR.CreatorKit.Editor.EditorEvents",
         "ClusterVR.CreatorKit.Item",
         "ClusterVR.CreatorKit.Item.Implements",
+        "ClusterVR.CreatorKit.Translation",
         "Silksprite.PSCollector",
         "Silksprite.PSCore",
         "Silksprite.PSCore.Editor"

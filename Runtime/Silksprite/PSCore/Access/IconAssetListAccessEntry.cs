@@ -1,6 +1,5 @@
 using System;
 using ClusterVR.CreatorKit;
-using ClusterVR.CreatorKit.Item.Implements;
 using UnityEngine;
 
 namespace Silksprite.PSCore.Access
