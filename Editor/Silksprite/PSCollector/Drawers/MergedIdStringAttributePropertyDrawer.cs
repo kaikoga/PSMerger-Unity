@@ -30,6 +30,7 @@ namespace Silksprite.PSCore.Drawers
 
             void RenderValidationErrors()
             {
+                idField.style.display = DisplayStyle.None;
                 validationErrorsContainer.Clear();
                 if (property.hasMultipleDifferentValues)
                 {
@@ -57,10 +58,6 @@ namespace Silksprite.PSCore.Drawers
                 {
                     idField.style.display = DisplayStyle.Flex;
                     idField.value = idString;
-                }
-                else
-                {
-                    idField.style.display = DisplayStyle.None;
                 }
             }
 
