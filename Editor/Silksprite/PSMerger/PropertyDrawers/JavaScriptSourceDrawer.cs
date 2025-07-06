@@ -8,6 +8,8 @@ namespace Silksprite.PSMerger.PropertyDrawers
     [CustomPropertyDrawer(typeof(JavaScriptSource))]
     public class JavaScriptSourceDrawer : PropertyDrawer
     {
+        static bool _advanced = false;
+
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
             var scriptLibraries = property.FindPropertyRelative(nameof(JavaScriptSource.scriptLibraries));
@@ -33,15 +35,22 @@ namespace Silksprite.PSMerger.PropertyDrawers
                 text = "Script Context に追加した内容が共存します。",
                 messageType = HelpBoxMessageType.Info
             });
-            container.Add(new PropertyField(detectCallbackSupport)
+            var advanced = new Foldout
+            {
+                text = "上級者向け設定",
+                value = _advanced
+            };
+            advanced.Add(new PropertyField(detectCallbackSupport)
             {
                 name = "PropertyField:" + detectCallbackSupport.propertyPath
             });
-            container.Add(new HelpBox
+            advanced.Add(new HelpBox
             {
-                text = "オンの場合、コールバックのサポートを必要に応じて生成します。\nほとんどの場合オンで問題ありません。",
+                text = "オンの場合、コールバックのサポートを必要に応じて生成します。",
                 messageType = HelpBoxMessageType.Info
             });
+            advanced.RegisterValueChangedCallback(evt => _advanced = evt.newValue);
+            container.Add(advanced);
             return container;
         }
 
