@@ -68,7 +68,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
             var scriptContexts = env.ScriptContexts;
             foreach (var lib in env.ScriptLibraries)
             {
-                output.AppendLine(lib.SourceCode);
+                output.AppendInput(lib);
             }
             if (env.DetectCallbackSupport || scriptContexts.Length > 0)
             {
