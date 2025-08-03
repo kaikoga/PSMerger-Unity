@@ -32,7 +32,7 @@ namespace Silksprite.PSMerger
                 }
                 if (GUILayout.Button("Compile"))
                 {
-                    Compile();
+                    ClusterScriptAssetMergerCompiler.Compile(_merger);
                 }
             }));
             return content;
@@ -45,22 +45,5 @@ namespace Silksprite.PSMerger
             _merger.SetMergedScript(javaScriptAsset);
         }
 
-        void Compile()
-        {
-            switch (_merger.ScriptType)
-            {
-                case ClusterScriptType.ConcatOnly:
-                    ConcatOnlyCompiler.Compile(_merger);
-                    break;
-                case ClusterScriptType.ItemScript:
-                    ItemScriptMergerCompiler.Compile(_merger);
-                    break;
-                case ClusterScriptType.PlayerScript:
-                    PlayerScriptMergerCompiler.Compile(_merger);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(_merger.ScriptType), _merger.ScriptType, null);
-            }
-        }
     }
 }
