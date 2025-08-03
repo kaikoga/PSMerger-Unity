@@ -16,15 +16,16 @@ namespace Silksprite.PSMerger.Compiler.Internal
         public readonly string OutputFileName;
         public readonly string OutputAssetPath;
 
-        JavaScriptCompilerEnvironment(JavaScriptSource source, string fileName, string assetPath, string defaultSourceCode)
+        JavaScriptCompilerEnvironment(IEnumerable<JavaScriptSource> sources, string fileName, string assetPath, string defaultSourceCode)
         {
-            ScriptLibraries = source.scriptLibraries
+            var sourcesArray = sources.ToArray();
+            ScriptLibraries = sourcesArray.SelectMany(source => source.scriptLibraries)
                 .ToJavaScriptInputs(fileName, defaultSourceCode)
                 .ToArray();
-            ScriptContexts = source.scriptContexts
+            ScriptContexts = sourcesArray.SelectMany(source => source.scriptContexts)
                 .Select(context => new JavaScriptCompilerContext(context, fileName, defaultSourceCode))
                 .ToArray();
-            DetectCallbackSupport = source.detectCallbackSupport;
+            DetectCallbackSupport = sourcesArray[0].detectCallbackSupport;
             OutputFileName = fileName;
             OutputAssetPath = assetPath;
         }
@@ -34,7 +35,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
             var inlineJavaScript = component.gameObject.GetComponent<InlineJavaScript>();
             var itemName = component.gameObject.GetComponent<IItem>().ItemName ?? component.gameObject.name;
             return new JavaScriptCompilerEnvironment(
-                component.JavaScriptSource,
+                component.JavaScriptSources(),
                 itemName,
                 "",
                 inlineJavaScript?.SourceCode);
@@ -44,7 +45,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
         {
             var assetPath = AssetDatabase.GetAssetPath(asset.MergedScript);
             return new JavaScriptCompilerEnvironment(
-                asset.JavaScriptSource,
+                asset.JavaScriptSources(),
                 Path.GetFileName(assetPath),
                 assetPath,
                 null);

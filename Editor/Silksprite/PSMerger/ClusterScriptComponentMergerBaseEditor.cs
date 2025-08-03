@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using ClusterVR.CreatorKit.Editor.Custom;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -76,7 +77,7 @@ namespace Silksprite.PSMerger
 
         void UpdateDisplay()
         {
-            _inlineInfoArea.style.display = _mergerBase.JavaScriptSource.HasInlineScriptPlaceholder ? DisplayStyle.Flex : DisplayStyle.None;
+            _inlineInfoArea.style.display = _mergerBase.JavaScriptSources().Any(source => source.HasInlineScriptPlaceholder) ? DisplayStyle.Flex : DisplayStyle.None;
             _createInlineJavaScriptButtonArea.style.display = !_mergerBase.TryGetComponent<InlineJavaScript>(out var _) ? DisplayStyle.Flex : DisplayStyle.None;
         }
     }
