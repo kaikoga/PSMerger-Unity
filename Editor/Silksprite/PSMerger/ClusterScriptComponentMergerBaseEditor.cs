@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static Silksprite.PSMerger.ClusterScriptComponentMergerBase;
 
 namespace Silksprite.PSMerger
 {
@@ -22,7 +23,37 @@ namespace Silksprite.PSMerger
 
         public override VisualElement CreateInspectorGUI()
         {
-            var content = base.CreateInspectorGUI();
+            var container = new VisualElement();
+
+            container.Add(new PropertyField(serializedObject.FindProperty(NameofJavaScriptSource)));
+            container.Add(new PropertyField(serializedObject.FindProperty(NameofOtherSources)));
+
+            var advanced = new Foldout
+            {
+                text = "上級者向け設定",
+            };
+            advanced.Add(new PropertyField(serializedObject.FindProperty(NameofMergedScript)));
+            advanced.Add(new IMGUIContainer(() =>
+            {
+                using (new EditorGUI.DisabledScope(_mergerBase.MergedScript))
+                {
+                    if (GUILayout.Button("Create Merged Script"))
+                    {
+                        CreateMergedScript();
+                    }
+                }
+            }));
+            advanced.Add(new PropertyField(serializedObject.FindProperty(NameofDetectCallbackSupport)));
+            advanced.Add(new HelpBox
+            {
+                text = "オンの場合、コールバックのサポートを必要に応じて生成します。",
+                messageType = HelpBoxMessageType.Info
+            });
+            advanced.Add(new PropertyField(serializedObject.FindProperty(NameofGenerateSourcemap)));
+            container.Add(advanced);
+
+            container.Bind(serializedObject);
+
             _inlineInfoArea = new VisualElement
             {
                 style =
@@ -40,30 +71,23 @@ namespace Silksprite.PSMerger
                 }
             });
             _inlineInfoArea.Add(_createInlineJavaScriptButtonArea);
-            content.Add(_inlineInfoArea);
+            container.Add(_inlineInfoArea);
             
-            content.Add(new IMGUIContainer(() =>
+            container.Add(new IMGUIContainer(() =>
             {
-                using (new EditorGUI.DisabledScope(_mergerBase.MergedScript))
-                {
-                    if (GUILayout.Button("Create Merged Script"))
-                    {
-                        CreateMergedScript();
-                    }
-                }
                 if (GUILayout.Button("Compile"))
                 {
                     Compile(_mergerBase);
                 }
             }));
 
-            content.TrackSerializedObjectValue(serializedObject, _ =>
+            container.TrackSerializedObjectValue(serializedObject, _ =>
             {
                 UpdateDisplay();
             });
             UpdateDisplay();
 
-            return content;
+            return container;
         }
 
         void CreateMergedScript()

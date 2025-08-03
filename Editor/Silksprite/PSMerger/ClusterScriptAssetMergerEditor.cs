@@ -1,10 +1,11 @@
-using System;
 using System.IO;
 using ClusterVR.CreatorKit.Editor.Custom;
 using Silksprite.PSMerger.Compiler;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static Silksprite.PSMerger.ClusterScriptAssetMerger;
 
 namespace Silksprite.PSMerger
 {
@@ -20,8 +21,12 @@ namespace Silksprite.PSMerger
 
         public override VisualElement CreateInspectorGUI()
         {
-            var content = base.CreateInspectorGUI();
-            content.Add(new IMGUIContainer(() =>
+            var container = new VisualElement();
+
+            container.Add(new PropertyField(serializedObject.FindProperty(NameofJavaScriptSource)));
+            container.Add(new PropertyField(serializedObject.FindProperty(NameofOtherSources)));
+            container.Add(new PropertyField(serializedObject.FindProperty(NameofMergedScript)));
+            container.Add(new IMGUIContainer(() =>
             {
                 using (new EditorGUI.DisabledScope(_merger.MergedScript))
                 {
@@ -30,12 +35,31 @@ namespace Silksprite.PSMerger
                         CreateMergedScript();
                     }
                 }
+            }));
+
+            var advanced = new Foldout
+            {
+                text = "上級者向け設定",
+            };
+            advanced.Add(new PropertyField(serializedObject.FindProperty(NameofDetectCallbackSupport)));
+            advanced.Add(new HelpBox
+            {
+                text = "オンの場合、コールバックのサポートを必要に応じて生成します。",
+                messageType = HelpBoxMessageType.Info
+            });
+            advanced.Add(new PropertyField(serializedObject.FindProperty(NameofGenerateSourcemap)));
+            container.Add(advanced);
+
+            container.Bind(serializedObject);
+
+            container.Add(new IMGUIContainer(() =>
+            {
                 if (GUILayout.Button("Compile"))
                 {
                     ClusterScriptAssetMergerCompiler.Compile(_merger);
                 }
             }));
-            return content;
+            return container;
         }
 
         void CreateMergedScript()

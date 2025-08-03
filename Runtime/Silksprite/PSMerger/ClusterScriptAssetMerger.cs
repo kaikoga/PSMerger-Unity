@@ -6,6 +6,12 @@ namespace Silksprite.PSMerger
 {
     public class ClusterScriptAssetMerger : ScriptableObject
     {
+        public const string NameofJavaScriptSource = nameof(javaScriptSource);
+        public const string NameofOtherSources = nameof(otherSources);
+        public const string NameofMergedScript = nameof(mergedScript);
+        public const string NameofDetectCallbackSupport = nameof(detectCallbackSupport);
+        public const string NameofGenerateSourcemap = nameof(generateSourcemap);
+
         [SerializeField] ClusterScriptType scriptType = ClusterScriptType.PlayerScript;
         [SerializeField] JavaScriptSource javaScriptSource;
         [SerializeField] ScriptMergerSource[] otherSources = { };
