@@ -1,3 +1,4 @@
+using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSCore.Access;
 using Silksprite.PSMerger.Compiler.Internal;
@@ -13,7 +14,7 @@ namespace Silksprite.PSMerger.Compiler
             var changed = false;
             using (var scriptableItemAccess = new ScriptableItemAccess(itemScriptMerger.GetComponent<ScriptableItem>()))
             {
-                var env = JavaScriptCompilerEnvironment.Create(itemScriptMerger);
+                var env = JavaScriptCompilerEnvironment.Create(itemScriptMerger, Enumerable.Empty<JavaScriptSource>());
                 var output = BuildItemScript(env);
                 if (itemScriptMerger.MergedScript)
                 {

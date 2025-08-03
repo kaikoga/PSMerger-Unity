@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSCore.Access;
 using Silksprite.PSMerger.Compiler.Internal;
@@ -14,6 +16,14 @@ namespace Silksprite.PSMerger.Compiler
 
         static readonly MergedJavaScriptGenerator Gen = MergedJavaScriptGenerator.ForPlayerScript();
 
+        static IEnumerable<JavaScriptSource> CollectMergedSources()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            var rootObjects = scene.GetRootGameObjects();
+            return rootObjects.SelectMany(o => o.GetComponentsInChildren<MergedPlayerScriptSource>(true))
+                .SelectMany(mergedSource => mergedSource.JavaScriptSources());
+        }
+
         public static bool Compile(PlayerScriptMerger playerScriptMerger)
         {
             var changed = false;
@@ -26,7 +36,7 @@ namespace Silksprite.PSMerger.Compiler
 
             using (var playerScriptAccess = new PlayerScriptAccess(playerScriptMerger.GetComponent<PlayerScript>()))
             {
-                var env = JavaScriptCompilerEnvironment.Create(playerScriptMerger);
+                var env = JavaScriptCompilerEnvironment.Create(playerScriptMerger, CollectMergedSources());
                 var output = BuildPlayerScript(env);
                 if (playerScriptMerger.MergedScript)
                 {
