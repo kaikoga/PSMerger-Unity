@@ -6,6 +6,10 @@ namespace Silksprite.PSMerger.Compiler
     {
         public static void Compile(ClusterScriptAssetMerger merger)
         {
+            if (merger.MergedScript == null)
+            {
+                return;                
+            }
             switch (merger.ScriptType)
             {
                 case ClusterScriptType.ConcatOnly:
