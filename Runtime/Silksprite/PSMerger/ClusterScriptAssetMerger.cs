@@ -10,10 +10,12 @@ namespace Silksprite.PSMerger
         [SerializeField] JavaScriptSource javaScriptSource;
         [SerializeField] ScriptMergerSource[] otherSources = { };
         [SerializeField] JavaScriptAsset mergedScript;
+        [SerializeField] bool detectCallbackSupport = true;
         [SerializeField] bool generateSourcemap;
         
         public ClusterScriptType ScriptType => scriptType;
         public JavaScriptAsset MergedScript => mergedScript;
+        public bool DetectCallbackSupport => detectCallbackSupport;
         public bool GenerateSourcemap => generateSourcemap;
 
         public IEnumerable<JavaScriptSource> JavaScriptSources()

@@ -16,7 +16,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
         public readonly string OutputFileName;
         public readonly string OutputAssetPath;
 
-        JavaScriptCompilerEnvironment(IEnumerable<JavaScriptSource> sources, string fileName, string assetPath, string defaultSourceCode)
+        JavaScriptCompilerEnvironment(IEnumerable<JavaScriptSource> sources, string fileName, string assetPath, bool detectCallbackSupport, string defaultSourceCode)
         {
             var sourcesArray = sources.ToArray();
             ScriptLibraries = sourcesArray.SelectMany(source => source.scriptLibraries)
@@ -25,7 +25,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
             ScriptContexts = sourcesArray.SelectMany(source => source.scriptContexts)
                 .Select(context => new JavaScriptCompilerContext(context, fileName, defaultSourceCode))
                 .ToArray();
-            DetectCallbackSupport = sourcesArray[0].detectCallbackSupport;
+            DetectCallbackSupport = detectCallbackSupport;
             OutputFileName = fileName;
             OutputAssetPath = assetPath;
         }
@@ -38,6 +38,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
                 component.JavaScriptSources(),
                 itemName,
                 "",
+                component.DetectCallbackSupport,
                 inlineJavaScript?.SourceCode);
         }
 
@@ -48,6 +49,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
                 asset.JavaScriptSources(),
                 Path.GetFileName(assetPath),
                 assetPath,
+                asset.DetectCallbackSupport,
                 null);
         }
 
