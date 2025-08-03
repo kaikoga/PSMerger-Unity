@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using Editor.Silksprite.PSCore.Extensions;
 using SourcemapToolkit.SourcemapParser;
 
 namespace Silksprite.PSMerger.SourcemapAccess
@@ -38,7 +39,7 @@ namespace Silksprite.PSMerger.SourcemapAccess
                     File = sourceFileName,
                     Sources = new() { sourceFileName },
                     Names = new(),
-                    ParsedMappings = sourceCode.Split("\n").Select((_, index) => new MappingEntry
+                    ParsedMappings = sourceCode.Lines().Select((_, index) => new MappingEntry
                     {
                         GeneratedSourcePosition = new SourcePosition
                         {

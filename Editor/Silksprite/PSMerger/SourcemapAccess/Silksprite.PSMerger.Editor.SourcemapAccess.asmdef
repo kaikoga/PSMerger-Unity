@@ -1,7 +1,9 @@
 {
     "name": "Silksprite.PSMerger.Editor.SourcemapAccess",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "Silksprite.PSCore.Editor"
+    ],
     "includePlatforms": [
         "Editor"
     ],

@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+using Editor.Silksprite.PSCore.Extensions;
 using Silksprite.PSMerger.SourcemapAccess;
 
 namespace Silksprite.PSMerger.Compiler.Internal
@@ -22,8 +23,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
 
         public void AppendLines(string lines)
         {
-            var stringReader = new StringReader(lines);
-            while (stringReader.ReadLine() is { } line)
+            foreach (var line in lines.Lines())
             {
                 AppendLine(line);
             }
@@ -31,8 +31,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
 
         public void AppendInput(JavaScriptInput input)
         {
-            var stringReader = new StringReader(input.SourceCode);
-            while (stringReader.ReadLine() is { } line)
+            foreach (var line in input.SourceCode.Lines())
             {
                 _sourceCode.AppendLine(line);
             }
