@@ -1,3 +1,4 @@
+using System.IO;
 using ClusterVR.CreatorKit.Editor.Custom;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -42,6 +43,13 @@ namespace Silksprite.PSMerger
             
             content.Add(new IMGUIContainer(() =>
             {
+                using (new EditorGUI.DisabledScope(_mergerBase.MergedScript))
+                {
+                    if (GUILayout.Button("Create Merged Script"))
+                    {
+                        CreateMergedScript();
+                    }
+                }
                 if (GUILayout.Button("Compile"))
                 {
                     Compile(_mergerBase);
@@ -55,6 +63,13 @@ namespace Silksprite.PSMerger
             UpdateDisplay();
 
             return content;
+        }
+
+        void CreateMergedScript()
+        {
+            var assetPath = $"{Path.GetDirectoryName(AssetDatabase.GetAssetPath(_mergerBase))}/MergedClusterScript.js";
+            var javaScriptAsset = PSMergerUtil.CreateJavaScriptAsset(assetPath);
+            _mergerBase.SetMergedScript(javaScriptAsset);
         }
 
         protected abstract void Compile(T mergerBase);

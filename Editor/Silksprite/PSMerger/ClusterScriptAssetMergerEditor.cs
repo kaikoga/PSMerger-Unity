@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using ClusterVR.CreatorKit.Editor.Custom;
-using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSMerger.Compiler;
 using UnityEditor;
 using UnityEngine;

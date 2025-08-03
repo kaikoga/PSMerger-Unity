@@ -26,10 +26,24 @@ namespace Silksprite.PSMerger.Compiler
 
             using (var playerScriptAccess = new PlayerScriptAccess(playerScriptMerger.GetComponent<PlayerScript>()))
             {
-                playerScriptAccess.sourceCodeAsset = null;
                 var env = JavaScriptCompilerEnvironment.Create(playerScriptMerger);
                 var output = BuildPlayerScript(env);
-                playerScriptAccess.sourceCode = output.SourceCode();
+                if (playerScriptMerger.MergedScript)
+                {
+                    playerScriptAccess.sourceCodeAsset = playerScriptMerger.MergedScript;
+                    using var javaScriptAssetAccess = new JavaScriptAssetAccess(playerScriptMerger.MergedScript);
+                    javaScriptAssetAccess.text = output.SourceCode();
+                    if (playerScriptMerger.GenerateSourcemap)
+                    {
+                        javaScriptAssetAccess.sourcemap = output.Sourcemap();
+                    } 
+                    changed |= javaScriptAssetAccess.hasModifiedProperties;
+                }
+                else
+                {
+                    playerScriptAccess.sourceCodeAsset = null;
+                    playerScriptAccess.sourceCode = output.SourceCode();
+                }
                 changed |= playerScriptAccess.hasModifiedProperties;
             }
 

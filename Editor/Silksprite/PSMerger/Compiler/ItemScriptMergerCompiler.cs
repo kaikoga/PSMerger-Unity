@@ -13,10 +13,24 @@ namespace Silksprite.PSMerger.Compiler
             var changed = false;
             using (var scriptableItemAccess = new ScriptableItemAccess(itemScriptMerger.GetComponent<ScriptableItem>()))
             {
-                scriptableItemAccess.sourceCodeAsset = null;
                 var env = JavaScriptCompilerEnvironment.Create(itemScriptMerger);
                 var output = BuildItemScript(env);
-                scriptableItemAccess.sourceCode = output.SourceCode();
+                if (itemScriptMerger.MergedScript)
+                {
+                    scriptableItemAccess.sourceCodeAsset = itemScriptMerger.MergedScript;
+                    using var javaScriptAssetAccess = new JavaScriptAssetAccess(itemScriptMerger.MergedScript);
+                    javaScriptAssetAccess.text = output.SourceCode();
+                    if (itemScriptMerger.GenerateSourcemap)
+                    {
+                        javaScriptAssetAccess.sourcemap = output.Sourcemap();
+                    } 
+                    changed |= javaScriptAssetAccess.hasModifiedProperties;
+                }
+                else
+                {
+                    scriptableItemAccess.sourceCodeAsset = null;
+                    scriptableItemAccess.sourceCode = output.SourceCode();
+                }
                 changed |= scriptableItemAccess.hasModifiedProperties;
             }
             return changed;
