@@ -19,7 +19,7 @@ namespace Silksprite.PSCollector.Compiler
             var rootObjects = scene.GetRootGameObjects();
             foreach (var mergerComponent in rootObjects.SelectMany(o => o.GetComponentsInChildren<PSAssetCollector>(true)))
             {
-                Debug.Log($"[{PSCollector}][Scene][{mergerComponent.GetType().Name}]{mergerComponent.gameObject.name}");
+                Debug.Log($"[{PSCollector}][Scene][{mergerComponent.GetType().Name}]{mergerComponent.gameObject.name}", mergerComponent);
                 CollectSingleComponent(mergerComponent);
             }
         }

@@ -27,8 +27,12 @@ namespace Silksprite.PSMerger.Compiler
             var rootObjects = scene.GetRootGameObjects();
             foreach (var mergerComponent in rootObjects.SelectMany(o => o.GetComponentsInChildren<ClusterScriptComponentMergerBase>(true)))
             {
-                Debug.Log($"[{PSMerger}[Scene][{mergerComponent.GetType().Name}]{mergerComponent.gameObject.name}");
-                CombineSingleComponent(mergerComponent);
+                var skipped = mergerComponent.MergedScript && !_mergedScriptAssets.Add(mergerComponent.MergedScript);
+                Debug.Log($"[{PSMerger}[Scene][{mergerComponent.GetType().Name}]{mergerComponent.gameObject.name}{(skipped ? " Skipped" : "")}", mergerComponent);
+                if (!skipped)
+                {
+                    CombineSingleComponent(mergerComponent);
+                }
             }
         }
 
@@ -48,13 +52,17 @@ namespace Silksprite.PSMerger.Compiler
                     continue;
                 }
 
-                Debug.Log($"[{PSMerger}][Prefab]{path}");
+                Debug.Log($"[{PSMerger}][Prefab]{path}", prefab);
 
                 var changed = false;
                 foreach (var mergerComponent in mergerComponents)
                 {
-                    Debug.Log($"[{PSMerger}][Prefab][{mergerComponent.GetType().Name}]{mergerComponent.gameObject.name}");
-                    changed |= CombineSingleComponent(mergerComponent);
+                    var skipped = mergerComponent.MergedScript && !_mergedScriptAssets.Add(mergerComponent.MergedScript);
+                    Debug.Log($"[{PSMerger}][Prefab][{mergerComponent.GetType().Name}]{mergerComponent.gameObject.name}{(skipped ? " Skipped" : "")}", prefab);
+                    if (!skipped)
+                    {
+                        changed |= CombineSingleComponent(mergerComponent);
+                    }
                 }
 
                 if (changed)
@@ -68,10 +76,6 @@ namespace Silksprite.PSMerger.Compiler
 
         bool CombineSingleComponent(ClusterScriptComponentMergerBase mergerComponent)
         {
-            if (!_mergedScriptAssets.Add(mergerComponent.MergedScript))
-            {
-                return false;
-            }
             return mergerComponent switch
             {
                 PlayerScriptMerger playerScriptMerger => PlayerScriptMergerCompiler.Compile(playerScriptMerger),
@@ -88,13 +92,12 @@ namespace Silksprite.PSMerger.Compiler
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var merger = AssetDatabase.LoadAssetAtPath<ClusterScriptAssetMerger>(path);
-                Debug.Log($"[{PSMerger}][Asset][{merger.GetType().Name}]{merger.name}");
-                if (!_mergedScriptAssets.Add(merger.MergedScript))
+                var skipped = merger.MergedScript && !_mergedScriptAssets.Add(merger.MergedScript);
+                Debug.Log($"[{PSMerger}][Asset][{merger.GetType().Name}]{merger.name}{(skipped ? " Skipped" : "")}", merger);
+                if (!skipped)
                 {
-                    continue;
+                    ClusterScriptAssetMergerCompiler.Compile(merger);
                 }
-
-                ClusterScriptAssetMergerCompiler.Compile(merger);
             }
         }
     }
