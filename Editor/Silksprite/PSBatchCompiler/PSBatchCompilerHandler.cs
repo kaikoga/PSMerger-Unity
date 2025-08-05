@@ -37,7 +37,7 @@ namespace Silksprite.PSBatchCompiler
         static void CompileAll()
         {
             Debug.Log($"[{PSMerger}]更新開始");
-            PSMergerBatchCompiler.CompileAll();
+            new PSMergerBatchCompiler().CompileAll();
             new PSCollectorBatchCompiler().CompileAll();
             Debug.Log($"[{PSMerger}]更新終了");
         }

@@ -1,23 +1,27 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using ClusterVR.CreatorKit.Item.Implements;
 using UnityEditor;
 using UnityEngine;
 
 namespace Silksprite.PSMerger.Compiler
 {
     // CSCombinerと同じことをする
-    public static class PSMergerBatchCompiler
+    public class PSMergerBatchCompiler
     {
         const string PSMerger = "PSMerger";
 
-        public static void CompileAll()
+        readonly HashSet<JavaScriptAsset> _mergedScriptAssets = new();
+
+        public void CompileAll()
         {
             CombineAllAssets();
             CombineAllOfScene();
             CombineAllOfProject();
         }
 
-        static void CombineAllOfScene()
+        void CombineAllOfScene()
         {
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             var rootObjects = scene.GetRootGameObjects();
@@ -28,7 +32,7 @@ namespace Silksprite.PSMerger.Compiler
             }
         }
 
-        static void CombineAllOfProject()
+        void CombineAllOfProject()
         {
             var guids = AssetDatabase.FindAssets("t:Prefab", null);
 
@@ -62,8 +66,12 @@ namespace Silksprite.PSMerger.Compiler
             }
         }
 
-        static bool CombineSingleComponent(ClusterScriptComponentMergerBase mergerComponent)
+        bool CombineSingleComponent(ClusterScriptComponentMergerBase mergerComponent)
         {
+            if (!_mergedScriptAssets.Add(mergerComponent.MergedScript))
+            {
+                return false;
+            }
             return mergerComponent switch
             {
                 PlayerScriptMerger playerScriptMerger => PlayerScriptMergerCompiler.Compile(playerScriptMerger),
@@ -72,7 +80,7 @@ namespace Silksprite.PSMerger.Compiler
             };
         }
 
-        static void CombineAllAssets()
+        void CombineAllAssets()
         {
             var guids = AssetDatabase.FindAssets("t:ClusterScriptAssetMerger", null);
             
@@ -80,6 +88,11 @@ namespace Silksprite.PSMerger.Compiler
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var merger = AssetDatabase.LoadAssetAtPath<ClusterScriptAssetMerger>(path);
+                if (!_mergedScriptAssets.Add(merger.MergedScript))
+                {
+                    continue;
+                }
+
                 ClusterScriptAssetMergerCompiler.Compile(merger);
             }
         }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Silksprite.PSCollector.Compiler
 {
-    public class PSAssetCollectorCompiler
+    public static class PSAssetCollectorCompiler
     {
         static bool CollectEntries<TEntry>(out TEntry[] entries)
         {
@@ -17,7 +17,7 @@ namespace Silksprite.PSCollector.Compiler
             return entries.Length > 0;
         }
 
-        public bool Collect(PSAssetCollector collector)
+        public static bool Collect(PSAssetCollector collector)
         {
             var changed = false;
             changed |= CollectItemAudioSetLists(collector);
@@ -29,7 +29,7 @@ namespace Silksprite.PSCollector.Compiler
             return changed;
         }
 
-        bool CollectItemAudioSetLists(PSAssetCollector collector)
+        static bool CollectItemAudioSetLists(PSAssetCollector collector)
         {
             if (!CollectEntries<ItemAudioSetListAccessEntry>(out var entries))
             {
@@ -40,7 +40,7 @@ namespace Silksprite.PSCollector.Compiler
             return true;
         }
 
-        bool CollectHumanoidAnimationLists(PSAssetCollector collector)
+        static bool CollectHumanoidAnimationLists(PSAssetCollector collector)
         {
             if (!CollectEntries<HumanoidAnimationListAccessEntry>(out var entries))
             {
@@ -51,7 +51,7 @@ namespace Silksprite.PSCollector.Compiler
             return true;
         }
 
-        bool CollectWorldItemReferenceLists(PSAssetCollector collector)
+        static bool CollectWorldItemReferenceLists(PSAssetCollector collector)
         {
             if (!CollectEntries<WorldItemReferenceListAccessEntry>(out var entries))
             {
@@ -62,7 +62,7 @@ namespace Silksprite.PSCollector.Compiler
             return true;
         }
 
-        bool CollectWorldItemTemplateLists(PSAssetCollector collector)
+        static bool CollectWorldItemTemplateLists(PSAssetCollector collector)
         {
             if (!CollectEntries<WorldItemTemplateListAccessEntry>(out var entries))
             {
@@ -73,7 +73,7 @@ namespace Silksprite.PSCollector.Compiler
             return true;
         }
 
-        bool CollectPlayerLocalObjectReferenceLists(PSAssetCollector collector)
+        static bool CollectPlayerLocalObjectReferenceLists(PSAssetCollector collector)
         {
             if (!CollectEntries<PlayerLocalObjectReferenceListAccessEntry>(out var entries))
             {
@@ -84,7 +84,7 @@ namespace Silksprite.PSCollector.Compiler
             return true;
         }
 
-        bool CollectIconAssetLists(PSAssetCollector collector)
+        static bool CollectIconAssetLists(PSAssetCollector collector)
         {
             if (!CollectEntries<IconAssetListAccessEntry>(out var entries))
             {
