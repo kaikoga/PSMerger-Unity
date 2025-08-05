@@ -16,9 +16,9 @@ namespace Silksprite.PSMerger.Compiler
 
         public void CompileAll()
         {
-            CombineAllAssets();
             CombineAllOfScene();
             CombineAllOfProject();
+            CombineAllAssets();
         }
 
         void CombineAllOfScene()
@@ -27,7 +27,7 @@ namespace Silksprite.PSMerger.Compiler
             var rootObjects = scene.GetRootGameObjects();
             foreach (var mergerComponent in rootObjects.SelectMany(o => o.GetComponentsInChildren<ClusterScriptComponentMergerBase>(true)))
             {
-                Debug.Log($"[{mergerComponent.GetType().Name}][Scene]{mergerComponent.gameObject.name}");
+                Debug.Log($"[{PSMerger}[Scene][{mergerComponent.GetType().Name}]{mergerComponent.gameObject.name}");
                 CombineSingleComponent(mergerComponent);
             }
         }
@@ -53,7 +53,7 @@ namespace Silksprite.PSMerger.Compiler
                 var changed = false;
                 foreach (var mergerComponent in mergerComponents)
                 {
-                    Debug.Log($"[{mergerComponent.GetType().Name}][Prefab]{mergerComponent.gameObject.name}");
+                    Debug.Log($"[{PSMerger}][Prefab][{mergerComponent.GetType().Name}]{mergerComponent.gameObject.name}");
                     changed |= CombineSingleComponent(mergerComponent);
                 }
 
@@ -88,6 +88,7 @@ namespace Silksprite.PSMerger.Compiler
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var merger = AssetDatabase.LoadAssetAtPath<ClusterScriptAssetMerger>(path);
+                Debug.Log($"[{PSMerger}][Asset][{merger.GetType().Name}]{merger.name}");
                 if (!_mergedScriptAssets.Add(merger.MergedScript))
                 {
                     continue;

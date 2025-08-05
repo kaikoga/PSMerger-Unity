@@ -16,10 +16,9 @@ namespace Silksprite.PSCollector
             {
                 if (GUILayout.Button("Collect"))
                 {
-                    var processor = new PSAssetCollectorCompiler();
                     foreach (var t in targets)
                     {
-                        processor.Collect((PSAssetCollector) t);
+                        PSAssetCollectorCompiler.Collect((PSAssetCollector) t);
                     }
                 }
             }));
