@@ -15,7 +15,8 @@ namespace Silksprite.PSMerger
         T _mergerBase;
         VisualElement _inlineInfoArea;
         IMGUIContainer _createInlineJavaScriptButtonArea;
-        
+        PropertyField _generateSourceMap;
+
         void OnEnable()
         {
             _mergerBase = (T)target;
@@ -43,13 +44,14 @@ namespace Silksprite.PSMerger
                     }
                 }
             }));
+            _generateSourceMap = new PropertyField(serializedObject.FindProperty(NameofGenerateSourcemap));
+            advanced.Add(_generateSourceMap);
             advanced.Add(new PropertyField(serializedObject.FindProperty(NameofDetectCallbackSupport)));
             advanced.Add(new HelpBox
             {
                 text = "オンの場合、コールバックのサポートを必要に応じて生成します。",
                 messageType = HelpBoxMessageType.Info
             });
-            advanced.Add(new PropertyField(serializedObject.FindProperty(NameofGenerateSourcemap)));
             container.Add(advanced);
 
             container.Bind(serializedObject);
@@ -81,10 +83,7 @@ namespace Silksprite.PSMerger
                 }
             }));
 
-            container.TrackSerializedObjectValue(serializedObject, _ =>
-            {
-                UpdateDisplay();
-            });
+            container.TrackSerializedObjectValue(serializedObject, _ => UpdateDisplay());
             UpdateDisplay();
 
             return container;
@@ -101,6 +100,7 @@ namespace Silksprite.PSMerger
 
         void UpdateDisplay()
         {
+            _generateSourceMap.style.display = _mergerBase.MergedScript ? DisplayStyle.Flex : DisplayStyle.None;
             _inlineInfoArea.style.display = _mergerBase.JavaScriptSources().Any(source => source.HasInlineScriptPlaceholder) ? DisplayStyle.Flex : DisplayStyle.None;
             _createInlineJavaScriptButtonArea.style.display = !_mergerBase.TryGetComponent<InlineJavaScript>(out var _) ? DisplayStyle.Flex : DisplayStyle.None;
         }

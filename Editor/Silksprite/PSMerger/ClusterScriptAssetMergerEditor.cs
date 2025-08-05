@@ -13,6 +13,7 @@ namespace Silksprite.PSMerger
     public class ClusterScriptAssetMergerEditor : VisualElementEditor
     {
         ClusterScriptAssetMerger _merger;
+        PropertyField _generateSourceMap;
 
         void OnEnable()
         {
@@ -41,13 +42,14 @@ namespace Silksprite.PSMerger
             {
                 text = "上級者向け設定",
             };
+            _generateSourceMap = new PropertyField(serializedObject.FindProperty(NameofGenerateSourcemap));
+            advanced.Add(_generateSourceMap);
             advanced.Add(new PropertyField(serializedObject.FindProperty(NameofDetectCallbackSupport)));
             advanced.Add(new HelpBox
             {
                 text = "オンの場合、コールバックのサポートを必要に応じて生成します。",
                 messageType = HelpBoxMessageType.Info
             });
-            advanced.Add(new PropertyField(serializedObject.FindProperty(NameofGenerateSourcemap)));
             container.Add(advanced);
 
             container.Bind(serializedObject);
@@ -59,6 +61,10 @@ namespace Silksprite.PSMerger
                     ClusterScriptAssetMergerCompiler.Compile(_merger);
                 }
             }));
+
+            container.TrackSerializedObjectValue(serializedObject, _ => UpdateDisplay());
+            UpdateDisplay();
+            
             return container;
         }
 
@@ -69,5 +75,9 @@ namespace Silksprite.PSMerger
             _merger.SetMergedScript(javaScriptAsset);
         }
 
+        void UpdateDisplay()
+        {
+            _generateSourceMap.style.display = _merger.MergedScript ? DisplayStyle.Flex : DisplayStyle.None;
+        }
     }
 }
