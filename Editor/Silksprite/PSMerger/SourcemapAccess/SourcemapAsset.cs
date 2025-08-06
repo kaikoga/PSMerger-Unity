@@ -30,6 +30,7 @@ namespace Silksprite.PSMerger.SourcemapAccess
                 sourceFileAssetPath
             );
         }
+
         public static SourcemapAsset CreateIdentity(string sourceFileName, string sourceFileAssetPath, string sourceCode)
         {
             return new SourcemapAsset(
@@ -58,6 +59,31 @@ namespace Silksprite.PSMerger.SourcemapAccess
                 sourceFileAssetPath
             );
         }
+        
+        public static SourcemapAsset CreateInline(string sourceCode)
+        {
+            return new SourcemapAsset(
+                new SourceMap
+                {
+                    Version = 3,
+                    File = null,
+                    Sources = new(),
+                    Names = new(),
+                    ParsedMappings = sourceCode.Lines().Select((_, index) => new MappingEntry
+                    {
+                        GeneratedSourcePosition = new SourcePosition
+                        {
+                            ZeroBasedLineNumber = index,
+                            ZeroBasedColumnNumber = 0
+                        },
+                        OriginalSourcePosition = null,
+                        OriginalName = null,
+                        OriginalFileName = null
+                    }).ToList()
+                },
+                null
+            );
+        }
 
         public void AppendLine()
         {
@@ -78,6 +104,10 @@ namespace Silksprite.PSMerger.SourcemapAccess
         {
             string ConvertRelativePath(string sourcePath)
             {
+                if (string.IsNullOrEmpty(sourcePath))
+                {
+                    return null;
+                }
                 if (Path.IsPathRooted(sourcePath))
                 {
                     return sourcePath;
@@ -112,10 +142,13 @@ namespace Silksprite.PSMerger.SourcemapAccess
                 : 0;
 
             var inSourcemap = other._sourceMap;
-            var inFile = ConvertRelativePath(inSourcemap.File);
-            if (!_sourceMap.Sources.Contains(inFile))
+            if (inSourcemap.File is { } inFile)
             {
-                _sourceMap.Sources.Add(inFile);
+                var file = ConvertRelativePath(inFile);
+                if (!_sourceMap.Sources.Contains(file))
+                {
+                    _sourceMap.Sources.Add(file);
+                }
             }
             _sourceMap.Sources = _sourceMap.Sources
                 .Concat(inSourcemap.Sources

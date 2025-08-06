@@ -13,33 +13,30 @@ namespace Silksprite.PSMerger.Compiler.Internal
         public readonly JavaScriptCompilerContext[] ScriptContexts;
         public readonly bool DetectCallbackSupport;
 
-        public readonly string OutputFileName;
-        public readonly string OutputAssetPath;
+        public readonly JavaScriptCompilerOutput Output;
 
-        JavaScriptCompilerEnvironment(IEnumerable<JavaScriptSource> sources, string fileName, string assetPath, bool detectCallbackSupport, string defaultSourceCode)
+        JavaScriptCompilerEnvironment(IEnumerable<JavaScriptSource> sources, bool detectCallbackSupport, string defaultSourceCode, JavaScriptAsset assetOutput)
         {
             var sourcesArray = sources.ToArray();
             ScriptLibraries = sourcesArray.SelectMany(source => source.scriptLibraries)
-                .ToJavaScriptInputs(fileName, defaultSourceCode)
+                .ToJavaScriptInputs(defaultSourceCode)
                 .ToArray();
             ScriptContexts = sourcesArray.SelectMany(source => source.scriptContexts)
-                .Select(context => new JavaScriptCompilerContext(context, fileName, defaultSourceCode))
+                .Select(context => new JavaScriptCompilerContext(context, defaultSourceCode))
                 .ToArray();
             DetectCallbackSupport = detectCallbackSupport;
-            OutputFileName = fileName;
-            OutputAssetPath = assetPath;
+            Output = JavaScriptCompilerOutput.CreateFromAssetOutput(assetOutput);
         }
 
         public static JavaScriptCompilerEnvironment Create(ClusterScriptComponentMergerBase component, IEnumerable<JavaScriptSource> mergedSources)
         {
             var inlineJavaScript = component.gameObject.GetComponent<InlineJavaScript>();
-            var itemName = component.gameObject.GetComponent<IItem>().ItemName ?? component.gameObject.name;
+            var assetPath = AssetDatabase.GetAssetPath(component.MergedScript);
             return new JavaScriptCompilerEnvironment(
                 component.JavaScriptSources().Concat(mergedSources),
-                itemName,
-                "",
                 component.DetectCallbackSupport,
-                inlineJavaScript?.SourceCode);
+                inlineJavaScript?.SourceCode,
+                component.MergedScript);
         }
 
         public static JavaScriptCompilerEnvironment Create(ClusterScriptAssetMerger asset)
@@ -47,10 +44,9 @@ namespace Silksprite.PSMerger.Compiler.Internal
             var assetPath = AssetDatabase.GetAssetPath(asset.MergedScript);
             return new JavaScriptCompilerEnvironment(
                 asset.JavaScriptSources(),
-                Path.GetFileName(assetPath),
-                assetPath,
                 asset.DetectCallbackSupport,
-                null);
+                null,
+                asset.MergedScript);
         }
 
         public IEnumerable<JavaScriptInput> AllInputs() => 
@@ -61,22 +57,22 @@ namespace Silksprite.PSMerger.Compiler.Internal
     {
         public readonly JavaScriptInput[] JavaScriptInputs;
 
-        public JavaScriptCompilerContext(JavaScriptContext context, string fileName, string defaultSourceCode)
+        public JavaScriptCompilerContext(JavaScriptContext context, string defaultSourceCode)
         {
             JavaScriptInputs = context.JavaScriptAssets
-                .ToJavaScriptInputs(fileName, defaultSourceCode)
+                .ToJavaScriptInputs(defaultSourceCode)
                 .ToArray();
         }
     }
 
     static class JavaScriptAssetExtension
     {
-        public static IEnumerable<JavaScriptInput> ToJavaScriptInputs(this IEnumerable<JavaScriptAsset> assets, string fileName, string defaultSourceCode)
+        public static IEnumerable<JavaScriptInput> ToJavaScriptInputs(this IEnumerable<JavaScriptAsset> assets, string defaultSourceCode)
         {
             return assets.Select(asset => asset
-                ? new JavaScriptInput(asset)
+                ? JavaScriptInput.FromAsset(asset)
                 : !string.IsNullOrEmpty(defaultSourceCode)
-                    ? new JavaScriptInput(fileName, defaultSourceCode)
+                    ? JavaScriptInput.Inline(defaultSourceCode)
                     : null)
                 .Where(input => input != null);
         }

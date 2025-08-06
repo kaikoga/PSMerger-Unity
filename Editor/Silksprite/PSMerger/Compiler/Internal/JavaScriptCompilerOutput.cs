@@ -1,7 +1,9 @@
 using System.IO;
 using System.Text;
+using ClusterVR.CreatorKit.Item.Implements;
 using Editor.Silksprite.PSCore.Extensions;
 using Silksprite.PSMerger.SourcemapAccess;
+using UnityEditor;
 
 namespace Silksprite.PSMerger.Compiler.Internal
 {
@@ -10,7 +12,24 @@ namespace Silksprite.PSMerger.Compiler.Internal
         readonly StringBuilder _sourceCode = new();
         readonly SourcemapAsset _sourcemap;
 
-        public JavaScriptCompilerOutput(string fileName, string assetPath)
+        public static JavaScriptCompilerOutput CreateFromAssetOutput(JavaScriptAsset assetOutput)
+        {
+            if (assetOutput)
+            {
+                var assetPath = AssetDatabase.GetAssetPath(assetOutput);
+                return new JavaScriptCompilerOutput(Path.GetFileName(assetPath), assetPath);
+            }
+            else
+            {
+                return new JavaScriptCompilerOutput();
+            }
+        }
+
+        JavaScriptCompilerOutput()
+        {
+        }
+
+        JavaScriptCompilerOutput(string fileName, string assetPath)
         {
             _sourcemap = SourcemapAsset.CreateEmpty(fileName, assetPath);
         }
@@ -18,7 +37,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
         public void AppendLine(string line)
         {
             _sourceCode.AppendLine(line);
-            _sourcemap.AppendLine();
+            _sourcemap?.AppendLine();
         }
 
         public void AppendLines(string lines)
@@ -35,10 +54,10 @@ namespace Silksprite.PSMerger.Compiler.Internal
             {
                 _sourceCode.AppendLine(line);
             }
-            _sourcemap.Concat(input.Sourcemap);
+            _sourcemap?.Concat(input.Sourcemap);
         }
 
         public string SourceCode() => _sourceCode.ToString();
-        public string Sourcemap() => _sourcemap.Serialize();
+        public string Sourcemap() => _sourcemap?.Serialize() ?? "";
     }
 }

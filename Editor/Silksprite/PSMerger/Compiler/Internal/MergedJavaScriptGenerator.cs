@@ -58,7 +58,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
 
         public JavaScriptCompilerOutput MergeScripts(JavaScriptCompilerEnvironment env)
         {
-            var output = new JavaScriptCompilerOutput(env.OutputFileName, env.OutputAssetPath);
+            var output = env.Output;
             var allScripts = env.AllInputs().Select(input => input.SourceCode).ToArray();
             var callbackDefs = env.DetectCallbackSupport
                 ? _callbackDefs
