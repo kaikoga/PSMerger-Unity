@@ -91,7 +91,7 @@ namespace Silksprite.PSMerger
 
         void CreateMergedScript()
         {
-            var assetPath = $"{Path.GetDirectoryName(AssetDatabase.GetAssetPath(_mergerBase))}/MergedClusterScript.js";
+            const string assetPath = "Assets/MergedClusterScript.js";
             var javaScriptAsset = PSMergerUtil.CreateJavaScriptAsset(assetPath);
             _mergerBase.SetMergedScript(javaScriptAsset);
         }

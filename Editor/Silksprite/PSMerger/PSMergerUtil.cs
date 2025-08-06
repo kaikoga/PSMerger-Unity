@@ -1,7 +1,6 @@
 using System.IO;
 using ClusterVR.CreatorKit.Item.Implements;
 using UnityEditor;
-using UnityEngine;
 
 namespace Silksprite.PSMerger
 {
@@ -13,6 +12,7 @@ namespace Silksprite.PSMerger
             File.WriteAllText(actualPath, "");
             AssetDatabase.ImportAsset(actualPath);
             var javaScriptAsset = AssetDatabase.LoadAssetAtPath<JavaScriptAsset>(actualPath);
+            EditorGUIUtility.PingObject(javaScriptAsset);
             return javaScriptAsset;
         }
     }
