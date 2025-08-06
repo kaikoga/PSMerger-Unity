@@ -4,26 +4,19 @@ namespace Silksprite.PSMerger.Compiler
 {
     public static class ClusterScriptAssetMergerCompiler
     {
-        public static void Compile(ClusterScriptAssetMerger merger)
+        public static bool Compile(ClusterScriptAssetMerger merger)
         {
             if (merger.MergedScript == null)
             {
-                return;                
+                return false;
             }
-            switch (merger.ScriptType)
+            return merger.ScriptType switch
             {
-                case ClusterScriptType.ConcatOnly:
-                    ConcatOnlyCompiler.Compile(merger);
-                    break;
-                case ClusterScriptType.ItemScript:
-                    ItemScriptMergerCompiler.Compile(merger);
-                    break;
-                case ClusterScriptType.PlayerScript:
-                    PlayerScriptMergerCompiler.Compile(merger);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(merger.ScriptType), merger.ScriptType, null);
-            }
+                ClusterScriptType.ConcatOnly => ConcatOnlyCompiler.Compile(merger),
+                ClusterScriptType.ItemScript => ItemScriptMergerCompiler.Compile(merger),
+                ClusterScriptType.PlayerScript => PlayerScriptMergerCompiler.Compile(merger),
+                _ => throw new ArgumentOutOfRangeException(nameof(merger.ScriptType), merger.ScriptType, null)
+            };
         }
     }
 }
