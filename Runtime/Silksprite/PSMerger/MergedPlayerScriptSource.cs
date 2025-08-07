@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Silksprite.PSMerger
 {
-    public class MergedPlayerScriptSource : MonoBehaviour
+    public class MergedPlayerScriptSource : MonoBehaviour, IMergedPlayerScriptSource
     {
         [SerializeField] JavaScriptSource javaScriptSource;
         [SerializeField] ScriptMergerSource[] otherSources = { };

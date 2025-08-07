@@ -5,7 +5,7 @@ namespace Silksprite.PSMerger
 {
     [AddComponentMenu("Silksprite/PSMerger/Inline JavaScript")]
     [RequireComponent(typeof(ScriptableItem))]
-    public class InlineJavaScript : MonoBehaviour
+    public class InlineJavaScript : MonoBehaviour, IInlineJavaScript
     {
         [SerializeField, TextArea(5, 15)] string sourceCode;
         

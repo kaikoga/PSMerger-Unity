@@ -30,8 +30,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
 
         public static JavaScriptCompilerEnvironment Create(ClusterScriptComponentMergerBase component, IEnumerable<JavaScriptSource> mergedSources)
         {
-            var inlineJavaScript = component.gameObject.GetComponent<InlineJavaScript>();
-            var assetPath = AssetDatabase.GetAssetPath(component.MergedScript);
+            var inlineJavaScript = component.gameObject.GetComponent<IInlineJavaScript>();
             return new JavaScriptCompilerEnvironment(
                 component.JavaScriptSources().Concat(mergedSources),
                 component.DetectCallbackSupport,

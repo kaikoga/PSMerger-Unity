@@ -20,7 +20,7 @@ namespace Silksprite.PSMerger.Compiler
         {
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             var rootObjects = scene.GetRootGameObjects();
-            return rootObjects.SelectMany(o => o.GetComponentsInChildren<MergedPlayerScriptSource>(true))
+            return rootObjects.SelectMany(o => o.GetComponentsInChildren<IMergedPlayerScriptSource>(true))
                 .SelectMany(mergedSource => mergedSource.JavaScriptSources());
         }
 

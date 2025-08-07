@@ -102,7 +102,7 @@ namespace Silksprite.PSMerger
         {
             _generateSourceMap.style.display = _mergerBase.MergedScript ? DisplayStyle.Flex : DisplayStyle.None;
             _inlineInfoArea.style.display = _mergerBase.JavaScriptSources().Any(source => source.HasInlineScriptPlaceholder) ? DisplayStyle.Flex : DisplayStyle.None;
-            _createInlineJavaScriptButtonArea.style.display = !_mergerBase.TryGetComponent<InlineJavaScript>(out var _) ? DisplayStyle.Flex : DisplayStyle.None;
+            _createInlineJavaScriptButtonArea.style.display = !_mergerBase.TryGetComponent<IInlineJavaScript>(out var _) ? DisplayStyle.Flex : DisplayStyle.None;
         }
     }
 }
