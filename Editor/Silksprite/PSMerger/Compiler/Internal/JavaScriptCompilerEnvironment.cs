@@ -18,10 +18,10 @@ namespace Silksprite.PSMerger.Compiler.Internal
         JavaScriptCompilerEnvironment(IEnumerable<JavaScriptSource> sources, bool detectCallbackSupport, string defaultSourceCode, JavaScriptAsset assetOutput)
         {
             var sourcesArray = sources.ToArray();
-            ScriptLibraries = sourcesArray.SelectMany(source => source.scriptLibraries)
+            ScriptLibraries = sourcesArray.SelectMany(source => source.ScriptLibraries)
                 .ToJavaScriptInputs(defaultSourceCode)
                 .ToArray();
-            ScriptContexts = sourcesArray.SelectMany(source => source.scriptContexts)
+            ScriptContexts = sourcesArray.SelectMany(source => source.ScriptContexts)
                 .Select(context => new JavaScriptCompilerContext(context, defaultSourceCode))
                 .ToArray();
             DetectCallbackSupport = detectCallbackSupport;

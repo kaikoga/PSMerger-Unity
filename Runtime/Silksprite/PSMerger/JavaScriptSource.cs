@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using UnityEngine;
@@ -8,9 +9,15 @@ namespace Silksprite.PSMerger
     [Serializable]
     public class JavaScriptSource
     {
-        [SerializeField] internal JavaScriptAsset[] scriptLibraries = { };
-        [SerializeField] internal JavaScriptContext[] scriptContexts = { };
-     
+        public const string NameofScriptLibraries = nameof(scriptLibraries);
+        public const string NameofScriptContexts = nameof(scriptContexts);
+        
+        [SerializeField] JavaScriptAsset[] scriptLibraries = { };
+        [SerializeField] JavaScriptContext[] scriptContexts = { };
+
+        public IEnumerable<JavaScriptAsset> ScriptLibraries => scriptLibraries;
+        public IEnumerable<JavaScriptContext> ScriptContexts => scriptContexts;
+
         public bool HasInlineScriptPlaceholder => 
             scriptLibraries
                 .Concat(scriptContexts.SelectMany(context => context.JavaScriptAssets))

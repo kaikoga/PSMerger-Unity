@@ -10,8 +10,8 @@ namespace Silksprite.PSMerger.PropertyDrawers
     {
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            var scriptLibraries = property.FindPropertyRelative(nameof(JavaScriptSource.scriptLibraries));
-            var scriptContexts = property.FindPropertyRelative(nameof(JavaScriptSource.scriptContexts));
+            var scriptLibraries = property.FindPropertyRelative(JavaScriptSource.NameofScriptLibraries);
+            var scriptContexts = property.FindPropertyRelative(JavaScriptSource.NameofScriptContexts);
 
             var container = new VisualElement();
             container.Add(new PropertyField(scriptLibraries)
@@ -37,12 +37,12 @@ namespace Silksprite.PSMerger.PropertyDrawers
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var scriptLibraries = property.FindPropertyRelative(nameof(JavaScriptSource.scriptLibraries));
+            var scriptLibraries = property.FindPropertyRelative(JavaScriptSource.NameofScriptLibraries);
             var scriptLibrariesPos = position;
             scriptLibrariesPos.height = EditorGUI.GetPropertyHeight(scriptLibraries);
             EditorGUI.PropertyField(scriptLibrariesPos, scriptLibraries);
 
-            var scriptContexts = property.FindPropertyRelative(nameof(JavaScriptSource.scriptContexts));
+            var scriptContexts = property.FindPropertyRelative(JavaScriptSource.NameofScriptContexts);
             var scriptContextsPos = position;
             scriptContextsPos.yMin = scriptContextsPos.yMax - EditorGUI.GetPropertyHeight(scriptContexts);
             EditorGUI.PropertyField(scriptContextsPos, scriptContexts);
@@ -51,9 +51,9 @@ namespace Silksprite.PSMerger.PropertyDrawers
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             return
-                EditorGUI.GetPropertyHeight(property.FindPropertyRelative(nameof(JavaScriptSource.scriptLibraries))) +
+                EditorGUI.GetPropertyHeight(property.FindPropertyRelative(JavaScriptSource.NameofScriptLibraries)) +
                 EditorGUIUtility.standardVerticalSpacing +
-                EditorGUI.GetPropertyHeight(property.FindPropertyRelative(nameof(JavaScriptSource.scriptContexts)));
+                EditorGUI.GetPropertyHeight(property.FindPropertyRelative(JavaScriptSource.NameofScriptContexts));
         }
     }
 }
