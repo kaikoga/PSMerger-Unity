@@ -29,6 +29,25 @@ namespace Silksprite.PSMerger
             container.Add(new PropertyField(serializedObject.FindProperty(NameofJavaScriptSource)));
             container.Add(new PropertyField(serializedObject.FindProperty(NameofOtherSources)));
 
+            _inlineInfoArea = new VisualElement
+            {
+                style =
+                {
+                    marginBottom = EditorGUIUtility.singleLineHeight
+                }
+            };
+            _inlineInfoArea.Add(new HelpBox("InlineJavaScriptコンポーネントがこのオブジェクトについている場合、Noneのスロットに内容が入ります。", HelpBoxMessageType.Info));
+            _createInlineJavaScriptButtonArea = new IMGUIContainer(() =>
+            {
+                if (GUILayout.Button("Create InlineJavaScript"))
+                {
+                    Undo.AddComponent<InlineJavaScript>(_mergerBase.gameObject);
+                    UpdateDisplay();
+                }
+            });
+            _inlineInfoArea.Add(_createInlineJavaScriptButtonArea);
+            container.Add(_inlineInfoArea);
+            
             var advanced = new Foldout
             {
                 text = "上級者向け設定",
@@ -56,25 +75,6 @@ namespace Silksprite.PSMerger
 
             container.Bind(serializedObject);
 
-            _inlineInfoArea = new VisualElement
-            {
-                style =
-                {
-                    marginBottom = EditorGUIUtility.singleLineHeight
-                }
-            };
-            _inlineInfoArea.Add(new HelpBox("InlineJavaScriptコンポーネントがこのオブジェクトについている場合、Noneのスロットに内容が入ります。", HelpBoxMessageType.Info));
-            _createInlineJavaScriptButtonArea = new IMGUIContainer(() =>
-            {
-                if (GUILayout.Button("Create InlineJavaScript"))
-                {
-                    Undo.AddComponent<InlineJavaScript>(_mergerBase.gameObject);
-                    UpdateDisplay();
-                }
-            });
-            _inlineInfoArea.Add(_createInlineJavaScriptButtonArea);
-            container.Add(_inlineInfoArea);
-            
             container.Add(new IMGUIContainer(() =>
             {
                 if (GUILayout.Button("Compile"))
