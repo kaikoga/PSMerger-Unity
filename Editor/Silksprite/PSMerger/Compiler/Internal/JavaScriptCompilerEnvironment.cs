@@ -40,7 +40,6 @@ namespace Silksprite.PSMerger.Compiler.Internal
 
         public static JavaScriptCompilerEnvironment Create(ClusterScriptAssetMerger asset)
         {
-            var assetPath = AssetDatabase.GetAssetPath(asset.MergedScript);
             return new JavaScriptCompilerEnvironment(
                 asset.JavaScriptSources(),
                 asset.DetectCallbackSupport,
