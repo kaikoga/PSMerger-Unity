@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
+using Silksprite.PSMerger.Compiler.Data;
+using Silksprite.PSMerger.Compiler.Extension;
 using UnityEngine;
 
 namespace Silksprite.PSMerger
@@ -32,6 +35,15 @@ namespace Silksprite.PSMerger
         public void SetMergedScript(JavaScriptAsset javaScriptAsset)
         {
             mergedScript = javaScriptAsset;
+        }
+
+        public JavaScriptCompilerEnvironment ToCompilerEnvironment(IEnumerable<JavaScriptSource> mergedSources)
+        {
+            var inlineJavaScript = gameObject.GetComponent<IInlineJavaScript>();
+            return JavaScriptCompilerEnvironmentFactory.Create(
+                JavaScriptSources().Concat(mergedSources),
+                DetectCallbackSupport,
+                inlineJavaScript?.SourceCode);
         }
     }
 }

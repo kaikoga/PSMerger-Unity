@@ -7,7 +7,7 @@ namespace Silksprite.PSMerger.Compiler.Extension
 {
     public static class JavaScriptCompilerEnvironmentFactory
     {
-        static JavaScriptCompilerEnvironment Create(IEnumerable<JavaScriptSource> sources, bool detectCallbackSupport, string defaultSourceCode)
+        public static JavaScriptCompilerEnvironment Create(IEnumerable<JavaScriptSource> sources, bool detectCallbackSupport, string defaultSourceCode)
         {
             var sourcesArray = sources.ToArray();
             var libraries = sourcesArray.SelectMany(source => source.ScriptLibraries)
@@ -19,23 +19,6 @@ namespace Silksprite.PSMerger.Compiler.Extension
             return new JavaScriptCompilerEnvironment(libraries, contexts, detectCallbackSupport);
         }
 
-        public static JavaScriptCompilerEnvironment Create(ClusterScriptComponentMergerBase component, IEnumerable<JavaScriptSource> mergedSources)
-        {
-            var inlineJavaScript = component.gameObject.GetComponent<IInlineJavaScript>();
-            return Create(
-                component.JavaScriptSources().Concat(mergedSources),
-                component.DetectCallbackSupport,
-                inlineJavaScript?.SourceCode);
-        }
-
-        public static JavaScriptCompilerEnvironment Create(ClusterScriptAssetMerger asset)
-        {
-            return Create(
-                asset.JavaScriptSources(),
-                asset.DetectCallbackSupport,
-                null);
-        }
-        
         static JavaScriptCompilerContext CreateContext(JavaScriptContext context, string defaultSourceCode)
         {
             var javaScriptInputs = context.JavaScriptAssets
