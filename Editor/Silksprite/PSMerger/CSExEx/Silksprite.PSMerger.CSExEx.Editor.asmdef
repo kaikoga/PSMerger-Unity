@@ -3,11 +3,13 @@
     "rootNamespace": "",
     "references": [
         "ClusterVR.CreatorKit.Editor.Custom",
+        "ClusterVR.CreatorKit.Item",
+        "ClusterVR.CreatorKit.Item.Implements",
         "Baxter.ClusterScriptExtensions",
         "Baxter.ClusterScriptExtensions.Editor",
         "Silksprite.PSMerger",
+        "Silksprite.PSMerger.Compiler",
         "Silksprite.PSMerger.CSExEx",
-        "Silksprite.PSMerger.Editor",
         "Silksprite.PSMerger.Editor.Compiler"
     ],
     "includePlatforms": [

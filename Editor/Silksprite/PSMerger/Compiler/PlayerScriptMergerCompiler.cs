@@ -3,6 +3,7 @@ using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSCore.Access;
 using Silksprite.PSMerger.Compiler.Data;
+using Silksprite.PSMerger.Compiler.Filter;
 using Silksprite.PSMerger.Compiler.Internal;
 using UnityEditor;
 
@@ -40,11 +41,12 @@ namespace Silksprite.PSMerger.Compiler
                 var env = playerScriptMerger.ToCompilerEnvironment(CollectMergedSources());
                 var output = JavaScriptCompilerOutput.CreateFromAssetOutput(playerScriptMerger.MergedScript);
                 BuildPlayerScript(env, output);
+                var sourceCode = PSMergerFilter.ApplyPostProcess(output.SourceCode(), playerScriptMerger);
                 if (playerScriptMerger.MergedScript)
                 {
                     playerScriptAccess.sourceCodeAsset = playerScriptMerger.MergedScript;
                     using var javaScriptAssetAccess = new JavaScriptAssetAccess(playerScriptMerger.MergedScript);
-                    javaScriptAssetAccess.text = output.SourceCode();
+                    javaScriptAssetAccess.text = sourceCode;
                     if (playerScriptMerger.GenerateSourcemap)
                     {
                         javaScriptAssetAccess.sourcemap = output.Sourcemap();
@@ -54,7 +56,7 @@ namespace Silksprite.PSMerger.Compiler
                 else
                 {
                     playerScriptAccess.sourceCodeAsset = null;
-                    playerScriptAccess.sourceCode = output.SourceCode();
+                    playerScriptAccess.sourceCode = sourceCode;
                 }
                 changed |= playerScriptAccess.hasModifiedProperties;
             }
@@ -68,7 +70,8 @@ namespace Silksprite.PSMerger.Compiler
             var env = clusterScriptAssetMerger.ToCompilerEnvironment();
             var output = JavaScriptCompilerOutput.CreateFromAssetOutput(clusterScriptAssetMerger.MergedScript);
             BuildPlayerScript(env, output);
-            javaScriptAssetAccess.text = output.SourceCode();
+            var sourceCode = PSMergerFilter.ApplyPostProcess(output.SourceCode(), clusterScriptAssetMerger);
+            javaScriptAssetAccess.text = sourceCode;
             if (clusterScriptAssetMerger.GenerateSourcemap)
             {
                 javaScriptAssetAccess.sourcemap = output.Sourcemap();

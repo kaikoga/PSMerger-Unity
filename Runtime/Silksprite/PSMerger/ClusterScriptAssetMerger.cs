@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSMerger.Compiler.Data;
 using Silksprite.PSMerger.Compiler.Extension;
+using Silksprite.PSMerger.Compiler.Filter;
 using UnityEngine;
 
 namespace Silksprite.PSMerger
@@ -39,10 +40,11 @@ namespace Silksprite.PSMerger
 
         public JavaScriptCompilerEnvironment ToCompilerEnvironment()
         {
-            return JavaScriptCompilerEnvironmentFactory.Create(
+            var environment = JavaScriptCompilerEnvironmentFactory.Create(
                 JavaScriptSources(),
                 DetectCallbackSupport,
                 null);
+            return PSMergerFilter.Apply(environment, this);
         }
     }
 

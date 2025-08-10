@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Baxter.ClusterScriptExtensions;
 using Baxter.ClusterScriptExtensions.Editor.ScriptParser;
-using Silksprite.PSMerger.Compiler.Internal;
 
-namespace Silksprite.PSMerger.CSExEx
+namespace Silksprite.PSMerger.CSExEx.ScriptUpdater
 {
     public static class FieldReloadUtil
     {
@@ -19,8 +18,10 @@ namespace Silksprite.PSMerger.CSExEx
 
         public static void ReloadFields(ClusterScriptComponentMergerExtensionBase ext, bool refresh)
         {
+            // NOTE: CSExEx: 全ての入力ソースコードからフィールドを収集する
+            // NOTE: CSExEx: ScriptExtensionField の位置情報は入力ソースコード上の位置情報であり、そのままでは使えないことに注意
             var env = ext.MergerBase.ToCompilerEnvironment(CollectMergedSources());
-                
+
             var templateCodes = env.AllInputs().Select(input => input.SourceCode).ToArray();
             if (templateCodes.Length == 0)
             {
@@ -34,6 +35,24 @@ namespace Silksprite.PSMerger.CSExEx
                     InitializeExtensionFieldValue(f, ext.ExtensionFields, refresh);
                 }
                 ext.SetFields(fields);
+            }
+        }
+        
+        public static ScriptExtensionField[] ParseFields(ClusterScriptComponentMergerExtensionBase ext, string templateCode)
+        {
+            // NOTE: CSExEx: マージ後のソースコードに対して ItemScriptUpdater から呼び出す用
+            if (string.IsNullOrEmpty(templateCode))
+            {
+                return Array.Empty<ScriptExtensionField>();
+            }
+            else
+            {
+                var fields = ExtensionFieldParser.ExtractTargetFields(templateCode);
+                foreach (var f in fields)
+                {
+                    InitializeExtensionFieldValue(f, ext.ExtensionFields, false);
+                }
+                return fields;
             }
         }
         

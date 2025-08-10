@@ -1,6 +1,7 @@
 using Silksprite.PSMerger.Compiler.Internal;
 using Silksprite.PSCore.Access;
 using Silksprite.PSMerger.Compiler.Data;
+using Silksprite.PSMerger.Compiler.Filter;
 
 namespace Silksprite.PSMerger.Compiler
 {
@@ -12,7 +13,8 @@ namespace Silksprite.PSMerger.Compiler
             var env = clusterScriptAssetMerger.ToCompilerEnvironment();
             var output = JavaScriptCompilerOutput.CreateFromAssetOutput(clusterScriptAssetMerger.MergedScript);
             ConcatScript(env, output);
-            javaScriptAssetAccess.text = output.SourceCode();
+            var sourceCode = PSMergerFilter.ApplyPostProcess(output.SourceCode(), clusterScriptAssetMerger);
+            javaScriptAssetAccess.text = sourceCode;
             if (clusterScriptAssetMerger.GenerateSourcemap)
             {
                 javaScriptAssetAccess.sourcemap = output.Sourcemap();

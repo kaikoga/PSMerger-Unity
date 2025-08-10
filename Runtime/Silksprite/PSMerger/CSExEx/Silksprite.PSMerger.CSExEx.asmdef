@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Baxter.ClusterScriptExtensions",
-        "Silksprite.PSMerger"
+        "Silksprite.PSMerger",
+        "Silksprite.PSMerger.Compiler"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
