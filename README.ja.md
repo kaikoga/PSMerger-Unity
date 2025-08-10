@@ -113,6 +113,6 @@ PSMerger でマージした PlayerScript の依存アイテムやアセットを
 
 https://github.com/kaikoga/PSMergerCSExEx-Unity
 
-ClusterScriptExtension ([BOOTH](https://booth.pm/ja/items/6089933)) と一緒にインストールすることで、 PSMerger でマージするスクリプトに ClusterScriptExtension のコメントを書けるようになります。
+ClusterScriptExtensions ([BOOTH](https://booth.pm/ja/items/6089933)) と一緒にインストールすることで、 PSMerger でマージするスクリプトに ClusterScriptExtensions のコメントを書けるようになります。
 
 `PlayerScript Merger Extension` と `ItemScript Merger Extension` コンポーネントを追加することで、プロパティの編集がインスペクタから行えるようになります。
