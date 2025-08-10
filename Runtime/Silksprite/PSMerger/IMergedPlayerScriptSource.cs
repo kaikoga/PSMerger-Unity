@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-
 namespace Silksprite.PSMerger
 {
-    public interface IMergedPlayerScriptSource
+    public interface IMergedPlayerScriptSource : IMergedClusterScriptSourceBase
     {
-        public IEnumerable<JavaScriptSource> JavaScriptSources();
     }
 }

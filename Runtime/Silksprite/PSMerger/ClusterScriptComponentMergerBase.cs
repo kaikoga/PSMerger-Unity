@@ -33,17 +33,31 @@ namespace Silksprite.PSMerger
             foreach (var otherSource in otherSources) yield return otherSource?.JavaScriptSource;
         }
 
+        protected abstract IEnumerable<JavaScriptSource> CollectMergedSources();
+
         public void SetMergedScript(JavaScriptAsset javaScriptAsset)
         {
             mergedScript = javaScriptAsset;
         }
 
-        public JavaScriptCompilerEnvironment ToCompilerEnvironment(IEnumerable<JavaScriptSource> mergedSources)
+        public JavaScriptCompilerEnvironment ToCompilerEnvironment()
         {
             var environment = JavaScriptCompilerEnvironmentFactory.Create(
-                JavaScriptSources().Concat(mergedSources),
+                JavaScriptSources().Concat(CollectMergedSources()),
                 DetectCallbackSupport);
             return PSMergerFilter.Apply(environment, this);
+        }
+    }
+    
+    public abstract class ClusterScriptComponentMergerBase<T> : ClusterScriptComponentMergerBase
+    where T : IMergedClusterScriptSourceBase
+    {
+        protected sealed override IEnumerable<JavaScriptSource> CollectMergedSources()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            var rootObjects = scene.GetRootGameObjects();
+            return rootObjects.SelectMany(o => o.GetComponentsInChildren<T>(true))
+                .SelectMany(mergedSource => mergedSource.JavaScriptSources());
         }
     }
 }

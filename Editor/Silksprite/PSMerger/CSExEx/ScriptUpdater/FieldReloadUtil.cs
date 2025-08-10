@@ -8,19 +8,11 @@ namespace Silksprite.PSMerger.CSExEx.ScriptUpdater
 {
     public static class FieldReloadUtil
     {
-        static IEnumerable<JavaScriptSource> CollectMergedSources()
-        {
-            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-            var rootObjects = scene.GetRootGameObjects();
-            return rootObjects.SelectMany(o => o.GetComponentsInChildren<IMergedPlayerScriptSource>(true))
-                .SelectMany(mergedSource => mergedSource.JavaScriptSources());
-        }
-
         public static void ReloadFields(ClusterScriptComponentMergerExtensionBase ext, bool refresh)
         {
             // NOTE: CSExEx: 全ての入力ソースコードからフィールドを収集する
             // NOTE: CSExEx: ScriptExtensionField の位置情報は入力ソースコード上の位置情報であり、そのままでは使えないことに注意
-            var env = ext.MergerBase.ToCompilerEnvironment(CollectMergedSources());
+            var env = ext.MergerBase.ToCompilerEnvironment();
 
             var templateCodes = env.AllInputs().Select(input => input.SourceCode).ToArray();
             if (templateCodes.Length == 0)

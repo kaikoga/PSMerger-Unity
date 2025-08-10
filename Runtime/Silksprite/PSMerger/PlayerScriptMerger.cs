@@ -5,7 +5,7 @@ namespace Silksprite.PSMerger
 {
     [AddComponentMenu("Silksprite/PSMerger/PlayerScript Merger")]
     [RequireComponent(typeof(PlayerScript))]
-    public class PlayerScriptMerger : ClusterScriptComponentMergerBase
+    public class PlayerScriptMerger : ClusterScriptComponentMergerBase<IMergedPlayerScriptSource>
     {
     }
 }

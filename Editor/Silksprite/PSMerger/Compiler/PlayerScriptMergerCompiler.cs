@@ -18,14 +18,6 @@ namespace Silksprite.PSMerger.Compiler
 
         static readonly MergedJavaScriptGenerator Gen = MergedJavaScriptGenerator.ForPlayerScript();
 
-        static IEnumerable<JavaScriptSource> CollectMergedSources()
-        {
-            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-            var rootObjects = scene.GetRootGameObjects();
-            return rootObjects.SelectMany(o => o.GetComponentsInChildren<IMergedPlayerScriptSource>(true))
-                .SelectMany(mergedSource => mergedSource.JavaScriptSources());
-        }
-
         public static bool Compile(PlayerScriptMerger playerScriptMerger)
         {
             var changed = false;
@@ -38,7 +30,7 @@ namespace Silksprite.PSMerger.Compiler
 
             using (var playerScriptAccess = new PlayerScriptAccess(playerScriptMerger.GetComponent<PlayerScript>()))
             {
-                var env = playerScriptMerger.ToCompilerEnvironment(CollectMergedSources());
+                var env = playerScriptMerger.ToCompilerEnvironment();
                 var output = JavaScriptCompilerOutput.CreateFromAssetOutput(playerScriptMerger.MergedScript);
                 BuildPlayerScript(env, output);
                 var sourceCode = PSMergerFilter.ApplyPostProcess(output.SourceCode(), playerScriptMerger);

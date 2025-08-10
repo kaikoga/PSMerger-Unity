@@ -16,7 +16,7 @@ namespace Silksprite.PSMerger.Compiler
             var changed = false;
             using (var scriptableItemAccess = new ScriptableItemAccess(itemScriptMerger.GetComponent<ScriptableItem>()))
             {
-                var env = itemScriptMerger.ToCompilerEnvironment(Enumerable.Empty<JavaScriptSource>());
+                var env = itemScriptMerger.ToCompilerEnvironment();
                 var output = JavaScriptCompilerOutput.CreateFromAssetOutput(itemScriptMerger.MergedScript);
                 BuildItemScript(env, output);
                 var sourceCode = PSMergerFilter.ApplyPostProcess(output.SourceCode(), itemScriptMerger);
