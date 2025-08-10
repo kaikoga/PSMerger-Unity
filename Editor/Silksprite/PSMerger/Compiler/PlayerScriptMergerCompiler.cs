@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSCore.Access;
 using Silksprite.PSMerger.Compiler.Data;
@@ -21,8 +19,9 @@ namespace Silksprite.PSMerger.Compiler
         public static bool Compile(PlayerScriptMerger playerScriptMerger)
         {
             var changed = false;
-            using (var scriptableItemAccess = new ScriptableItemAccess(playerScriptMerger.GetComponent<ScriptableItem>()))
+            if (!playerScriptMerger.TryGetComponent<ItemScriptMerger>(out _))
             {
+                using var scriptableItemAccess = new ScriptableItemAccess(playerScriptMerger.GetComponent<ScriptableItem>());
                 scriptableItemAccess.sourceCodeAsset = ItemScriptAsset;
                 scriptableItemAccess.sourceCode = null;
                 changed |= scriptableItemAccess.hasModifiedProperties;

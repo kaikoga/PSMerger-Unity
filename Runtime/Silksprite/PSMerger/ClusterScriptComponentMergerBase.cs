@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Silksprite.PSMerger
 {
-    [RequireComponent(typeof(ScriptableItem)), DisallowMultipleComponent]
+    [RequireComponent(typeof(ScriptableItem))]
     public abstract class ClusterScriptComponentMergerBase : MonoBehaviour
     {
         public const string NameofJavaScriptSource = nameof(javaScriptSource);
@@ -48,7 +48,7 @@ namespace Silksprite.PSMerger
             return PSMergerFilter.Apply(environment, this);
         }
     }
-    
+
     public abstract class ClusterScriptComponentMergerBase<T> : ClusterScriptComponentMergerBase
     where T : IMergedClusterScriptSourceBase
     {
