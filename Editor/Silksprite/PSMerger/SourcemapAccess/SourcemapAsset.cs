@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Text;
 using Editor.Silksprite.PSCore.Extensions;
 using SourcemapToolkit.SourcemapParser;
 
@@ -31,8 +32,9 @@ namespace Silksprite.PSMerger.SourcemapAccess
             );
         }
 
-        public static SourcemapAsset CreateIdentity(string sourceFileName, string sourceFileAssetPath, string sourceCode)
+        public static SourcemapAsset CreateIdentity(string sourceFileAssetPath, string sourceCode)
         {
+            var sourceFileName = Path.GetFileName(sourceFileAssetPath); 
             return new SourcemapAsset(
                 new SourceMap
                 {
@@ -60,6 +62,15 @@ namespace Silksprite.PSMerger.SourcemapAccess
             );
         }
         
+        public static SourcemapAsset CreateWithSourcemap(string sourceFileAssetPath, string sourcemap)
+        {
+            using var stream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(sourcemap)), Encoding.UTF8);
+            return new SourcemapAsset(
+                new SourceMapParser().ParseSourceMap(stream),
+                sourceFileAssetPath
+            );
+        }
+
         public static SourcemapAsset CreateInline(string sourceCode)
         {
             return new SourcemapAsset(

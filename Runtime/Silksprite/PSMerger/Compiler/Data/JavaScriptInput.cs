@@ -1,3 +1,4 @@
+using System.IO;
 using ClusterVR.CreatorKit.Item.Implements;
 using UnityEditor;
 
@@ -7,16 +8,13 @@ namespace Silksprite.PSMerger.Compiler.Data
     {
         public readonly string SourceCode;
         public readonly string SourceCodePath;
+        public readonly string Sourcemap;
 
-        JavaScriptInput(JavaScriptAsset asset)
-        {
-            SourceCode = asset.text;
-            SourceCodePath = AssetDatabase.GetAssetPath(asset);
-        }
-
-        JavaScriptInput(string sourceCode)
+        public JavaScriptInput(string sourceCode, string sourceCodePath = null, string sourcemap = null)
         {
             SourceCode = sourceCode;
+            SourceCodePath = sourceCodePath;
+            Sourcemap = sourcemap;
         }
 
         public static JavaScriptInput Empty()
@@ -24,14 +22,18 @@ namespace Silksprite.PSMerger.Compiler.Data
             return new JavaScriptInput("");
         }
 
-        public static JavaScriptInput FromAsset(JavaScriptAsset asset)
-        {
-            return new JavaScriptInput(asset);
-        }
-
         public static JavaScriptInput Inline(string sourceCode)
         {
             return new JavaScriptInput(sourceCode);
+        }
+
+        public static JavaScriptInput FromAsset(JavaScriptAsset asset)
+        {
+            var sourceCode = asset.text;
+            var sourceCodePath = AssetDatabase.GetAssetPath(asset);
+            var sourcemapPath = $"{sourceCodePath}.map";
+            var sourcemap = File.Exists(sourcemapPath) ? File.ReadAllText(sourcemapPath, System.Text.Encoding.UTF8) : null;
+            return new JavaScriptInput(sourceCode, sourceCodePath, sourcemap);
         }
     }
 
