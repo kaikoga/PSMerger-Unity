@@ -2,6 +2,7 @@ using System.IO;
 using System.Text;
 using ClusterVR.CreatorKit.Item.Implements;
 using Editor.Silksprite.PSCore.Extensions;
+using Silksprite.PSMerger.Compiler.Internal.Extensions;
 using Silksprite.PSMerger.SourcemapAccess;
 using UnityEditor;
 
@@ -54,7 +55,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
             {
                 _sourceCode.AppendLine(line);
             }
-            _sourcemap?.Concat(input.Sourcemap);
+            _sourcemap?.Concat(input.Sourcemap());
         }
 
         public string SourceCode() => _sourceCode.ToString();
