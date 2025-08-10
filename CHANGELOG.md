@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 3.0.0
+
+### Added
+
+- 
+
+### Fixed
+
+- Fixed sourcemap support not properly working with script libraries. 
+
 ## 2.1.0
 
 ### Added
