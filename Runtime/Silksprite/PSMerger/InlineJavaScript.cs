@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Silksprite.PSMerger
 {
-    [AddComponentMenu("Silksprite/PSMerger/Inline JavaScript")]
+    [AddComponentMenu("Silksprite/PSMerger/Inline JavaScript", 200)]
     [RequireComponent(typeof(ScriptableItem))]
     public class InlineJavaScript : MonoBehaviour, IInlineJavaScript
     {
