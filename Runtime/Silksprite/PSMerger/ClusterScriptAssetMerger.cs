@@ -42,8 +42,7 @@ namespace Silksprite.PSMerger
         {
             var environment = JavaScriptCompilerEnvironmentFactory.Create(
                 JavaScriptSources(),
-                DetectCallbackSupport,
-                null);
+                DetectCallbackSupport);
             return PSMergerFilter.Apply(environment, this);
         }
     }

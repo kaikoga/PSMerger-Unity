@@ -40,11 +40,9 @@ namespace Silksprite.PSMerger
 
         public JavaScriptCompilerEnvironment ToCompilerEnvironment(IEnumerable<JavaScriptSource> mergedSources)
         {
-            var inlineJavaScript = gameObject.GetComponent<IInlineJavaScript>();
             var environment = JavaScriptCompilerEnvironmentFactory.Create(
                 JavaScriptSources().Concat(mergedSources),
-                DetectCallbackSupport,
-                inlineJavaScript?.SourceCode);
+                DetectCallbackSupport);
             return PSMergerFilter.Apply(environment, this);
         }
     }

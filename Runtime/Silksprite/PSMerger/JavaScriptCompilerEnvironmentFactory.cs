@@ -7,36 +7,29 @@ namespace Silksprite.PSMerger.Compiler.Extension
 {
     public static class JavaScriptCompilerEnvironmentFactory
     {
-        public static JavaScriptCompilerEnvironment Create(IEnumerable<JavaScriptSource> sources, bool detectCallbackSupport, string defaultSourceCode)
+        public static JavaScriptCompilerEnvironment Create(IEnumerable<JavaScriptSource> sources, bool detectCallbackSupport)
         {
             var sourcesArray = sources.ToArray();
             var libraries = sourcesArray.SelectMany(source => source.ScriptLibraries)
-                .ToJavaScriptInputs(defaultSourceCode)
+                .ToJavaScriptInputs()
                 .ToArray();
             var contexts = sourcesArray.SelectMany(source => source.ScriptContexts)
-                .Select(context => CreateContext(context, defaultSourceCode))
+                .Select(ToCompilerContext)
                 .ToArray();
             return new JavaScriptCompilerEnvironment(libraries, contexts, detectCallbackSupport);
         }
 
-        static JavaScriptCompilerContext CreateContext(JavaScriptContext context, string defaultSourceCode)
+        static JavaScriptCompilerContext ToCompilerContext(JavaScriptContext context)
         {
-            var javaScriptInputs = context.JavaScriptAssets
-                .ToJavaScriptInputs(defaultSourceCode)
-                .ToArray();
-            return new JavaScriptCompilerContext(javaScriptInputs);
+            return new JavaScriptCompilerContext(context.JavaScriptAssets.ToJavaScriptInputs());
         }
     }
     
     static class JavaScriptAssetExtension
     {
-        public static IEnumerable<JavaScriptInput> ToJavaScriptInputs(this IEnumerable<JavaScriptAsset> assets, string defaultSourceCode)
+        public static IEnumerable<JavaScriptInput> ToJavaScriptInputs(this IEnumerable<JavaScriptAsset> assets)
         {
-            return assets.Select(asset => asset
-                    ? JavaScriptInput.FromAsset(asset)
-                    : !string.IsNullOrEmpty(defaultSourceCode)
-                        ? JavaScriptInput.Inline(defaultSourceCode)
-                        : null)
+            return assets.Select(asset => asset ? JavaScriptInput.FromAsset(asset) : JavaScriptInput.Empty())
                 .Where(input => input != null);
         }
     }

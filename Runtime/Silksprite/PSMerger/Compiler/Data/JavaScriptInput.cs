@@ -19,6 +19,11 @@ namespace Silksprite.PSMerger.Compiler.Data
             SourceCode = sourceCode;
         }
 
+        public static JavaScriptInput Empty()
+        {
+            return new JavaScriptInput("");
+        }
+
         public static JavaScriptInput FromAsset(JavaScriptAsset asset)
         {
             return new JavaScriptInput(asset);
