@@ -1,7 +1,7 @@
 using ClusterVR.CreatorKit.Item.Implements;
 using UnityEditor;
 
-namespace Silksprite.PSMerger.Compiler.Internal
+namespace Silksprite.PSMerger.Compiler.Data
 {
     public class JavaScriptInput
     {

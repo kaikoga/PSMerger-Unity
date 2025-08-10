@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSCore.Access;
+using Silksprite.PSMerger.Compiler.Data;
 using Silksprite.PSMerger.Compiler.Internal;
 using UnityEditor;
 

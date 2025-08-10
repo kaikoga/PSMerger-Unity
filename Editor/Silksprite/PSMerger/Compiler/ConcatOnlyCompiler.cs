@@ -1,5 +1,6 @@
 using Silksprite.PSMerger.Compiler.Internal;
 using Silksprite.PSCore.Access;
+using Silksprite.PSMerger.Compiler.Data;
 
 namespace Silksprite.PSMerger.Compiler
 {

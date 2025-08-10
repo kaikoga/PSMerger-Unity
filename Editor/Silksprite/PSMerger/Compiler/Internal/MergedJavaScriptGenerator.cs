@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Silksprite.PSMerger.Compiler.Data;
 
 namespace Silksprite.PSMerger.Compiler.Internal
 {

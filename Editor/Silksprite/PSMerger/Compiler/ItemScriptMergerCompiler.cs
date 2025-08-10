@@ -1,6 +1,7 @@
 using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSCore.Access;
+using Silksprite.PSMerger.Compiler.Data;
 using Silksprite.PSMerger.Compiler.Internal;
 
 namespace Silksprite.PSMerger.Compiler
