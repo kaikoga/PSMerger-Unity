@@ -7,5 +7,9 @@ namespace Silksprite.PSMerger
     [RequireComponent(typeof(PlayerScript)), DisallowMultipleComponent]
     public class PlayerScriptMerger : ClusterScriptComponentMergerBase<IMergedPlayerScriptSource>
     {
+        public const string NameofUseGlobalPlayerScriptSetter = nameof(useGlobalPlayerScriptSetter);
+
+        [SerializeField] bool useGlobalPlayerScriptSetter = true;
+        public bool UseGlobalPlayerScriptSetter => useGlobalPlayerScriptSetter;
     }
 }

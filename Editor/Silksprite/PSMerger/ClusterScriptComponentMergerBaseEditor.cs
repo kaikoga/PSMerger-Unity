@@ -62,8 +62,23 @@ namespace Silksprite.PSMerger
                     }
                 }
             }));
+            if (_mergerBase is PlayerScriptMerger && !_mergerBase.TryGetComponent<ItemScriptMerger>(out _))
+            {
+                advanced.Add(new PropertyField(serializedObject.FindProperty(PlayerScriptMerger.NameofUseGlobalPlayerScriptSetter)));
+                advanced.Add(new HelpBox
+                {
+                    text = "オンの場合、入室中のプレイヤーに $.setPlayerScript() を行うスクリプトを ScriptableItem に設定します。",
+                    messageType = HelpBoxMessageType.Info
+                });
+
+            }
             _generateSourceMap = new PropertyField(serializedObject.FindProperty(NameofGenerateSourcemap));
             advanced.Add(_generateSourceMap);
+            advanced.Add(new HelpBox
+            {
+                text = "オンの場合、ソースマップを出力します。",
+                messageType = HelpBoxMessageType.Info
+            });
             advanced.Add(new PropertyField(serializedObject.FindProperty(NameofDetectCallbackSupport)));
             advanced.Add(new HelpBox
             {

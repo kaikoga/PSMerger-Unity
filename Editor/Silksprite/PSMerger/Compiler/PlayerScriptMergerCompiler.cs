@@ -19,7 +19,7 @@ namespace Silksprite.PSMerger.Compiler
         public static bool Compile(PlayerScriptMerger playerScriptMerger)
         {
             var changed = false;
-            if (!playerScriptMerger.TryGetComponent<ItemScriptMerger>(out _))
+            if (playerScriptMerger.UseGlobalPlayerScriptSetter && !playerScriptMerger.TryGetComponent<ItemScriptMerger>(out _))
             {
                 using var scriptableItemAccess = new ScriptableItemAccess(playerScriptMerger.GetComponent<ScriptableItem>());
                 scriptableItemAccess.sourceCodeAsset = ItemScriptAsset;
