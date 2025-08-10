@@ -1,6 +1,5 @@
 using System;
 using Baxter.ClusterScriptExtensions;
-using Silksprite.PSMerger.Compiler.Data;
 using Silksprite.PSMerger.CSExEx.ComponentUpdater;
 
 namespace Silksprite.PSMerger.CSExEx.ScriptUpdater
@@ -27,7 +26,13 @@ namespace Silksprite.PSMerger.CSExEx.ScriptUpdater
                 {
                     var field = fields[i];
                     var location = field.FieldDefinedLocation;
-                    script = Replace(script, location, $"{field.FieldName} = {field.ToJavaScriptValueLiteral()};");
+                    // CSExEx: PlayerScript 対応
+                    var javaScriptValueLiteral = field.ToJavaScriptValueLiteral();
+                    if (ext is PlayerScriptMergerExtension)
+                    {
+                        javaScriptValueLiteral = javaScriptValueLiteral.Replace("$", "_");
+                    } 
+                    script = Replace(script, location, $"{field.FieldName} = {javaScriptValueLiteral};");
                 }
             }
             
