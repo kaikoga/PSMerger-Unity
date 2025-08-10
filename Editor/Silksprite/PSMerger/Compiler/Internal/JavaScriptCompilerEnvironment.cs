@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using ClusterVR.CreatorKit.Item;
 using ClusterVR.CreatorKit.Item.Implements;
-using UnityEditor;
 
 namespace Silksprite.PSMerger.Compiler.Internal
 {
@@ -13,9 +10,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
         public readonly JavaScriptCompilerContext[] ScriptContexts;
         public readonly bool DetectCallbackSupport;
 
-        public readonly JavaScriptCompilerOutput Output;
-
-        JavaScriptCompilerEnvironment(IEnumerable<JavaScriptSource> sources, bool detectCallbackSupport, string defaultSourceCode, JavaScriptAsset assetOutput)
+        JavaScriptCompilerEnvironment(IEnumerable<JavaScriptSource> sources, bool detectCallbackSupport, string defaultSourceCode)
         {
             var sourcesArray = sources.ToArray();
             ScriptLibraries = sourcesArray.SelectMany(source => source.ScriptLibraries)
@@ -25,7 +20,6 @@ namespace Silksprite.PSMerger.Compiler.Internal
                 .Select(context => new JavaScriptCompilerContext(context, defaultSourceCode))
                 .ToArray();
             DetectCallbackSupport = detectCallbackSupport;
-            Output = JavaScriptCompilerOutput.CreateFromAssetOutput(assetOutput);
         }
 
         public static JavaScriptCompilerEnvironment Create(ClusterScriptComponentMergerBase component, IEnumerable<JavaScriptSource> mergedSources)
@@ -34,8 +28,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
             return new JavaScriptCompilerEnvironment(
                 component.JavaScriptSources().Concat(mergedSources),
                 component.DetectCallbackSupport,
-                inlineJavaScript?.SourceCode,
-                component.MergedScript);
+                inlineJavaScript?.SourceCode);
         }
 
         public static JavaScriptCompilerEnvironment Create(ClusterScriptAssetMerger asset)
@@ -43,8 +36,7 @@ namespace Silksprite.PSMerger.Compiler.Internal
             return new JavaScriptCompilerEnvironment(
                 asset.JavaScriptSources(),
                 asset.DetectCallbackSupport,
-                null,
-                asset.MergedScript);
+                null);
         }
 
         public IEnumerable<JavaScriptInput> AllInputs() => 

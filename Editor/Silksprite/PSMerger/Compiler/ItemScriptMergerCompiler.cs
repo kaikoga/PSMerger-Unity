@@ -15,7 +15,8 @@ namespace Silksprite.PSMerger.Compiler
             using (var scriptableItemAccess = new ScriptableItemAccess(itemScriptMerger.GetComponent<ScriptableItem>()))
             {
                 var env = JavaScriptCompilerEnvironment.Create(itemScriptMerger, Enumerable.Empty<JavaScriptSource>());
-                var output = BuildItemScript(env);
+                var output = JavaScriptCompilerOutput.CreateFromAssetOutput(itemScriptMerger.MergedScript);
+                BuildItemScript(env, output);
                 if (itemScriptMerger.MergedScript)
                 {
                     scriptableItemAccess.sourceCodeAsset = itemScriptMerger.MergedScript;
@@ -41,7 +42,8 @@ namespace Silksprite.PSMerger.Compiler
         {
             using var javaScriptAssetAccess = new JavaScriptAssetAccess(clusterScriptAssetMerger.MergedScript);
             var env = JavaScriptCompilerEnvironment.Create(clusterScriptAssetMerger);
-            var output = BuildItemScript(env);
+            var output = JavaScriptCompilerOutput.CreateFromAssetOutput(clusterScriptAssetMerger.MergedScript);
+            BuildItemScript(env, output);
             javaScriptAssetAccess.text = output.SourceCode();
             if (clusterScriptAssetMerger.GenerateSourcemap)
             {
@@ -50,9 +52,9 @@ namespace Silksprite.PSMerger.Compiler
             return javaScriptAssetAccess.hasModifiedProperties;
         }
 
-        static JavaScriptCompilerOutput BuildItemScript(JavaScriptCompilerEnvironment env)
+        static void BuildItemScript(JavaScriptCompilerEnvironment env, JavaScriptCompilerOutput output)
         {
-            return Gen.MergeScripts(env);
+            Gen.MergeScripts(env, output);
         }
     }
 }
