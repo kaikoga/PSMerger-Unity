@@ -3,6 +3,7 @@ using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
 using Silksprite.PSCore.Access;
 using Silksprite.PSMerger.Compiler.Data;
+using Silksprite.PSMerger.Compiler.Extension;
 using Silksprite.PSMerger.Compiler.Internal;
 using UnityEditor;
 
@@ -37,7 +38,7 @@ namespace Silksprite.PSMerger.Compiler
 
             using (var playerScriptAccess = new PlayerScriptAccess(playerScriptMerger.GetComponent<PlayerScript>()))
             {
-                var env = JavaScriptCompilerEnvironment.Create(playerScriptMerger, CollectMergedSources());
+                var env = JavaScriptCompilerEnvironmentFactory.Create(playerScriptMerger, CollectMergedSources());
                 var output = JavaScriptCompilerOutput.CreateFromAssetOutput(playerScriptMerger.MergedScript);
                 BuildPlayerScript(env, output);
                 if (playerScriptMerger.MergedScript)
@@ -65,7 +66,7 @@ namespace Silksprite.PSMerger.Compiler
         public static bool Compile(ClusterScriptAssetMerger clusterScriptAssetMerger)
         {
             using var javaScriptAssetAccess = new JavaScriptAssetAccess(clusterScriptAssetMerger.MergedScript);
-            var env = JavaScriptCompilerEnvironment.Create(clusterScriptAssetMerger);
+            var env = JavaScriptCompilerEnvironmentFactory.Create(clusterScriptAssetMerger);
             var output = JavaScriptCompilerOutput.CreateFromAssetOutput(clusterScriptAssetMerger.MergedScript);
             BuildPlayerScript(env, output);
             javaScriptAssetAccess.text = output.SourceCode();

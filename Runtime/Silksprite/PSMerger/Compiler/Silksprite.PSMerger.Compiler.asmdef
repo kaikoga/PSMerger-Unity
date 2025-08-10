@@ -1,9 +1,8 @@
 {
-    "name": "Silksprite.PSMerger",
+    "name": "Silksprite.PSMerger.Compiler",
     "rootNamespace": "",
     "references": [
-        "ClusterVR.CreatorKit.Item.Implements",
-        "Silksprite.PSMerger.Compiler"
+        "ClusterVR.CreatorKit.Item.Implements"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
