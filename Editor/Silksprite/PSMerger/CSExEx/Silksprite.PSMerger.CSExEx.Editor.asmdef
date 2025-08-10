@@ -1,0 +1,24 @@
+{
+    "name": "Silksprite.PSMerger.CSExEx.Editor",
+    "rootNamespace": "",
+    "references": [
+        "ClusterVR.CreatorKit.Editor.Custom",
+        "Baxter.ClusterScriptExtensions",
+        "Baxter.ClusterScriptExtensions.Editor",
+        "Silksprite.PSMerger",
+        "Silksprite.PSMerger.CSExEx",
+        "Silksprite.PSMerger.Editor",
+        "Silksprite.PSMerger.Editor.Compiler"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
