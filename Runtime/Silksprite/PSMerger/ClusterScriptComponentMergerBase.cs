@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ClusterVR.CreatorKit.Item.Implements;
-using Silksprite.PSMerger.Compiler.Data;
-using Silksprite.PSMerger.Compiler.Extension;
-using Silksprite.PSMerger.Compiler.Filter;
 using UnityEngine;
 
 namespace Silksprite.PSMerger
@@ -33,26 +30,18 @@ namespace Silksprite.PSMerger
             foreach (var otherSource in otherSources) yield return otherSource?.JavaScriptSource;
         }
 
-        protected abstract IEnumerable<JavaScriptSource> CollectMergedSources();
+        public abstract IEnumerable<JavaScriptSource> CollectMergedSources();
 
         public void SetMergedScript(JavaScriptAsset javaScriptAsset)
         {
             mergedScript = javaScriptAsset;
-        }
-
-        public JavaScriptCompilerEnvironment ToCompilerEnvironment()
-        {
-            var environment = JavaScriptCompilerEnvironmentFactory.Create(
-                JavaScriptSources().Concat(CollectMergedSources()),
-                DetectCallbackSupport);
-            return PSMergerFilter.Apply(environment, this);
         }
     }
 
     public abstract class ClusterScriptComponentMergerBase<T> : ClusterScriptComponentMergerBase
     where T : IMergedClusterScriptSourceBase
     {
-        protected sealed override IEnumerable<JavaScriptSource> CollectMergedSources()
+        public sealed override IEnumerable<JavaScriptSource> CollectMergedSources()
         {
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             var rootObjects = scene.GetRootGameObjects();

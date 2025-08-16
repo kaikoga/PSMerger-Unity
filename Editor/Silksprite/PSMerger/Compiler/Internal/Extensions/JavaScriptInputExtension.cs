@@ -1,4 +1,4 @@
-using Silksprite.PSMerger.Compiler.Data;
+using Silksprite.PSMerger.CompilerAPI.Data;
 using Silksprite.PSMerger.SourcemapAccess;
 
 namespace Silksprite.PSMerger.Compiler.Internal.Extensions

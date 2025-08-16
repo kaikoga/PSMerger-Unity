@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Silksprite.PSMerger.Compiler.Data
+namespace Silksprite.PSMerger.CompilerAPI.Data
 {
     public class JavaScriptCompilerEnvironment
     {

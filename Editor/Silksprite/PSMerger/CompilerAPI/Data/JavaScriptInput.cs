@@ -1,8 +1,4 @@
-using System.IO;
-using ClusterVR.CreatorKit.Item.Implements;
-using UnityEditor;
-
-namespace Silksprite.PSMerger.Compiler.Data
+namespace Silksprite.PSMerger.CompilerAPI.Data
 {
     public class JavaScriptInput
     {
@@ -26,15 +22,5 @@ namespace Silksprite.PSMerger.Compiler.Data
         {
             return new JavaScriptInput(sourceCode);
         }
-
-        public static JavaScriptInput FromAsset(JavaScriptAsset asset)
-        {
-            var sourceCode = asset.text;
-            var sourceCodePath = AssetDatabase.GetAssetPath(asset);
-            var sourcemapPath = $"{sourceCodePath}.map";
-            var sourcemap = File.Exists(sourcemapPath) ? File.ReadAllText(sourcemapPath, System.Text.Encoding.UTF8) : null;
-            return new JavaScriptInput(sourceCode, sourceCodePath, sourcemap);
-        }
     }
-
 }

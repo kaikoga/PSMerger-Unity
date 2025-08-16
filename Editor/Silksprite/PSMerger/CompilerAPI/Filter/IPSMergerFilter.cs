@@ -1,6 +1,6 @@
-using Silksprite.PSMerger.Compiler.Data;
+using Silksprite.PSMerger.CompilerAPI.Data;
 
-namespace Silksprite.PSMerger.Compiler.Filter
+namespace Silksprite.PSMerger.CompilerAPI.Filter
 {
     public interface IPSMergerFilter
     {

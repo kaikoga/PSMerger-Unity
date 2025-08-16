@@ -1,10 +1,13 @@
 {
-    "name": "Silksprite.PSMerger.Compiler",
+    "name": "Silksprite.PSMerger.Editor.CompilerAPI",
     "rootNamespace": "",
     "references": [
-        "ClusterVR.CreatorKit.Item.Implements"
+        "ClusterVR.CreatorKit.Item.Implements",
+        "Silksprite.PSMerger"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

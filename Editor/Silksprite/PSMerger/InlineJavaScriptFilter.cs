@@ -1,6 +1,6 @@
 using System.Linq;
-using Silksprite.PSMerger.Compiler.Data;
-using Silksprite.PSMerger.Compiler.Filter;
+using Silksprite.PSMerger.CompilerAPI.Data;
+using Silksprite.PSMerger.CompilerAPI.Filter;
 using UnityEditor;
 using UnityEngine;
 

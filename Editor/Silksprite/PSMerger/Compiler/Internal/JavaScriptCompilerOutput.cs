@@ -2,7 +2,7 @@ using System.IO;
 using System.Text;
 using ClusterVR.CreatorKit.Item.Implements;
 using Editor.Silksprite.PSCore.Extensions;
-using Silksprite.PSMerger.Compiler.Data;
+using Silksprite.PSMerger.CompilerAPI.Data;
 using Silksprite.PSMerger.Compiler.Internal.Extensions;
 using Silksprite.PSMerger.SourcemapAccess;
 using UnityEditor;

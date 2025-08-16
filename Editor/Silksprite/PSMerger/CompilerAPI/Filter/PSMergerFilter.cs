@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Silksprite.PSMerger.Compiler.Data;
+using Silksprite.PSMerger.CompilerAPI.Data;
 
-namespace Silksprite.PSMerger.Compiler.Filter
+namespace Silksprite.PSMerger.CompilerAPI.Filter
 {
     public static class PSMergerFilter
     {

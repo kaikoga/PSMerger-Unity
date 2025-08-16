@@ -5,7 +5,8 @@
         "ClusterVR.CreatorKit.Editor.Custom",
         "ClusterVR.CreatorKit.Item.Implements",
         "Silksprite.PSMerger",
-        "Silksprite.PSMerger.Editor.Compiler"
+        "Silksprite.PSMerger.Editor.Compiler",
+        "Silksprite.PSMerger.Editor.CompilerAPI"
     ],
     "includePlatforms": [
         "Editor"
